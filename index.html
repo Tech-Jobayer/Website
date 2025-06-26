@@ -1,101 +1,11 @@
+<!-- index.html -->
 <!DOCTYPE html>
-<html lang="bn">
-<head>
-  <meta charset="UTF-8" />
-  <title>YT Subscription Exchange</title>
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-  <style>
-    body { font-family: sans-serif; max-width: 480px; margin: auto; padding: 20px; background:#f9f9f9; }
-    h1 { color: #e91e63; }
-    input, button { width: 100%; padding: 10px; margin: 8px 0; font-size: 16px; }
-    .channel-box { background: white; border: 1px solid #ddd; padding: 10px; margin-bottom: 12px; }
-  </style>
-</head>
-<body>
-
-  <h1>📺 ইউটিউব সাবস্ক্রিপশন এক্সচেঞ্জ</h1>
-
-  <h3>➕ নিজের চ্যানেল যুক্ত করো</h3>
-  <input id="channelName" placeholder="চ্যানেলের নাম লিখো" />
-  <input id="channelUrl" placeholder="চ্যানেল URL দাও" />
-  <button onclick="addChannel()">✅ সাবমিট করো (৫ পয়েন্ট খরচ হবে)</button>
-
-  <h3>🔁 সাবস্ক্রাইব করে পয়েন্ট উপার্জন করো</h3>
-  <div id="channelsList"></div>
-
-<script>
-  // তোমার Firebase Config এখানে বসানো হলো
-  const firebaseConfig = {
-    apiKey: "AIzaSyAC4h55aA0Zz--V5ejyndzR5WC_-9rAPio",
-    authDomain: "subscribe-bot-6f9b2.firebaseapp.com",
-    databaseURL: "https://subscribe-bot-6f9b2-default-rtdb.firebaseio.com",
-    projectId: "subscribe-bot-6f9b2",
-    storageBucket: "subscribe-bot-6f9b2.firebasestorage.app",
-    messagingSenderId: "141787931031",
-    appId: "1:141787931031:web:2108a3e930f5ce4fbc64d2",
-    measurementId: "G-HSDKCJB14Y"
-  };
-
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
-
-  // Channel যোগ করার ফাংশন
-  function addChannel() {
-    const name = document.getElementById('channelName').value.trim();
-    const url = document.getElementById('channelUrl').value.trim();
-
-    if (!name || !url) {
-      alert("সব ফিল্ড পূরণ করো");
-      return;
-    }
-
-    const newChannelRef = db.ref('channels').push();
-    newChannelRef.set({ name, url, subscribers: 0 }, () => {
-      alert("চ্যানেল সাবমিট হয়েছে!");
-      document.getElementById('channelName').value = '';
-      document.getElementById('channelUrl').value = '';
-    });
-  }
-
-  // চ্যানেল লিস্ট দেখানোর ফাংশন
-  function loadChannels() {
-    const listDiv = document.getElementById('channelsList');
-    listDiv.innerHTML = "লোড হচ্ছে...";
-
-    db.ref('channels').on('value', snapshot => {
-      const data = snapshot.val();
-      listDiv.innerHTML = '';
-
-      if (!data) {
-        listDiv.innerHTML = "<p>কোনো চ্যানেল নেই</p>";
-        return;
-      }
-
-      Object.keys(data).forEach(key => {
-        const ch = data[key];
-        const chDiv = document.createElement('div');
-        chDiv.className = 'channel-box';
-        chDiv.innerHTML = `
-          <strong>${ch.name}</strong><br>
-          <a href="${ch.url}" target="_blank">➡️ সাবস্ক্রাইব করতে এখানে ক্লিক করো</a><br>
-          <button onclick="doneSubscribe('${key}')">✅ Done (৫ পয়েন্ট পাবেন)</button>
-        `;
-        listDiv.appendChild(chDiv);
-      });
-    });
-  }
-
-  // Done বাটনে সাবস্ক্রিপশন চেক করে পয়েন্ট আপডেটের জায়গা (ডেমো)
-  function doneSubscribe(channelKey) {
-    alert("এখন সাবস্ক্রিপশন যাচাই করার কোড লাগবে (API) এবং পয়েন্ট আপডেট হবে");
-    // এখানে সাবস্ক্রিপশন যাচাই ও পয়েন্ট হিসাব যুক্ত করবে
-  }
-
-  // পেজ লোড হলে চ্যানেলগুলো দেখাও
-  window.onload = loadChannels;
-</script>
-
-</body>
+<html>
+  <head>
+    <meta http-equiv="refresh" content="0; URL=dashboard.html" />
+    <title>Redirecting...</title>
+  </head>
+  <body>
+    <p>Redirecting to dashboard...</p>
+  </body>
 </html>
