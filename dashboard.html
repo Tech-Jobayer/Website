@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <title>DashBoard - Sub Exchange</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+  <style>
+    body { font-family: sans-serif; background: #f2f2f2; margin: 0; padding: 0; }
+    .header { background: #e91e63; color: white; padding: 15px; text-align: center; }
+    .profile { text-align: center; margin: 10px 0; }
+    .btn { padding: 10px 15px; margin: 5px; font-size: 16px; }
+    .card { background: white; margin: 10px; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .card h3 { margin: 0 0 10px; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h2>📺 সাবস্ক্রিপশন এক্সচেঞ্জ ড্যাশবোর্ড</h2>
+  </div>
+
+  <div class="profile" id="userArea">
+    <button class="btn" onclick="googleLogin()">🔐 Login / Signup</button>
+  </div>
+
+  <div id="taskList">
+    <!-- চ্যানেল টাস্ক এখানে লোড হবে -->
+  </div>
+
+<script>
+  // Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyAC4h55aA0Zz--V5ejyndzR5WC_-9rAPio",
+    authDomain: "subscribe-bot-6f9b2.firebaseapp.com",
+    databaseURL: "https://subscribe-bot-6f9b2-default-rtdb.firebaseio.com",
+    projectId: "subscribe-bot-6f9b2",
+    storageBucket: "subscribe-bot-6f9b2.firebasestorage.app",
+    messagingSenderId: "141787931031",
+    appId: "1:141787931031:web:2108a3e930f5ce4fbc64d2",
+    measurementId: "G-HSDKCJB14Y"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.database();
+
+  // গুগল লগইন ফাংশন
+  function googleLogin() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider).then(result => {
+      showUser(result.user);
+      loadTasks();
+    }).catch(error => {
+      alert("Login Error: " + error.message);
+    });
+  }
+
+  // ইউজার UI দেখাও
+  function showUser(user) {
+    document.getElementById("userArea").innerHTML = `
+      👋 ${user.displayName} | 🔥 <span id="userPoints">Loading...</span> পয়েন্ট
+      <br><button class="btn" onclick="logout()">🚪 Logout</button>
+    `;
+    loadPoints(user.uid);
+  }
+
+  // লগআউট
+  function logout() {
+    auth.signOut().then(() => location.reload());
+  }
+
+  // ইউজারের পয়েন্ট দেখাও
+  function loadPoints(uid) {
+    db.ref('users/' + uid + '/points').once('value', snap => {
+      const points = snap.val() || 0;
+      document.getElementById('userPoints').innerText = points;
+    });
+  }
+
+  // চ্যানেল টাস্ক লোড
+  function loadTasks() {
+    const list = document.getElementById("taskList");
+    db.ref('channels').limitToFirst(3).once('value', snap => {
+      const data = snap.val();
+      list.innerHTML = '';
+
+      if (!data) {
+        list.innerHTML = "<p>কোনো টাস্ক নেই</p>";
+        return;
+      }
+
+      Object.keys(data).forEach(key => {
+        const ch = data[key];
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <h3>${ch.name}</h3>
+          <a href="${ch.url}" target="_blank">➡️ সাবস্ক্রাইব করতে এখানে ক্লিক করো</a><br><br>
+          <button class="btn" onclick="done('${key}')">✅ Done</button>
+          <button class="btn">❌ Skip</button>
+        `;
+        list.appendChild(card);
+      });
+    });
+  }
+
+  // Done বাটনে (ডেমো পয়েন্ট যোগ)
+  function done(channelId) {
+    const user = auth.currentUser;
+    if (!user) return alert("লগইন করুন");
+    const userRef = db.ref('users/' + user.uid + '/points');
+
+    userRef.transaction(current => (current || 0) + 5);
+    alert("✅ সাবস্ক্রিপশন সফল! ৫ পয়েন্ট যোগ হয়েছে।");
+  }
+
+  // পেজ লোড হলে লগইন থাকলে দেখাও
+  auth.onAuthStateChanged(user => {
+    if (user) {
+      showUser(user);
+      loadTasks();
+    }
+  });
+</script>
+
+</body>
+</html>
