@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <title>Login | Subscribe Exchange</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+      max-width: 400px;
+      margin: auto;
+    }
+    h2 {
+      text-align: center;
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+    }
+    #userInfo {
+      margin-top: 20px;
+      background: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>🔐 ইমেইল দিয়ে Login / Signup</h2>
+
+  <input type="email" id="email" placeholder="Email লিখুন">
+  <input type="password" id="password" placeholder="Password লিখুন">
+
+  <button onclick="signup()">🆕 Signup</button>
+  <button onclick="login()">🔓 Login</button>
+  <button onclick="logout()">🚪 Logout</button>
+
+  <div id="userInfo" style="display:none;">
+    <p>👤 Logged in as: <span id="userEmail"></span></p>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAC4h55aA0Zz--V5ejyndzR5WC_-9rAPio",
+      authDomain: "subscribe-bot-6f9b2.firebaseapp.com",
+      databaseURL: "https://subscribe-bot-6f9b2-default-rtdb.firebaseio.com",
+      projectId: "subscribe-bot-6f9b2",
+      storageBucket: "subscribe-bot-6f9b2.appspot.com",
+      messagingSenderId: "141787931031",
+      appId: "1:141787931031:web:2108a3e930f5ce4fbc64d2",
+      measurementId: "G-HSDKCJB14Y"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+
+    function signup() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      firebase.auth().createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          alert("✅ Signup সফল হয়েছে!");
+        })
+        .catch((error) => {
+          alert("❌ Signup error: " + error.message);
+        });
+    }
+
+    function login() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      firebase.auth().signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          alert("✅ Login সফল হয়েছে!");
+        })
+        .catch((error) => {
+          alert("❌ Login error: " + error.message);
+        });
+    }
+
+    function logout() {
+      firebase.auth().signOut().then(() => {
+        alert("🚪 Logged out");
+      });
+    }
+
+    firebase.auth().onAuthStateChanged(function(user) {
+      const userInfo = document.getElementById("userInfo");
+      const userEmail = document.getElementById("userEmail");
+      if (user) {
+        userInfo.style.display = "block";
+        userEmail.textContent = user.email;
+      } else {
+        userInfo.style.display = "none";
+        userEmail.textContent = "";
+      }
+    });
+  </script>
+
+</body>
+</html>
