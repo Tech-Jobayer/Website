@@ -1,23 +1,52 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="bn">
 <head>
   <meta charset="UTF-8">
-  <title>আমার ওয়েবসাইট</title>
+  <title>YouTube Subscription Exchange</title>
   <style>
-    body {
-      background: #f0f0f0;
-      text-align: center;
-      padding-top: 100px;
-      font-family: sans-serif;
-    }
-    h1 {
-      color: #2c3e50;
-    }
+    body { font-family: sans-serif; padding: 20px; background: #f9f9f9; }
+    h1 { color: #e91e63; }
+    input, button { padding: 10px; margin: 5px 0; width: 100%; max-width: 400px; }
+    .channel-box { border: 1px solid #ccc; padding: 10px; margin: 10px 0; }
   </style>
 </head>
 <body>
-  <h1>স্বাগতম আমার ওয়েবসাইটে!</h1>
-  <p>এই ওয়েবসাইট আমি নিজেই তৈরি করেছি।</p>
+
+  <h1>📺 ইউটিউব সাবস্ক্রিপশন এক্সচেঞ্জ</h1>
+
+  <h3>➕ নিজের চ্যানেল যুক্ত করো</h3>
+  <input type="text" id="channelUrl" placeholder="তোমার ইউটিউব চ্যানেল লিংক দাও">
+  <button onclick="submitChannel()">✅ সাবমিট করো (৫ পয়েন্ট খরচ হবে)</button>
+
+  <h3>🔁 সাবস্ক্রাইব করে পয়েন্ট উপার্জন করো</h3>
+  <div id="taskList">
+    <!-- এখানে অন্যদের চ্যানেল লিস্ট আসবে -->
+  </div>
+
+  <script>
+    // চ্যানেল সাবমিট ফাংশন (ডেমো)
+    function submitChannel() {
+      const url = document.getElementById('channelUrl').value;
+      alert("তোমার চ্যানেল সাবমিট হয়েছে: " + url + "\n(বাস্তব সাবমিশনের জন্য ব্যাকএন্ড লাগবে)");
+    }
+
+    // ডেমো চ্যানেল লোড
+    const demoChannels = [
+      {name: "Channel A", link: "https://youtube.com/@channelA"},
+      {name: "Channel B", link: "https://youtube.com/@channelB"},
+    ];
+
+    const taskList = document.getElementById("taskList");
+    demoChannels.forEach(ch => {
+      taskList.innerHTML += `
+        <div class="channel-box">
+          <p><strong>${ch.name}</strong></p>
+          <a href="${ch.link}" target="_blank">➡️ সাবস্ক্রাইব করতে এখানে ক্লিক করো</a><br>
+          <button>✅ Done (৫ পয়েন্ট পাবেন)</button>
+        </div>
+      `;
+    });
+  </script>
+
 </body>
 </html>
