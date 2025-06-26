@@ -81,31 +81,31 @@
   }
 
   // চ্যানেল টাস্ক লোড
-  function loadTasks() {
-    const list = document.getElementById("taskList");
-    db.ref('channels').limitToFirst(3).once('value', snap => {
-      const data = snap.val();
-      list.innerHTML = '';
+function loadTasks() {
+  const list = document.getElementById("taskList");
+  db.ref('channels').once('value', snap => {
+    const data = snap.val();
+    list.innerHTML = '';
 
-      if (!data) {
-        list.innerHTML = "<p>কোনো টাস্ক নেই</p>";
-        return;
-      }
+    if (!data) {
+      list.innerHTML = "<p>কোনো টাস্ক নেই</p>";
+      return;
+    }
 
-      Object.keys(data).forEach(key => {
-        const ch = data[key];
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `
-          <h3>${ch.name}</h3>
-          <a href="${ch.url}" target="_blank">➡️ সাবস্ক্রাইব করতে এখানে ক্লিক করো</a><br><br>
-          <button class="btn" onclick="done('${key}')">✅ Done</button>
-          <button class="btn">❌ Skip</button>
-        `;
-        list.appendChild(card);
-      });
+    // সব টাস্ক লুপ করে দেখাও
+    Object.entries(data).forEach(([key, ch]) => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <h3>${ch.name}</h3>
+        <a href="${ch.url}" target="_blank">➡️ সাবস্ক্রাইব করতে এখানে ক্লিক করো</a><br><br>
+        <button class="btn" onclick="done('${key}')">✅ Done</button>
+        <button class="btn">❌ Skip</button>
+      `;
+      list.appendChild(card);
     });
-  }
+  });
+}
 
   // Done বাটনে (ডেমো পয়েন্ট যোগ)
   function done(channelId) {
