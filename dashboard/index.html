@@ -80,15 +80,25 @@
           return;
         }
         Object.entries(data).forEach(([key, ch]) => {
-          const card = document.createElement('div');
-          card.className = 'card';
-          card.innerHTML = `
-            <h3>${ch.title}</h3>
-            <p>সাবস্ক্রাইবার: ${ch.completed} / ${ch.max}</p>
-            <a href="${ch.link}" target="_blank" rel="noopener noreferrer" class="btn btn-primary">➡️ সাবস্ক্রাইব করতে এখানে ক্লিক করো</a>
-          `;
-          list.appendChild(card);
-        });
+  const cardLink = document.createElement('a');
+  cardLink.href = ch.link;
+  cardLink.target = "_blank";
+  cardLink.rel = "noopener noreferrer";
+  cardLink.className = "card-link"; // CSS এ ক্লিক ইফেক্ট ও pointer যোগ করব
+
+  cardLink.innerHTML = `
+    <div class="card">
+      <h3>${ch.title}</h3>
+      <p>সাবস্ক্রাইবার: ${ch.completed} / ${ch.max}</p>
+      <div class="progress">
+        <div class="progress-bar" style="width: ${(ch.completed / ch.max) * 100}%"></div>
+      </div>
+      <p style="margin-top: 10px; color: #888;">👉 ক্লিক করে সাবস্ক্রাইব করুন</p>
+    </div>
+  `;
+
+  list.appendChild(cardLink);
+});
       })
       .catch(err => {
         console.error("টাস্ক লোড সমস্যা:", err);
