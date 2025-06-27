@@ -9,29 +9,65 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
   <style>
     body { font-family: sans-serif; background: #f2f2f2; margin: 0; padding: 0; }
+
     .header { background: #e91e63; color: white; padding: 15px; text-align: center; }
+
     .profile { text-align: center; margin: 10px 0; }
-    .btn { padding: 10px 15px; margin: 5px; font-size: 16px; border-radius: 6px; cursor: pointer; }
-    .card { background: white; margin: 10px; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+
+    .btn {
+      padding: 10px 15px;
+      margin: 5px;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .card {
+      background: white;
+      margin: 10px;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
     .card h3 { margin: 0 0 10px; }
+
+    #loadingScreen {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
   </style>
 </head>
 <body>
 
-  <div class="header">
-    <h2>📺 সাবস্ক্রিপশন এক্সচেঞ্জ ড্যাশবোর্ড</h2>
+  <!-- ✅ লোডিং স্ক্রিন -->
+  <div id="loadingScreen">
+    <h2>⏳ ড্যাশবোর্ড লোড হচ্ছে...</h2>
   </div>
 
-  <div class="profile" id="userArea">
-    <button class="btn" onclick="redirectToLogin()">🔐 Login / Signup</button>
-  </div>
+  <!-- ✅ ড্যাশবোর্ড কনটেন্ট -->
+  <div id="dashboardContent" style="display: none;">
+    <div class="header">
+      <h2>📺 সাবস্ক্রিপশন এক্সচেঞ্জ ড্যাশবোর্ড</h2>
+    </div>
 
-  <div id="taskList">
-    <!-- চ্যানেল টাস্ক এখানে লোড হবে -->
+    <div class="profile" id="userArea">
+      <button class="btn" onclick="redirectToLogin()">🔐 Login / Signup</button>
+    </div>
+
+    <div id="taskList">
+      <!-- চ্যানেল টাস্ক এখানে লোড হবে -->
+    </div>
   </div>
 
 <script>
-  // Firebase config
+  // ✅ Firebase config
   const firebaseConfig = {
     apiKey: "AIzaSyAC4h55aA0Zz--V5ejyndzR5WC_-9rAPio",
     authDomain: "subscribe-bot-6f9b2.firebaseapp.com",
@@ -46,13 +82,11 @@
   const auth = firebase.auth();
   const db = firebase.database();
 
-  // Redirect to login.html
   function redirectToLogin() {
     const basePath = window.location.pathname.split('/')[1];
     window.location.href = `${location.origin}/${basePath}/login/`;
   }
 
-  // ইউজার UI দেখানো
   function showUser(user) {
     document.getElementById("userArea").innerHTML = `
       👋 ${user.displayName || user.email} | 🔥 <span id="userPoints">Loading...</span> পয়েন্ট
@@ -61,33 +95,30 @@
     loadPoints(user.uid);
   }
 
-  // Logout ফাংশন
   function logout() {
     auth.signOut().then(() => location.reload());
   }
 
-  // ইউজারের পয়েন্ট লোড করা
   function loadPoints(uid) {
-    db.ref('users/' + uid + '/points').once('value').then(snap => {
+    return db.ref('users/' + uid + '/points').once('value').then(snap => {
       const points = snap.val() || 0;
       document.getElementById('userPoints').innerText = points;
     });
   }
 
-  // চ্যানেল টাস্ক লোড করা
   function loadTasks() {
     const list = document.getElementById("taskList");
-    db.ref('channels').once('value').then(snap => {
+
+    return db.ref('channels').once('value').then(snap => {
       const data = snap.val();
       list.innerHTML = '';
 
       if (!data) {
-        list.innerHTML = "<p>কোনো টাস্ক নেই</p>";
+        list.innerHTML = "<p>😢 কোনো টাস্ক নেই</p>";
         return;
       }
 
       Object.entries(data).forEach(([key, ch]) => {
-        // আপনার JSON এ ফিল্ড নাম গুলো: title, link, completed, max
         const card = document.createElement('div');
         card.className = 'card';
         card.innerHTML = `
@@ -99,36 +130,37 @@
         `;
         list.appendChild(card);
       });
-    }).catch(error => {
-      console.error("Error loading tasks:", error);
-      document.getElementById("taskList").innerHTML = "<p>টাস্ক লোড করতে সমস্যা হয়েছে।</p>";
     });
   }
 
-  // Done বাটনে ৫ পয়েন্ট যোগ
   function done(channelId) {
     const user = auth.currentUser;
     if (!user) return alert("দয়া করে লগইন করুন।");
-    
-    const userPointsRef = db.ref('users/' + user.uid + '/points');
 
+    const userPointsRef = db.ref('users/' + user.uid + '/points');
     userPointsRef.transaction(current => (current || 0) + 5)
       .then(() => alert("✅ সাবস্ক্রিপশন সফল! ৫ পয়েন্ট যোগ হয়েছে।"))
       .catch(() => alert("পয়েন্ট যোগ করতে সমস্যা হয়েছে।"));
   }
 
-  // Skip ফাংশন (আপনার ইচ্ছা অনুযায়ী কাজ দিতে পারেন)
   function skip(channelId) {
     alert("আপনি টাস্কটি বাদ দিয়েছেন।");
   }
 
-  // পেজ লোড হলে ইউজার চেক ও টাস্ক লোড করা
+  // ✅ সব কিছু লোড হলে
   auth.onAuthStateChanged(user => {
     if (user) {
       showUser(user);
-      loadTasks();
+      Promise.all([
+        loadPoints(user.uid),
+        loadTasks()
+      ]).then(() => {
+        document.getElementById("loadingScreen").style.display = "none";
+        document.getElementById("dashboardContent").style.display = "block";
+      });
     } else {
-      // ইউজার না থাকলে login button দেখাও
+      document.getElementById("loadingScreen").style.display = "none";
+      document.getElementById("dashboardContent").style.display = "block";
       document.getElementById("userArea").innerHTML = `
         <button class="btn" onclick="redirectToLogin()">🔐 Login / Signup</button>
       `;
