@@ -81,7 +81,7 @@
         }
         Object.entries(data).forEach(([key, ch]) => {
   const cardLink = document.createElement('a');
-  cardLink.href = ch.link;
+  cardLink.href = `/task_detail/index.html?taskId=${encodeURIComponent(key)}`;
   cardLink.target = "_blank";
   cardLink.rel = "noopener noreferrer";
   cardLink.className = "card-link"; // CSS এ ক্লিক ইফেক্ট ও pointer যোগ করব
