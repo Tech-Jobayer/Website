@@ -72,6 +72,12 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
+// ✅ একবার define করো
+const basePath = window.location.pathname.split('/')[1];
+const goToDashboard = () => {
+  window.location.href = `${location.origin}/${basePath}/dashboard/`;
+};
+
     function signup() {
       const name = document.getElementById("fullname").value;
       const email = document.getElementById("email").value;
@@ -88,10 +94,12 @@
             points: 0
           });
         })
-        .then(() => {
-          alert("✅ রেজিস্ট্রেশন সফল!");
-          window.location.href = "dashboard.html";
-        })
+        
+// ✅ এখন হবে
+.then(() => {
+  alert("✅ লগইন সফল!");
+  goToDashboard();
+})
         .catch(error => {
           alert("❌ " + error.message);
         });
@@ -102,36 +110,43 @@
       const pass = document.getElementById("password").value;
 
       firebase.auth().signInWithEmailAndPassword(email, pass)
-        .then(() => {
-          alert("✅ লগইন সফল!");
-          window.location.href = "dashboard.html";
-        })
+        
+// ✅ এখন হবে
+.then(() => {
+  alert("✅ লগইন সফল!");
+  goToDashboard();
+})
         .catch(error => {
           alert("❌ " + error.message);
         });
     }
 
     function googleLogin() {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      firebase.auth().signInWithPopup(provider)
-        .then(result => {
-          const user = result.user;
-          const uid = user.uid;
-          db.ref('users/' + uid).once('value').then(snapshot => {
-            if (!snapshot.exists()) {
-              db.ref('users/' + uid).set({
-                name: user.displayName || "No Name",
-                email: user.email,
-                points: 0
-              });
-            }
-            window.location.href = "dashboard.html";
+  const provider = new firebase.auth.GoogleAuthProvider();
+  firebase.auth().signInWithPopup(provider)
+    .then(result => {
+      const user = result.user;
+      const uid = user.uid;
+
+      // ইউজার নতুন হলে ডাটাবেজে যোগ করো
+      return db.ref('users/' + uid).once('value').then(snapshot => {
+        if (!snapshot.exists()) {
+          return db.ref('users/' + uid).set({
+            name: user.displayName || "No Name",
+            email: user.email,
+            points: 0
           });
-        })
-        .catch(error => {
-          alert("❌ গুগল লগইন সমস্যা: " + error.message);
-        });
-    }
+        }
+      });
+    })
+    .then(() => {
+      alert("✅ লগইন সফল!");
+      goToDashboard();
+    })
+    .catch(error => {
+      alert("❌ গুগল লগইন সমস্যা: " + error.message);
+    });
+}
 
     function logout() {
       firebase.auth().signOut().then(() => {
