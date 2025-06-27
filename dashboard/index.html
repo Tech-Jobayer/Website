@@ -69,39 +69,32 @@
       document.getElementById('userPoints').innerText = snap.val() || 0;
     });
   }
-
-  function loadTasks() {
-    const list = document.getElementById("taskList");
-    return db.ref('channels').once('value')
-      .then(snap => {
-        const data = snap.val();
-        list.innerHTML = '';
-        if (!data) {
-          list.innerHTML = "<p>😢 কোনো টাস্ক নেই</p>";
-          return;
-        }
-        Object.entries(data).forEach(([key, ch]) => {
-          const progressPercent = (ch.completed / ch.max * 100).toFixed(1);
-          const card = document.createElement('div');
-          card.className = 'card';
-          card.innerHTML = `
-            <h3>${ch.title}</h3>
-            <p>সাবস্ক্রাইবার: ${ch.completed} / ${ch.max}</p>
-            <div class="progress" style="background:#eee; border-radius:6px; overflow:hidden; margin-bottom:10px;">
-              <div style="width:${progressPercent}%; background:#e91e63; height:8px;"></div>
-            </div>
-            <a href="${ch.link}" target="_blank" rel="noopener noreferrer">➡️ সাবস্ক্রাইব করতে এখানে ক্লিক করো</a><br><br>
-            <button class="btn" onclick="done('${key}')">✅ Done</button>
-            <button class="btn" onclick="skip('${key}')">❌ Skip</button>
-          `;
-          list.appendChild(card);
-        });
-      })
-      .catch(err => {
-        console.error("টাস্ক লোড সমস্যা:", err);
-        list.innerHTML = "<p>❌ টাস্ক লোড করতে সমস্যা হয়েছে</p>";
+function loadTasks() {
+  const list = document.getElementById("taskList");
+  return db.ref('channels').once('value')
+    .then(snap => {
+      const data = snap.val();
+      list.innerHTML = '';
+      if (!data) {
+        list.innerHTML = "<p>😢 কোনো টাস্ক নেই</p>";
+        return;
+      }
+      Object.entries(data).forEach(([key, ch]) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <h3>${ch.title}</h3>
+          <p>সাবস্ক্রাইবার: ${ch.completed} / ${ch.max}</p>
+          <a href="${ch.link}" target="_blank" rel="noopener noreferrer" class="btn btn-primary">➡️ সাবস্ক্রাইব করতে এখানে ক্লিক করো</a>
+        `;
+        list.appendChild(card);
       });
-  }
+    })
+    .catch(err => {
+      console.error("টাস্ক লোড সমস্যা:", err);
+      list.innerHTML = "<p>❌ টাস্ক লোড করতে সমস্যা হয়েছে</p>";
+    });
+}
 
   function done(channelId) {
     const user = auth.currentUser;
