@@ -63,46 +63,46 @@
     auth.signOut().then(() => location.reload());
   }
 
-  // ✅ Realtime point update
   function loadPoints(uid) {
     db.ref('users/' + uid + '/points').on('value', snap => {
       document.getElementById('userPoints').innerText = snap.val() || 0;
     });
   }
-function loadTasks() {
-  const list = document.getElementById("taskList");
-  return db.ref('channels').once('value')
-    .then(snap => {
-      const data = snap.val();
-      list.innerHTML = '';
-      if (!data) {
-        list.innerHTML = "<p>😢 কোনো টাস্ক নেই</p>";
-        return;
-      }
-      Object.entries(data).forEach(([key, ch]) => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `
-          <h3>${ch.title}</h3>
-          <p>সাবস্ক্রাইবার: ${ch.completed} / ${ch.max}</p>
-          <a href="${ch.link}" target="_blank" rel="noopener noreferrer" class="btn btn-primary">➡️ সাবস্ক্রাইব করতে এখানে ক্লিক করো</a>
-        `;
-        list.appendChild(card);
-      });
-    })
-    .catch(err => {
-      console.error("টাস্ক লোড সমস্যা:", err);
-      list.innerHTML = "<p>❌ টাস্ক লোড করতে সমস্যা হয়েছে</p>";
-    });
-}
 
-  // ✅ fallback timeout (3 সেকেন্ডে লোডিং বন্ধ)
+  function loadTasks() {
+    const list = document.getElementById("taskList");
+    return db.ref('channels').once('value')
+      .then(snap => {
+        const data = snap.val();
+        list.innerHTML = '';
+        if (!data) {
+          list.innerHTML = "<p>😢 কোনো টাস্ক নেই</p>";
+          return;
+        }
+        Object.entries(data).forEach(([key, ch]) => {
+          const card = document.createElement('div');
+          card.className = 'card';
+          card.innerHTML = `
+            <h3>${ch.title}</h3>
+            <p>সাবস্ক্রাইবার: ${ch.completed} / ${ch.max}</p>
+            <a href="${ch.link}" target="_blank" rel="noopener noreferrer" class="btn btn-primary">➡️ সাবস্ক্রাইব করতে এখানে ক্লিক করো</a>
+          `;
+          list.appendChild(card);
+        });
+      })
+      .catch(err => {
+        console.error("টাস্ক লোড সমস্যা:", err);
+        list.innerHTML = "<p>❌ টাস্ক লোড করতে সমস্যা হয়েছে</p>";
+      });
+  }
+
+  // লোডিং স্ক্রিন টাইমআউট
   let loadingTimeout = setTimeout(() => {
     document.getElementById("loadingScreen").style.display = "none";
     document.getElementById("dashboardContent").style.display = "block";
   }, 3000);
 
-  // 🔄 লগইন স্ট্যাটাস অনুযায়ী UI আপডেট
+  // লগইন স্ট্যাটাস অনুযায়ী UI আপডেট
   auth.onAuthStateChanged(user => {
     if (user) {
       showUser(user);
@@ -131,7 +131,6 @@ function loadTasks() {
 </script>
 
 <script>
-  // ⏳ "অপেক্ষা করুন..." এনিমেশন
   const loadingText = document.querySelector('.loading-text');
   let dotCount = 0;
   setInterval(() => {
@@ -139,5 +138,6 @@ function loadTasks() {
     loadingText.innerHTML = `অনুগ্রহ করে অপেক্ষা করুন${'.'.repeat(dotCount)}`;
   }, 500);
 </script>
+
 </body>
 </html>
