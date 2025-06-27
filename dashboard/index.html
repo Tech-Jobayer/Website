@@ -96,20 +96,6 @@ function loadTasks() {
     });
 }
 
-  function done(channelId) {
-    const user = auth.currentUser;
-    if (!user) return alert("দয়া করে লগইন করুন।");
-
-    const userPointsRef = db.ref('users/' + user.uid + '/points');
-    userPointsRef.transaction(current => (current || 0) + 5)
-      .then(() => alert("✅ সাবস্ক্রিপশন সফল! ৫ পয়েন্ট যোগ হয়েছে।"))
-      .catch(() => alert("❌ পয়েন্ট যোগ করতে সমস্যা হয়েছে।"));
-  }
-
-  function skip(channelId) {
-    alert("আপনি টাস্কটি বাদ দিয়েছেন।");
-  }
-
   // ✅ fallback timeout (3 সেকেন্ডে লোডিং বন্ধ)
   let loadingTimeout = setTimeout(() => {
     document.getElementById("loadingScreen").style.display = "none";
