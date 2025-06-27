@@ -1,10 +1,41 @@
 <!DOCTYPE html>
-<html>
-  <head>
-  <meta http-equiv="refresh" content="0; URL=dashboard/" />
-    <title>Redirecting...</title>
-  </head>
-  <body>
-    <p>Redirecting to dashboard...</p>
-  </body>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <title>Redirecting...</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .spinner {
+      border: 6px solid #f3f3f3;
+      border-top: 6px solid #e91e63;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0%   { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="spinner"></div>
+
+  <script>
+    // রিডাইরেক্ট সঙ্গে সঙ্গে
+    window.location.href = "dashboard/";
+  </script>
+</body>
 </html>
