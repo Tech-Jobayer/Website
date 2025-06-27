@@ -2,18 +2,15 @@
 <html lang="bn">
 <head>
   <meta charset="UTF-8">
-  <title>Login | Subscribe Exchange</title>
+  <title>Login / Signup</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
+      font-family: sans-serif;
+      background: #f0f0f0;
       padding: 20px;
-      max-width: 400px;
+      max-width: 450px;
       margin: auto;
-    }
-    h2 {
-      text-align: center;
     }
     input, button {
       width: 100%;
@@ -21,35 +18,39 @@
       margin-top: 10px;
       font-size: 16px;
       border-radius: 5px;
-      border: 1px solid #ccc;
     }
     button {
       background-color: #4CAF50;
       color: white;
       border: none;
     }
+    .google-btn {
+      background-color: #dd4b39;
+    }
     #userInfo {
+      background: white;
       margin-top: 20px;
-      background: #fff;
       padding: 15px;
-      border-radius: 8px;
-      text-align: center;
+      border-radius: 10px;
     }
   </style>
 </head>
 <body>
 
-  <h2>🔐 ইমেইল দিয়ে Login / Signup</h2>
+  <h2>🔐 Login / Signup</h2>
 
-  <input type="email" id="email" placeholder="Email লিখুন">
-  <input type="password" id="password" placeholder="Password লিখুন">
+  <input type="text" id="fullname" placeholder="নাম">
+  <input type="email" id="email" placeholder="ইমেইল">
+  <input type="password" id="password" placeholder="পাসওয়ার্ড">
 
-  <button onclick="signup()">🆕 Signup</button>
-  <button onclick="login()">🔓 Login</button>
-  <button onclick="logout()">🚪 Logout</button>
+  <button onclick="signup()">🆕 রেজিস্ট্রেশন</button>
+  <button onclick="login()">🔓 লগইন</button>
+  <button class="google-btn" onclick="googleLogin()">🔗 গুগল দিয়ে লগইন</button>
+  <button onclick="logout()">🚪 লগআউট</button>
 
   <div id="userInfo" style="display:none;">
-    <p>👤 Logged in as: <span id="userEmail"></span></p>
+    <p>👋 <b id="userName">নাম</b></p>
+    <p>📧 <span id="userEmail">ইমেইল</span></p>
   </div>
 
   <!-- Firebase SDK -->
@@ -65,54 +66,93 @@
       projectId: "subscribe-bot-6f9b2",
       storageBucket: "subscribe-bot-6f9b2.appspot.com",
       messagingSenderId: "141787931031",
-      appId: "1:141787931031:web:2108a3e930f5ce4fbc64d2",
-      measurementId: "G-HSDKCJB14Y"
+      appId: "1:141787931031:web:2108a3e930f5ce4fbc64d2"
     };
 
     firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
     function signup() {
+      const name = document.getElementById("fullname").value;
       const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      firebase.auth().createUserWithEmailAndPassword(email, password)
+      const pass = document.getElementById("password").value;
+
+      if (!name) return alert("নাম দিন");
+
+      firebase.auth().createUserWithEmailAndPassword(email, pass)
         .then((userCredential) => {
-          alert("✅ Signup সফল হয়েছে!");
+          const uid = userCredential.user.uid;
+          return db.ref('users/' + uid).set({
+            name: name,
+            email: email,
+            points: 0
+          });
         })
-        .catch((error) => {
-          alert("❌ Signup error: " + error.message);
+        .then(() => {
+          alert("✅ রেজিস্ট্রেশন সফল!");
+          window.location.href = "dashboard.html";
+        })
+        .catch(error => {
+          alert("❌ " + error.message);
         });
     }
 
     function login() {
       const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      firebase.auth().signInWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-          alert("✅ Login সফল হয়েছে!");
+      const pass = document.getElementById("password").value;
+
+      firebase.auth().signInWithEmailAndPassword(email, pass)
+        .then(() => {
+          alert("✅ লগইন সফল!");
+          window.location.href = "dashboard.html";
         })
-        .catch((error) => {
-          alert("❌ Login error: " + error.message);
+        .catch(error => {
+          alert("❌ " + error.message);
+        });
+    }
+
+    function googleLogin() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      firebase.auth().signInWithPopup(provider)
+        .then(result => {
+          const user = result.user;
+          const uid = user.uid;
+          db.ref('users/' + uid).once('value').then(snapshot => {
+            if (!snapshot.exists()) {
+              db.ref('users/' + uid).set({
+                name: user.displayName || "No Name",
+                email: user.email,
+                points: 0
+              });
+            }
+            window.location.href = "dashboard.html";
+          });
+        })
+        .catch(error => {
+          alert("❌ গুগল লগইন সমস্যা: " + error.message);
         });
     }
 
     function logout() {
       firebase.auth().signOut().then(() => {
-        alert("🚪 Logged out");
+        alert("🚪 লগআউট হয়েছে");
       });
     }
 
-    firebase.auth().onAuthStateChanged(function(user) {
-      const userInfo = document.getElementById("userInfo");
-      const userEmail = document.getElementById("userEmail");
+    firebase.auth().onAuthStateChanged(user => {
+      const info = document.getElementById("userInfo");
       if (user) {
-        userInfo.style.display = "block";
-        userEmail.textContent = user.email;
+        info.style.display = "block";
+        document.getElementById("userEmail").textContent = user.email;
+        db.ref('users/' + user.uid + '/name').once('value').then(snapshot => {
+          document.getElementById("userName").textContent = snapshot.val() || "No Name";
+        });
       } else {
-        userInfo.style.display = "none";
-        userEmail.textContent = "";
+        info.style.display = "none";
+        document.getElementById("userName").textContent = "";
+        document.getElementById("userEmail").textContent = "";
       }
     });
   </script>
-
 </body>
 </html>
