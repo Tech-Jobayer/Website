@@ -11,7 +11,6 @@
     body { font-family: sans-serif; background: #f2f2f2; margin: 0; padding: 0; }
 
     .header { background: #e91e63; color: white; padding: 15px; text-align: center; }
-
     .profile { text-align: center; margin: 10px 0; }
 
     .btn {
@@ -32,15 +31,38 @@
 
     .card h3 { margin: 0 0 10px; }
 
+    /* ✅ লোডিং স্ক্রিন স্টাইল */
     #loadingScreen {
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
-      background: #fff;
+      background: white;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       z-index: 9999;
+      font-family: sans-serif;
+    }
+
+    .spinner {
+      border: 6px solid #f3f3f3;
+      border-top: 6px solid #e91e63;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 10px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      font-size: 16px;
+      color: #555;
     }
   </style>
 </head>
@@ -48,7 +70,8 @@
 
   <!-- ✅ লোডিং স্ক্রিন -->
   <div id="loadingScreen">
-    <h2>⏳ ড্যাশবোর্ড লোড হচ্ছে...</h2>
+    <div class="spinner"></div>
+    <div class="loading-text">⏳ ড্যাশবোর্ড লোড হচ্ছে...<br>অনুগ্রহ করে অপেক্ষা করুন</div>
   </div>
 
   <!-- ✅ ড্যাশবোর্ড কনটেন্ট -->
@@ -67,7 +90,7 @@
   </div>
 
 <script>
-  // ✅ Firebase config
+  // Firebase config
   const firebaseConfig = {
     apiKey: "AIzaSyAC4h55aA0Zz--V5ejyndzR5WC_-9rAPio",
     authDomain: "subscribe-bot-6f9b2.firebaseapp.com",
@@ -140,21 +163,18 @@
     const userPointsRef = db.ref('users/' + user.uid + '/points');
     userPointsRef.transaction(current => (current || 0) + 5)
       .then(() => alert("✅ সাবস্ক্রিপশন সফল! ৫ পয়েন্ট যোগ হয়েছে।"))
-      .catch(() => alert("পয়েন্ট যোগ করতে সমস্যা হয়েছে।"));
+      .catch(() => alert("❌ পয়েন্ট যোগ করতে সমস্যা হয়েছে।"));
   }
 
   function skip(channelId) {
     alert("আপনি টাস্কটি বাদ দিয়েছেন।");
   }
 
-  // ✅ সব কিছু লোড হলে
+  // 🔄 পেজ লোডে সব কিছু প্রস্তুত হলে লোডিং স্ক্রিন বন্ধ
   auth.onAuthStateChanged(user => {
     if (user) {
       showUser(user);
-      Promise.all([
-        loadPoints(user.uid),
-        loadTasks()
-      ]).then(() => {
+      Promise.all([loadPoints(user.uid), loadTasks()]).then(() => {
         document.getElementById("loadingScreen").style.display = "none";
         document.getElementById("dashboardContent").style.display = "block";
       });
