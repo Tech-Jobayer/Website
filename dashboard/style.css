@@ -1,9 +1,10 @@
 /* style.css */
 body { 
-  font-family: sans-serif; 
+  font-family: 'Noto Sans Bengali', 'Hind Siliguri', sans-serif;
   background: #f2f2f2; 
   margin: 0; 
   padding: 0; 
+  line-height: 1.6;
 }
 
 .header { 
@@ -24,6 +25,40 @@ body {
   font-size: 16px;
   border-radius: 6px;
   cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+}
+
+.btn-primary:hover {
+  background-color: #c2185b;
+}
+
+.btn-danger:hover {
+  background-color: #d32f2f;
+}
+
+.btn-primary {
+  background-color: #e91e63;
+  color: white;
+  border: none;
+}
+
+.btn-danger {
+  background-color: #f44336;
+  color: white;
+  border: none;
+}
+
+.btn:focus {
+  outline: 3px solid #e91e63;
+  outline-offset: 2px;
+}
+
+.btn:active {
+  transform: scale(0.98);
 }
 
 .card {
@@ -32,10 +67,52 @@ body {
   padding: 15px;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  color: #333;
+}
+
+.card:hover {
+  box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);
+  transform: translateY(-5px);
+  transition: all 0.3s ease;
 }
 
 .card h3 { 
   margin: 0 0 10px; 
+}
+
+input[type="text"], input[type="email"], input[type="password"] {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.input-error {
+  border-color: #f44336;
+  background-color: #ffebee;
+}
+
+.input-error::placeholder {
+  color: #d32f2f;
+}
+
+.alert {
+  padding: 12px 20px;
+  border-radius: 6px;
+  margin: 10px 0;
+  font-weight: 500;
+}
+
+.alert-success {
+  background-color: #dff0d8;
+  color: #3c763d;
+}
+
+.alert-danger {
+  background-color: #f2dede;
+  color: #a94442;
 }
 
 /* ✅ লোডিং স্ক্রিন স্টাইল */
@@ -49,7 +126,7 @@ body {
   align-items: center;
   justify-content: center;
   z-index: 9999;
-  font-family: sans-serif;
+  font-family: 'Noto Sans Bengali', 'Hind Siliguri', sans-serif;
 }
 
 .spinner {
@@ -87,4 +164,50 @@ body {
     transform: scale(1.2);
     opacity: 0.7;
   }
+}
+
+@media (max-width: 600px) {
+  .card {
+    margin: 5px;
+    padding: 10px;
+  }
+  .btn {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+  .header h2 {
+    font-size: 18px;
+  }
+  .profile {
+    margin: 5px 0;
+  }
+  .loading-text {
+    font-size: 16px;
+  }
+  .spinner {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+.toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #333;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  animation: fadeIn 0.5s ease, fadeOut 0.5s ease 4s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(20px); }
 }
