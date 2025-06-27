@@ -71,8 +71,7 @@
   <!-- ✅ লোডিং স্ক্রিন -->
   <div id="loadingScreen">
     <div class="spinner"></div>
-    <div class="loading-text">⏳ ড্যাশবোর্ড লোড হচ্ছে...<br>অনুগ্রহ করে অপেক্ষা করুন</div>
-  </div>
+    <div class="loading-text">অনুগ্রহ করে অপেক্ষা করুন</div>
 
   <!-- ✅ ড্যাশবোর্ড কনটেন্ট -->
   <div id="dashboardContent" style="display: none;">
@@ -189,7 +188,6 @@
   });
 </script>
 <script>
-  // আগের সব কোড থাকবে...
 
   // ⏳ "অপেক্ষা করুন..." এনিমেশন
   const loadingText = document.querySelector('.loading-text');
@@ -198,7 +196,7 @@
   setInterval(() => {
     dotCount = (dotCount + 1) % 4;
     const dots = '.'.repeat(dotCount);
-    loadingText.innerHTML = `⏳ ড্যাশবোর্ড লোড হচ্ছে<br>অনুগ্রহ করে অপেক্ষা করুন${dots}`;
+    loadingText.innerHTML = `⏳ অনুগ্রহ করে অপেক্ষা করুন${dots}`;
   }, 500); // প্রতি 0.5 সেকেন্ডে পরিবর্তন হবে
 </script>
 </body>
