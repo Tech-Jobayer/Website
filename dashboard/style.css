@@ -210,3 +210,16 @@ input[type="text"], input[type="email"], input[type="password"] {
   from { opacity: 1; transform: translateY(0); }
   to   { opacity: 0; transform: translateY(20px); }
 }
+
+.task-message {
+  text-align: center;
+  margin: 20px auto;
+  padding: 12px 16px;
+  font-size: 18px;
+  color: #856404;
+  background-color: #fff3cd;
+  border: 1px solid #ffeeba;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  max-width: 90%;
+}
