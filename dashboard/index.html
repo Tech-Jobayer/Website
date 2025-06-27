@@ -63,16 +63,11 @@
     auth.signOut().then(() => location.reload());
   }
 
+  // ✅ Realtime point update
   function loadPoints(uid) {
-    return db.ref('users/' + uid + '/points').once('value')
-      .then(snap => {
-        const points = snap.val() || 0;
-        document.getElementById('userPoints').innerText = points;
-      })
-      .catch(err => {
-        console.error("পয়েন্ট লোড সমস্যা:", err);
-        document.getElementById('userPoints').innerText = "ত্রুটি";
-      });
+    db.ref('users/' + uid + '/points').on('value', snap => {
+      document.getElementById('userPoints').innerText = snap.val() || 0;
+    });
   }
 
   function loadTasks() {
@@ -86,11 +81,15 @@
           return;
         }
         Object.entries(data).forEach(([key, ch]) => {
+          const progressPercent = (ch.completed / ch.max * 100).toFixed(1);
           const card = document.createElement('div');
           card.className = 'card';
           card.innerHTML = `
             <h3>${ch.title}</h3>
             <p>সাবস্ক্রাইবার: ${ch.completed} / ${ch.max}</p>
+            <div class="progress" style="background:#eee; border-radius:6px; overflow:hidden; margin-bottom:10px;">
+              <div style="width:${progressPercent}%; background:#e91e63; height:8px;"></div>
+            </div>
             <a href="${ch.link}" target="_blank" rel="noopener noreferrer">➡️ সাবস্ক্রাইব করতে এখানে ক্লিক করো</a><br><br>
             <button class="btn" onclick="done('${key}')">✅ Done</button>
             <button class="btn" onclick="skip('${key}')">❌ Skip</button>
@@ -128,7 +127,7 @@
   auth.onAuthStateChanged(user => {
     if (user) {
       showUser(user);
-      Promise.all([loadPoints(user.uid), loadTasks()])
+      Promise.all([loadTasks()])
         .then(() => {
           clearTimeout(loadingTimeout);
           document.getElementById("loadingScreen").style.display = "none";
