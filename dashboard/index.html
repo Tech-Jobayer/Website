@@ -48,8 +48,9 @@
 
   // ✅ Redirect to login.html
   function redirectToLogin() {
-    window.location.href = "login/index.html";
-  }
+  const basePath = window.location.pathname.split('/')[1];
+  window.location.href = `${location.origin}/${basePath}/login/`;
+}
 
   // ✅ ইউজার UI দেখাও
   function showUser(user) {
