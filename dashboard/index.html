@@ -4,39 +4,34 @@
   <meta charset="UTF-8" />
   <title>DashBoard - Sub Exchange</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-<!-- Google Fonts থেকে Noto Sans Bengali এবং Hind Siliguri -->
   <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri&family=Noto+Sans+Bengali&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
- 
 </head>
 <body>
 
-  <!-- ✅ লোডিং স্ক্রিন -->
 <div id="loadingScreen">
   <div class="spinner"></div>
   <div class="loading-text">অনুগ্রহ করে অপেক্ষা করুন</div>
 </div>
 
-  <!-- ✅ ড্যাশবোর্ড কনটেন্ট -->
-  <div id="dashboardContent" style="display: none;">
-    <div class="header">
-      <h2>📺 সাবস্ক্রিপশন এক্সচেঞ্জ ড্যাশবোর্ড</h2>
-    </div>
-
-    <div class="profile" id="userArea">
-      <button class="btn" onclick="redirectToLogin()">🔐 Login / Signup</button>
-    </div>
-
-    <div id="taskList">
-      <!-- চ্যানেল টাস্ক এখানে লোড হবে -->
-    </div>
+<div id="dashboardContent" style="display: none;">
+  <div class="header">
+    <h2>📺 সাবস্ক্রিপশন এক্সচেঞ্জ ড্যাশবোর্ড</h2>
   </div>
 
+  <div class="profile" id="userArea">
+    <button class="btn" onclick="redirectToLogin()">🔐 Login / Signup</button>
+  </div>
+
+  <div id="taskList">
+    <!-- চ্যানেল টাস্ক এখানে লোড হবে -->
+  </div>
+</div>
+
 <script>
-  // Firebase config
   const firebaseConfig = {
     apiKey: "AIzaSyAC4h55aA0Zz--V5ejyndzR5WC_-9rAPio",
     authDomain: "subscribe-bot-6f9b2.firebaseapp.com",
@@ -69,37 +64,44 @@
   }
 
   function loadPoints(uid) {
-    return db.ref('users/' + uid + '/points').once('value').then(snap => {
-      const points = snap.val() || 0;
-      document.getElementById('userPoints').innerText = points;
-    });
+    return db.ref('users/' + uid + '/points').once('value')
+      .then(snap => {
+        const points = snap.val() || 0;
+        document.getElementById('userPoints').innerText = points;
+      })
+      .catch(err => {
+        console.error("পয়েন্ট লোড সমস্যা:", err);
+        document.getElementById('userPoints').innerText = "ত্রুটি";
+      });
   }
 
   function loadTasks() {
     const list = document.getElementById("taskList");
-
-    return db.ref('channels').once('value').then(snap => {
-      const data = snap.val();
-      list.innerHTML = '';
-
-      if (!data) {
-        list.innerHTML = "<p>😢 কোনো টাস্ক নেই</p>";
-        return;
-      }
-
-      Object.entries(data).forEach(([key, ch]) => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `
-          <h3>${ch.title}</h3>
-          <p>সাবস্ক্রাইবার: ${ch.completed} / ${ch.max}</p>
-          <a href="${ch.link}" target="_blank" rel="noopener noreferrer">➡️ সাবস্ক্রাইব করতে এখানে ক্লিক করো</a><br><br>
-          <button class="btn" onclick="done('${key}')">✅ Done</button>
-          <button class="btn" onclick="skip('${key}')">❌ Skip</button>
-        `;
-        list.appendChild(card);
+    return db.ref('channels').once('value')
+      .then(snap => {
+        const data = snap.val();
+        list.innerHTML = '';
+        if (!data) {
+          list.innerHTML = "<p>😢 কোনো টাস্ক নেই</p>";
+          return;
+        }
+        Object.entries(data).forEach(([key, ch]) => {
+          const card = document.createElement('div');
+          card.className = 'card';
+          card.innerHTML = `
+            <h3>${ch.title}</h3>
+            <p>সাবস্ক্রাইবার: ${ch.completed} / ${ch.max}</p>
+            <a href="${ch.link}" target="_blank" rel="noopener noreferrer">➡️ সাবস্ক্রাইব করতে এখানে ক্লিক করো</a><br><br>
+            <button class="btn" onclick="done('${key}')">✅ Done</button>
+            <button class="btn" onclick="skip('${key}')">❌ Skip</button>
+          `;
+          list.appendChild(card);
+        });
+      })
+      .catch(err => {
+        console.error("টাস্ক লোড সমস্যা:", err);
+        list.innerHTML = "<p>❌ টাস্ক লোড করতে সমস্যা হয়েছে</p>";
       });
-    });
   }
 
   function done(channelId) {
@@ -116,35 +118,48 @@
     alert("আপনি টাস্কটি বাদ দিয়েছেন।");
   }
 
-  // 🔄 পেজ লোডে সব কিছু প্রস্তুত হলে লোডিং স্ক্রিন বন্ধ
+  // ✅ fallback timeout (3 সেকেন্ডে লোডিং বন্ধ)
+  let loadingTimeout = setTimeout(() => {
+    document.getElementById("loadingScreen").style.display = "none";
+    document.getElementById("dashboardContent").style.display = "block";
+  }, 3000);
+
+  // 🔄 লগইন স্ট্যাটাস অনুযায়ী UI আপডেট
   auth.onAuthStateChanged(user => {
     if (user) {
       showUser(user);
-      Promise.all([loadPoints(user.uid), loadTasks()]).then(() => {
-        document.getElementById("loadingScreen").style.display = "none";
-        document.getElementById("dashboardContent").style.display = "block";
-      });
+      Promise.all([loadPoints(user.uid), loadTasks()])
+        .then(() => {
+          clearTimeout(loadingTimeout);
+          document.getElementById("loadingScreen").style.display = "none";
+          document.getElementById("dashboardContent").style.display = "block";
+        })
+        .catch((err) => {
+          console.error("ড্যাশবোর্ড লোড সমস্যা:", err);
+          clearTimeout(loadingTimeout);
+          document.getElementById("loadingScreen").style.display = "none";
+          document.getElementById("dashboardContent").style.display = "block";
+        });
     } else {
+      clearTimeout(loadingTimeout);
       document.getElementById("loadingScreen").style.display = "none";
       document.getElementById("dashboardContent").style.display = "block";
       document.getElementById("userArea").innerHTML = `
         <button class="btn" onclick="redirectToLogin()">🔐 Login / Signup</button>
       `;
-      document.getElementById("taskList").innerHTML = "<p class="task-message">🔐 দয়া করে লগইন করুন, তারপর টাস্ক দেখতে পারবেন।</p>";
+      document.getElementById("taskList").innerHTML = "<p class='task-message'>🔐 দয়া করে লগইন করুন, তারপর টাস্ক দেখতে পারবেন।</p>";
     }
   });
 </script>
-<script>
 
+<script>
   // ⏳ "অপেক্ষা করুন..." এনিমেশন
   const loadingText = document.querySelector('.loading-text');
   let dotCount = 0;
-
   setInterval(() => {
     dotCount = (dotCount + 1) % 4;
-    const dots = '.'.repeat(dotCount);
-    loadingText.innerHTML = `অনুগ্রহ করে অপেক্ষা করুন${dots}`;
-  }, 500); // প্রতি 0.5 সেকেন্ডে পরিবর্তন হবে
+    loadingText.innerHTML = `অনুগ্রহ করে অপেক্ষা করুন${'.'.repeat(dotCount)}`;
+  }, 500);
 </script>
 </body>
 </html>
