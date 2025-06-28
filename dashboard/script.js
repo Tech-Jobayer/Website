@@ -20,6 +20,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.database();
+// const storage = firebase.storage(); // Firebase Storage SDK HTML এ যোগ করা থাকলে এটি ব্যবহার করতে পারেন
 
 function redirectToLogin() {
   const basePath = window.location.pathname.split('/')[1];
@@ -78,16 +79,48 @@ function loadTasks() {
     });
 }
 
+// --- প্রোফাইল আইকন লোডিং লজিক ---
+const profileImgElement = document.getElementById('profileImg');
+// HTML-এ সেট করা ডিফল্ট লোগোর URL
+const defaultProfileImgUrl = "https://raw.githubusercontent.com/tech-jobayer/Website/main/data/default-profile.png";
+
+function loadProfileImage(user) {
+  if (user) {
+    // ব্যবহারকারী লগইন করা থাকলে, তাদের কাস্টম প্রোফাইল ছবি ডেটাবেজ থেকে লোড করার চেষ্টা করুন
+    db.ref(`users/${user.uid}/profilePictureUrl`).once('value')
+      .then(snapshot => {
+        const customImageUrl = snapshot.val();
+        if (customImageUrl) {
+          profileImgElement.src = customImageUrl; // কাস্টম লোগো থাকলে সেটি সেট করুন
+        } else {
+          profileImgElement.src = defaultProfileImgUrl; // কাস্টম লোগো না থাকলে ডিফল্ট সেট করুন
+        }
+      })
+      .catch(error => {
+        console.error("Error loading user profile picture:", error);
+        profileImgElement.src = defaultProfileImgUrl; // ত্রুটি হলে ডিফল্ট সেট করুন
+      });
+  } else {
+    // ব্যবহারকারী লগইন করা না থাকলে বা লগআউট করলে ডিফল্ট লোগো সেট করুন
+    profileImgElement.src = defaultProfileImgUrl;
+  }
+}
+// --- প্রোফাইল আইকন লোডিং লজিক শেষ ---
+
+
 // লোডিং স্ক্রিন টাইমআউট
 let loadingTimeout = setTimeout(() => {
   document.getElementById("loadingScreen").style.display = "none";
   document.getElementById("dashboardContent").style.display = "block";
+  // যদি auth.onAuthStateChanged কল না হয়, তাহলে ডিফল্ট লোগো নিশ্চিত করুন
+  loadProfileImage(auth.currentUser);
 }, 3000);
 
 // লগইন স্ট্যাটাস অনুযায়ী UI আপডেট
 auth.onAuthStateChanged(user => {
   if (user) {
     showUser(user);
+    loadProfileImage(user); // ব্যবহারকারী লগইন করলে প্রোফাইল ছবি লোড করুন
     Promise.all([loadTasks()])
       .then(() => {
         clearTimeout(loadingTimeout);
@@ -108,6 +141,7 @@ auth.onAuthStateChanged(user => {
       <button class="btn" onclick="redirectToLogin()">🔐 Login / Signup</button>
     `;
     document.getElementById("taskList").innerHTML = "<p class='task-message'>🔐 দয়া করে লগইন করুন, তারপর টাস্ক দেখতে পারবেন।</p>";
+    loadProfileImage(null); // ব্যবহারকারী লগইন না থাকলে ডিফল্ট প্রোফাইল ছবি লোড করুন
   }
 });
 
@@ -132,3 +166,4 @@ function setNotificationCount(count) {
 setTimeout(() => {
   setNotificationCount(7);
 }, 5000);
+
