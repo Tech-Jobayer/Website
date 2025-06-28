@@ -118,3 +118,17 @@ setInterval(() => {
   dotCount = (dotCount + 1) % 4;
   loadingText.innerHTML = `অনুগ্রহ করে অপেক্ষা করুন${'.'.repeat(dotCount)}`;
 }, 500);
+
+// উদাহরণ: notification count ডাইনামিকভাবে সেট করা
+function setNotificationCount(count) {
+  const notifyCount = document.querySelector('.notify-count');
+  if (notifyCount) {
+    notifyCount.textContent = count;
+    notifyCount.style.display = count > 0 ? 'inline-block' : 'none';
+  }
+}
+
+// ডেমো: ৫ সেকেন্ড পর badge সংখ্যা বাড়বে
+setTimeout(() => {
+  setNotificationCount(7);
+}, 5000);
