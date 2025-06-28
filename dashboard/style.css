@@ -235,3 +235,8 @@ input[type="text"], input[type="email"], input[type="password"] {
   background: #e91e63;
   transition: width 0.3s ease;
 }
+
+.card-link {
+  text-decoration: none; /* আন্ডারলাইন রিমুভ করবে */
+  color: inherit;        /* টেক্সটের রঙ ডিফল্ট রাখবে */
+}
