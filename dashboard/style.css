@@ -240,3 +240,56 @@ input[type="text"], input[type="email"], input[type="password"] {
   text-decoration: none !important;
   color: inherit !important;
 }
+.menu-btn {
+  font-size: 26px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-right: 15px;
+  color: #20242c;
+}
+
+.sidebar {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 999;
+  top: 0;
+  left: 0;
+  background-color: #20242c;
+  overflow-x: hidden;
+  transition: 0.3s;
+  padding-top: 60px;
+}
+
+.sidebar a {
+  padding: 16px 24px;
+  text-decoration: none;
+  font-size: 20px;
+  color: #fff;
+  display: block;
+  transition: 0.2s;
+}
+
+.sidebar a:hover {
+  background: #314156;
+}
+
+.closebtn {
+  position:12px;
+  right: 16px;
+  font-size: 36px;
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #f2f2f2;
+  padding: 12px 24px;
+  border-bottom: 1px solid #ddd;
+        }
