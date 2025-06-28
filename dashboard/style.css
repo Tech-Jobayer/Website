@@ -6,6 +6,59 @@ body {
   line-height: 1.6;
 }
 
+
+.header {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  box-shadow: 0 2px 6px #efefef;
+  padding: 8px;
+  position: relative;
+}
+.menu-btn {
+  font-size: 24px;
+  margin-right: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.notify-btn {
+  font-size: 22px;
+  background: none;
+  border: none;
+  margin-right: 14px;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.2s;
+}
+
+.notify-btn:hover {
+  background: #f3f3f3;
+  border-radius: 50%;
+}
+
+/* Notification count badge */
+.notify-count {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: red;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 12px;
+  padding: 0 5px;
+  min-width: 18px;
+  line-height: 18px;
+  text-align: center;
+  font-family: inherit;
+  pointer-events: none;
+}
+.header h2 {
+  flex: 1;
+  margin: 0;
+  font-size: 20px;
+  text-align: left;
+}
 .header { 
   background: #e91e63; 
   color: white; 
