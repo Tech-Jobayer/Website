@@ -28,22 +28,39 @@ function redirectToLogin() {
 }
 
 function showUser(user) {
+  // এখানে `userArea` এর অংশটি অপরিবর্তিত থাকবে, কারণ এটি ড্যাশবোর্ডের মূল কন্টেন্ট।
   document.getElementById("userArea").innerHTML = `
     👋 ${user.displayName || user.email} | 🔥 <span id="userPoints">Loading...</span> পয়েন্ট
     <br><button class="btn" onclick="logout()">🚪 Logout</button>
   `;
+  // `loadPoints` ফাংশন এখন হেডার এবং userArea উভয় জায়গাতেই পয়েন্ট আপডেট করবে।
   loadPoints(user.uid);
 }
 
 function logout() {
-  auth.signOut().then(() => location.reload());
-}
-
-function loadPoints(uid) {
-  db.ref('users/' + uid + '/points').on('value', snap => {
-    document.getElementById('userPoints').innerText = snap.val() || 0;
+  auth.signOut().then(() => {
+    // লগআউট করার পর হেডার থেকে পয়েন্ট সরিয়ে দিন
+    document.getElementById('headerUserPoints').innerText = '';
+    location.reload();
   });
 }
+
+// --- loadPoints ফাংশন আপডেট করা হয়েছে ---
+function loadPoints(uid) {
+  const userPointsElementInArea = document.getElementById('userPoints'); // userArea এর ভেতরের পয়েন্ট
+  const headerUserPointsElement = document.getElementById('headerUserPoints'); // হেডার এর ভেতরের পয়েন্ট
+
+  db.ref('users/' + uid + '/points').on('value', snap => {
+    const points = snap.val() || 0;
+    if (userPointsElementInArea) {
+      userPointsElementInArea.innerText = points;
+    }
+    if (headerUserPointsElement) {
+      headerUserPointsElement.innerHTML = `🔥 ${points} পয়েন্ট`; // হেডার এ পয়েন্ট দেখান
+    }
+  });
+}
+// --- loadPoints ফাংশন আপডেট শেষ ---
 
 function loadTasks() {
   const list = document.getElementById("taskList");
@@ -86,22 +103,20 @@ const defaultProfileImgUrl = "https://raw.githubusercontent.com/tech-jobayer/Web
 
 function loadProfileImage(user) {
   if (user) {
-    // ব্যবহারকারী লগইন করা থাকলে, তাদের কাস্টম প্রোফাইল ছবি ডেটাবেজ থেকে লোড করার চেষ্টা করুন
     db.ref(`users/${user.uid}/profilePictureUrl`).once('value')
       .then(snapshot => {
         const customImageUrl = snapshot.val();
         if (customImageUrl) {
-          profileImgElement.src = customImageUrl; // কাস্টম লোগো থাকলে সেটি সেট করুন
+          profileImgElement.src = customImageUrl;
         } else {
-          profileImgElement.src = defaultProfileImgUrl; // কাস্টম লোগো না থাকলে ডিফল্ট সেট করুন
+          profileImgElement.src = defaultProfileImgUrl;
         }
       })
       .catch(error => {
         console.error("Error loading user profile picture:", error);
-        profileImgElement.src = defaultProfileImgUrl; // ত্রুটি হলে ডিফল্ট সেট করুন
+        profileImgElement.src = defaultProfileImgUrl;
       });
   } else {
-    // ব্যবহারকারী লগইন করা না থাকলে বা লগআউট করলে ডিফল্ট লোগো সেট করুন
     profileImgElement.src = defaultProfileImgUrl;
   }
 }
@@ -112,15 +127,20 @@ function loadProfileImage(user) {
 let loadingTimeout = setTimeout(() => {
   document.getElementById("loadingScreen").style.display = "none";
   document.getElementById("dashboardContent").style.display = "block";
-  // যদি auth.onAuthStateChanged কল না হয়, তাহলে ডিফল্ট লোগো নিশ্চিত করুন
   loadProfileImage(auth.currentUser);
+  // ব্যবহারকারী লগইন না থাকলে হেডারের পয়েন্ট অংশ খালি করে দিন
+  if (!auth.currentUser) {
+      document.getElementById('headerUserPoints').innerText = '';
+  }
 }, 3000);
 
 // লগইন স্ট্যাটাস অনুযায়ী UI আপডেট
 auth.onAuthStateChanged(user => {
+  const headerUserPointsElement = document.getElementById('headerUserPoints'); // হেডার এর ভেতরের পয়েন্ট
+
   if (user) {
     showUser(user);
-    loadProfileImage(user); // ব্যবহারকারী লগইন করলে প্রোফাইল ছবি লোড করুন
+    loadProfileImage(user);
     Promise.all([loadTasks()])
       .then(() => {
         clearTimeout(loadingTimeout);
@@ -141,7 +161,11 @@ auth.onAuthStateChanged(user => {
       <button class="btn" onclick="redirectToLogin()">🔐 Login / Signup</button>
     `;
     document.getElementById("taskList").innerHTML = "<p class='task-message'>🔐 দয়া করে লগইন করুন, তারপর টাস্ক দেখতে পারবেন।</p>";
-    loadProfileImage(null); // ব্যবহারকারী লগইন না থাকলে ডিফল্ট প্রোফাইল ছবি লোড করুন
+    loadProfileImage(null);
+    // ব্যবহারকারী লগইন না থাকলে হেডারের পয়েন্ট অংশ খালি করে দিন
+    if (headerUserPointsElement) {
+        headerUserPointsElement.innerText = '';
+    }
   }
 });
 
@@ -166,4 +190,3 @@ function setNotificationCount(count) {
 setTimeout(() => {
   setNotificationCount(7);
 }, 5000);
-
