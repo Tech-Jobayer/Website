@@ -68,6 +68,31 @@ body {
   font-size: 20px;
 }
 
+/* Profile button & image */
+.profile-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 12px;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  transition: background 0.2s;
+}
+.profile-btn:hover {
+  background: #f3f3f3;
+  border-radius: 50%;
+}
+.profile-img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.10);
+  background: #eee;
+}
+
 .profile { 
   text-align: center; 
   margin: 10px 0; 
@@ -329,5 +354,9 @@ input[type="text"], input[type="email"], input[type="password"] {
   .spinner {
     width: 40px;
     height: 40px;
+  }
+  .profile-img {
+    width: 26px;
+    height: 26px;
   }
 }
