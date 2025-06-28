@@ -1,4 +1,4 @@
-// Sidebar  Drawer JS
+// Sidebar Drawer JS
 document.getElementById('menuBtn').onclick = function() {
   document.getElementById('sidebar').style.width = "240px";
 };
