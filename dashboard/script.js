@@ -57,7 +57,7 @@ function loadPoints(uid) {
     //   userPointsElementInArea.innerText = points;
     // }
     if (headerUserPointsElement) {
-      headerUserPointsElement.innerHTML = `🔥 ${points} পয়েন্ট`; // হেডার এ পয়েন্ট দেখান
+      headerUserPointsElement.innerHTML = `${points} 💰`; // হেডার এ পয়েন্ট দেখান
     }
   });
 }
