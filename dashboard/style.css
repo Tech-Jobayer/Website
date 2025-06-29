@@ -361,7 +361,7 @@ input[type="text"], input[type="email"], input[type="password"] {
   }
 }
 
-/* নতুন Profile Drawer স্টাইল */
+/* Profile Drawer স্টাইল */
 .profile-drawer {
   height: 100%;
   width: 0; /* ডিফল্টভাবে লুকানো থাকবে */
@@ -376,6 +376,7 @@ input[type="text"], input[type="email"], input[type="password"] {
   box-shadow: -4px 0 10px rgba(0,0,0,0.3); /* বাম দিকে গাঢ় শ্যাডো */
   color: white; /* টেক্সটের রঙ */
   text-align: center; /* কন্টেন্ট মাঝখানে আনতে */
+  **display: none;** /* এটি যোগ করুন: ডিফল্টভাবে ড্রয়ার লুকানো থাকবে */
 }
 
 /* প্রোফাইল ড্রয়ারের ক্লোজ বাটন */
