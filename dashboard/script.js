@@ -31,7 +31,7 @@ function redirectToLogin() {
 /*
 function showUser(user) {
   document.getElementById("userArea").innerHTML = `
-    👋 ${user.displayName || user.email} | 🔥 <span id="userPoints">Loading...</span> পয়েন্ট
+    👋 ${user.displayName || user.email} | <span id="userPoints">Loading...</span> 💰
     <br><button class="btn" onclick="logout()">🚪 Logout</button>
   `;
   loadPoints(user.uid);
