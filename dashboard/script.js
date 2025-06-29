@@ -2,7 +2,8 @@
 document.getElementById('menuBtn').onclick = function() {
   document.getElementById('sidebar').style.width = "240px";
   // সাইডবার খুললে প্রোফাইল ড্রয়ার বন্ধ করুন
-  document.getElementById('profileDrawer').style.width = "0"; // নিশ্চিত করুন প্রোফাইল ড্রয়ার বন্ধ আছে
+  document.getElementById('profileDrawer').style.width = "0";
+  document.getElementById('profileDrawer').style.display = "none"; // নিশ্চিত করুন প্রোফাইল ড্রয়ার ডিসপ্লে না হয়
 };
 
 function closeSidebar() {
@@ -11,13 +12,21 @@ function closeSidebar() {
 
 // Profile Drawer JS
 document.getElementById('profileBtn').onclick = function() {
-  document.getElementById('profileDrawer').style.width = "280px"; // প্রোফাইল ড্রয়ারের জন্য কিছুটা ভিন্ন প্রস্থ
+  const profileDrawer = document.getElementById('profileDrawer');
+  profileDrawer.style.display = "block"; // ড্রয়ার খোলার আগে এটি ডিসপ্লে করুন
+  profileDrawer.style.width = "280px"; // প্রোফাইল ড্রয়ারের জন্য কিছুটা ভিন্ন প্রস্থ
   // প্রোফাইল ড্রয়ার খুললে সাইডবার বন্ধ করুন
-  document.getElementById('sidebar').style.width = "0"; // নিশ্চিত করুন সাইডবার বন্ধ আছে
+  document.getElementById('sidebar').style.width = "0";
 };
 
 function closeProfileDrawer() {
-  document.getElementById('profileDrawer').style.width = "0";
+  const profileDrawer = document.getElementById('profileDrawer');
+  profileDrawer.style.width = "0";
+  // transition শেষ হওয়ার পর display: none; করাটা ভালো, তবে দ্রুত বন্ধের জন্য সরাসরি display: none;
+  // setTimeout(() => {
+  //   profileDrawer.style.display = "none";
+  // }, 300); // transition সময় (0.3s) এর সাথে মিলিয়ে
+  profileDrawer.style.display = "none"; // তাৎক্ষণিকভাবে ডিসপ্লে বন্ধ করুন
 }
 
 // Firebase Config
@@ -34,6 +43,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.database();
+// const storage = firebase.storage(); // Firebase Storage SDK HTML এ যোগ করা থাকলে এটি ব্যবহার করতে পারেন
 
 function redirectToLogin() {
   const basePath = window.location.pathname.split('/')[1];
@@ -202,7 +212,7 @@ auth.onAuthStateChanged(user => {
     document.getElementById("dashboardContent").style.display = "block";
     document.getElementById("taskList").innerHTML = "<p class='task-message'>🔐 দয়া করে লগইন করুন, তারপর টাস্ক দেখতে পারবেন।</p>";
     loadProfileImage(null);
-    updateProfileDrawerUI(null); // authStateChanged এ ড্রয়ার UI আপডেট করুন
+    updateProfileDrawerUI(null);
     closeProfileDrawer(); // নিশ্চিত করুন প্রোফাইল ড্রয়ার বন্ধ আছে যখন ইউজার লগইন না থাকে
     if (headerUserPointsElement) {
         headerUserPointsElement.innerText = '';
@@ -218,7 +228,6 @@ setInterval(() => {
   loadingText.innerHTML = `অনুগ্রহ করে অপেক্ষা করুন${'.'.repeat(dotCount)}`;
 }, 500);
 
-// উদাহরণ: notification count ডাইনামিকভাবে সেট করা
 function setNotificationCount(count) {
   const notifyCount = document.querySelector('.notify-count');
   if (notifyCount) {
@@ -227,7 +236,6 @@ function setNotificationCount(count) {
   }
 }
 
-// ডেমো: ৫ সেকেন্ড পর badge সংখ্যা বাড়বে
 setTimeout(() => {
   setNotificationCount(7);
 }, 5000);
