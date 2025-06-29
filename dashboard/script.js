@@ -27,15 +27,16 @@ function redirectToLogin() {
   window.location.href = `${location.origin}/${basePath}/login/`;
 }
 
+// showUser ফাংশন আর প্রয়োজন নেই, কারণ userArea সরানো হয়েছে
+/*
 function showUser(user) {
-  // এখানে `userArea` এর অংশটি অপরিবর্তিত থাকবে, কারণ এটি ড্যাশবোর্ডের মূল কন্টেন্ট।
   document.getElementById("userArea").innerHTML = `
     👋 ${user.displayName || user.email} | 🔥 <span id="userPoints">Loading...</span> পয়েন্ট
     <br><button class="btn" onclick="logout()">🚪 Logout</button>
   `;
-  // `loadPoints` ফাংশন এখন হেডার এবং userArea উভয় জায়গাতেই পয়েন্ট আপডেট করবে।
   loadPoints(user.uid);
 }
+*/
 
 function logout() {
   auth.signOut().then(() => {
@@ -45,22 +46,21 @@ function logout() {
   });
 }
 
-// --- loadPoints ফাংশন আপডেট করা হয়েছে ---
 function loadPoints(uid) {
-  const userPointsElementInArea = document.getElementById('userPoints'); // userArea এর ভেতরের পয়েন্ট
+  // `userPointsElementInArea` এখন প্রয়োজন নেই
+  // const userPointsElementInArea = document.getElementById('userPoints');
   const headerUserPointsElement = document.getElementById('headerUserPoints'); // হেডার এর ভেতরের পয়েন্ট
 
   db.ref('users/' + uid + '/points').on('value', snap => {
     const points = snap.val() || 0;
-    if (userPointsElementInArea) {
-      userPointsElementInArea.innerText = points;
-    }
+    // if (userPointsElementInArea) {
+    //   userPointsElementInArea.innerText = points;
+    // }
     if (headerUserPointsElement) {
       headerUserPointsElement.innerHTML = `🔥 ${points} পয়েন্ট`; // হেডার এ পয়েন্ট দেখান
     }
   });
 }
-// --- loadPoints ফাংশন আপডেট শেষ ---
 
 function loadTasks() {
   const list = document.getElementById("taskList");
@@ -139,8 +139,10 @@ auth.onAuthStateChanged(user => {
   const headerUserPointsElement = document.getElementById('headerUserPoints'); // হেডার এর ভেতরের পয়েন্ট
 
   if (user) {
-    showUser(user);
+    // showUser(user); // showUser ফাংশনটি সরিয়ে ফেলা হয়েছে
     loadProfileImage(user);
+    // ব্যবহারকারী লগইন করলে হেডারে পয়েন্ট লোড করুন
+    loadPoints(user.uid); // এই লাইনটি যোগ করা হয়েছে
     Promise.all([loadTasks()])
       .then(() => {
         clearTimeout(loadingTimeout);
@@ -157,9 +159,7 @@ auth.onAuthStateChanged(user => {
     clearTimeout(loadingTimeout);
     document.getElementById("loadingScreen").style.display = "none";
     document.getElementById("dashboardContent").style.display = "block";
-    document.getElementById("userArea").innerHTML = `
-      <button class="btn" onclick="redirectToLogin()">🔐 Login / Signup</button>
-    `;
+    // document.getElementById("userArea").innerHTML = `<button class="btn" onclick="redirectToLogin()">🔐 Login / Signup</button>`; // userArea সরানো হয়েছে
     document.getElementById("taskList").innerHTML = "<p class='task-message'>🔐 দয়া করে লগইন করুন, তারপর টাস্ক দেখতে পারবেন।</p>";
     loadProfileImage(null);
     // ব্যবহারকারী লগইন না থাকলে হেডারের পয়েন্ট অংশ খালি করে দিন
