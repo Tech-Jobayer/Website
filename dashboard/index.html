@@ -11,7 +11,6 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 </head>
 <body>
-  <!-- Sidebar Drawer -->
   <div id="sidebar" class="sidebar">
     <button class="closebtn" onclick="closeSidebar()">&times;</button>
     <a href="/Website/dashboard/">🏠 ড্যাশবোর্ড</a>
@@ -19,11 +18,9 @@
     <a href="/Website/tasks/">📝 টাস্ক</a>
     <a href="/Website/rewards/">🎁 রিওয়ার্ড</a>
     <a href="/Website/support/">📞 সাপোর্ট</a>
-    <!-- আরও পেজ চাইলে এখানে যুক্ত করুন -->
-  </div>
+    </div>
 
-  <!-- Header -->
-<div class="header">
+  <div class="header">
   <button id="menuBtn" class="menu-btn">&#9776;</button>
   <button id="notifyBtn" class="notify-btn">
     🔔
@@ -43,12 +40,8 @@
   </div>
 
   <div id="dashboardContent" style="display: none;">
-    <div class="profile" id="userArea">
-      <button class="btn" onclick="redirectToLogin()">🔐 Login / Signup</button>
-    </div>
     <div id="taskList">
-      <!-- চ্যানেল টাস্ক এখানে লোড হবে -->
-    </div>
+      </div>
   </div>
 
   <script src="script.js"></script>
