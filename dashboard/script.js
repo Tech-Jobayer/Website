@@ -2,7 +2,7 @@
 document.getElementById('menuBtn').onclick = function() {
   document.getElementById('sidebar').style.width = "240px";
   // সাইডবার খুললে প্রোফাইল ড্রয়ার বন্ধ করুন
-  document.getElementById('profileDrawer').style.width = "0";
+  document.getElementById('profileDrawer').style.width = "0"; // নিশ্চিত করুন প্রোফাইল ড্রয়ার বন্ধ আছে
 };
 
 function closeSidebar() {
@@ -13,7 +13,7 @@ function closeSidebar() {
 document.getElementById('profileBtn').onclick = function() {
   document.getElementById('profileDrawer').style.width = "280px"; // প্রোফাইল ড্রয়ারের জন্য কিছুটা ভিন্ন প্রস্থ
   // প্রোফাইল ড্রয়ার খুললে সাইডবার বন্ধ করুন
-  document.getElementById('sidebar').style.width = "0";
+  document.getElementById('sidebar').style.width = "0"; // নিশ্চিত করুন সাইডবার বন্ধ আছে
 };
 
 function closeProfileDrawer() {
@@ -167,6 +167,7 @@ let loadingTimeout = setTimeout(() => {
   document.getElementById("dashboardContent").style.display = "block";
   loadProfileImage(auth.currentUser);
   updateProfileDrawerUI(auth.currentUser); // লোডিং শেষে ড্রয়ার UI আপডেট করুন
+  closeProfileDrawer(); // নিশ্চিত করুন প্রোফাইল ড্রয়ার বন্ধ আছে যখন লোডিং শেষ হয়
   // ব্যবহারকারী লগইন না থাকলে হেডারের পয়েন্ট অংশ খালি করে দিন
   if (!auth.currentUser) {
       document.getElementById('headerUserPoints').innerText = '';
@@ -186,12 +187,14 @@ auth.onAuthStateChanged(user => {
         clearTimeout(loadingTimeout);
         document.getElementById("loadingScreen").style.display = "none";
         document.getElementById("dashboardContent").style.display = "block";
+        closeProfileDrawer(); // নিশ্চিত করুন প্রোফাইল ড্রয়ার বন্ধ আছে যখন ইউজার লগইন করে
       })
       .catch((err) => {
         console.error("ড্যাশবোর্ড লোড সমস্যা:", err);
         clearTimeout(loadingTimeout);
         document.getElementById("loadingScreen").style.display = "none";
         document.getElementById("dashboardContent").style.display = "block";
+        closeProfileDrawer(); // এরর হলেও বন্ধ করুন
       });
   } else {
     clearTimeout(loadingTimeout);
@@ -200,6 +203,7 @@ auth.onAuthStateChanged(user => {
     document.getElementById("taskList").innerHTML = "<p class='task-message'>🔐 দয়া করে লগইন করুন, তারপর টাস্ক দেখতে পারবেন।</p>";
     loadProfileImage(null);
     updateProfileDrawerUI(null); // authStateChanged এ ড্রয়ার UI আপডেট করুন
+    closeProfileDrawer(); // নিশ্চিত করুন প্রোফাইল ড্রয়ার বন্ধ আছে যখন ইউজার লগইন না থাকে
     if (headerUserPointsElement) {
         headerUserPointsElement.innerText = '';
     }
