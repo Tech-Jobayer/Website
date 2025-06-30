@@ -284,16 +284,6 @@ input[type="text"], input[type="email"], input[type="password"] {
   border-radius: 5px;
   overflow: hidden;
 }
-.progress-bar {
-  height: 100%;
-  background: #e91e63;
-  transition: width 0.3s ease;
-}
-
-.card-link, .card-link * {
-  text-decoration: none !important;
-  color: inherit !important;
-}
 
 /* --- Sidebar Drawer Styles --- */
 .sidebar {
@@ -348,7 +338,7 @@ input[type="text"], input[type="email"], input[type="password"] {
   box-shadow: -4px 0 10px rgba(0,0,0,0.3); /* বাম দিকে গাঢ় শ্যাডো */
   color: white; /* টেক্সটের রঙ */
   text-align: center; /* কন্টেন্ট মাঝখানে আনতে */
-  display: none; /* এটি যোগ করুন: ডিফল্টভাবে ড্রয়ার লুকানো থাকবে */
+  display: none; /* ডিফল্টভাবে ড্রয়ার লুকানো থাকবে */
 }
 
 /* প্রোফাইল ড্রয়ারের ক্লোজ বাটন */
@@ -498,20 +488,13 @@ input[type="text"], input[type="email"], input[type="password"] {
   justify-content: space-between; /* টাইটেল এবং স্ট্যাটাসকে দুই পাশে সরাতে */
   align-items: center;
   margin-bottom: 10px; /* নিচের কন্টেন্ট থেকে কিছুটা দূরত্ব */
-  position: relative; /* স্ট্যাটাস ট্যাগ পজিশন করার জন্য */
+  position: relative;
 }
 
 .card-header h3 {
   margin: 0; /* h3 এর ডিফল্ট মার্জিন সরান */
   flex-grow: 1; /* টাইটেলকে যতটুকু সম্ভব জায়গা নিতে দিন */
 }
-
-
-
-
-/* style.css */
-
-/* ... (আপনার style.css ফাইলের অন্যান্য বিদ্যমান কোড) ... */
 
 /* --- প্রোগ্রেস বার পার্সেন্টেজ ও অ্যানিমেশন স্টাইল --- */
 
@@ -565,5 +548,3 @@ input[type="text"], input[type="email"], input[type="password"] {
   0% { background-position: 0 0; }
   100% { background-position: 30px 0; }
 }
-
-/* --- প্রোগ্রেস বার পার্সেন্টেজ ও অ্যানিমেশন স্টাইল শেষ --- */
