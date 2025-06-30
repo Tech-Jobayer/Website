@@ -87,7 +87,7 @@ function loadTasks() {
       }
       Object.entries(data).forEach(([key, ch]) => {
         // পার্সেন্টেজ গণনা করুন
-        const percentage = Math.round((ch.completed / ch.max) * 100); // এটি এখানে আছে
+        const percentage = Math.round((ch.completed / ch.max) * 100);
 
         const cardLink = document.createElement('a');
         cardLink.href = `${window.location.origin}/Website/dashboard/task.html?taskId=${encodeURIComponent(key)}`;
@@ -100,7 +100,9 @@ function loadTasks() {
               <h3>${ch.title}</h3>
             </div>
             <p>সাবস্ক্রাইবার: ${ch.completed} / ${ch.max}</p>
-            <div class="progress-container"> <div class="progress-percentage">${percentage}%</div>  <div class="progress">
+            <div class="progress-container">
+              <div class="progress-percentage">${percentage}%</div>
+              <div class="progress">
                 <div class="progress-bar" style="width: ${percentage}%"></div>
               </div>
             </div>
@@ -195,7 +197,7 @@ auth.onAuthStateChanged(user => {
     loadProfileImage(user);
     updateProfileDrawerUI(user); // authStateChanged এ ড্রয়ার UI আপডেট করুন
     loadPoints(user.uid);
-    Promise.all([loadTasks()])
+    Promise.all([loadTasks()]) // লগইন থাকলে টাস্ক লোড করুন
       .then(() => {
         clearTimeout(loadingTimeout);
         document.getElementById("loadingScreen").style.display = "none";
@@ -213,7 +215,9 @@ auth.onAuthStateChanged(user => {
     clearTimeout(loadingTimeout);
     document.getElementById("loadingScreen").style.display = "none";
     document.getElementById("dashboardContent").style.display = "block";
-    document.getElementById("taskList").innerHTML = "<p class='task-message'>🔐 দয়া করে লগইন করুন, তারপর টাস্ক দেখতে পারবেন।</p>";
+    // এই লাইনটি সরানো হয়েছে, যাতে লগইন না থাকলেও টাস্ক লোড হয়
+    // document.getElementById("taskList").innerHTML = "<p class='task-message'>🔐 দয়া করে লগইন করুন, তারপর টাস্ক দেখতে পারবেন।</p>";
+    loadTasks(); // লগইন না থাকলেও টাস্ক লোড করুন
     loadProfileImage(null);
     updateProfileDrawerUI(null);
     closeProfileDrawer(); // নিশ্চিত করুন প্রোফাইল ড্রয়ার বন্ধ আছে যখন ইউজার লগইন না থাকে
