@@ -26,6 +26,25 @@ function closeProfileDrawer() {
   profileDrawer.style.display = "none"; // তাৎক্ষণিকভাবে ডিসপ্লে বন্ধ করুন
 }
 
+// Notification Drawer JS
+document.getElementById('notifyBtn').onclick = function() {
+  const notificationDrawer = document.getElementById('notificationDrawer');
+  notificationDrawer.style.display = "block";
+  notificationDrawer.style.width = "280px";
+  // নোটিফিকেশন ড্রয়ার খুললে অন্য ড্রয়ার বন্ধ করুন
+  document.getElementById('sidebar').style.width = "0";
+  document.getElementById('profileDrawer').style.width = "0";
+  document.getElementById('profileDrawer').style.display = "none";
+  fetchAndDisplayNotifications(); // নোটিফিকেশন লোড ও ডিসপ্লে করুন
+};
+
+function closeNotificationDrawer() {
+  const notificationDrawer = document.getElementById('notificationDrawer');
+  notificationDrawer.style.width = "0";
+  notificationDrawer.style.display = "none";
+}
+
+
 // --- Firebase Initialization & Core Functions ---
 // Firebase Config
 const firebaseConfig = {
@@ -117,6 +136,82 @@ function loadTasks() {
     });
 }
 
+// --- Notification Functions ---
+function fetchAndDisplayNotifications() {
+  const notificationList = document.getElementById('notificationList');
+  notificationList.innerHTML = '<p class="no-notifications-message">নোটিফিকেশন লোড হচ্ছে...</p>'; // লোডিং মেসেজ
+
+  db.ref('notifications').orderByChild('timestamp').once('value')
+    .then(snapshot => {
+      const notifications = [];
+      snapshot.forEach(childSnapshot => {
+        const notification = childSnapshot.val();
+        notification.id = childSnapshot.key; // নোটিফিকেশন ID যোগ করুন
+        notifications.unshift(notification); // নতুন নোটিফিকেশন উপরে দেখাতে
+      });
+
+      notificationList.innerHTML = ''; // পুরোনো লোডিং মেসেজ সরান
+
+      if (notifications.length === 0) {
+        notificationList.innerHTML = '<p class="no-notifications-message">কোনো নতুন নোটিফিকেশন নেই।</p>';
+        return;
+      }
+
+      notifications.forEach(notif => {
+        const notifItem = document.createElement('div');
+        notifItem.className = `notification-item ${notif.read ? '' : 'unread'}`;
+        notifItem.dataset.id = notif.id; // নোটিফিকেশন ID ডেটাসেটে রাখুন
+
+        const date = new Date(notif.timestamp);
+        const formattedTime = date.toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit' });
+        const formattedDate = date.toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' });
+
+        notifItem.innerHTML = `
+          <h4>${notif.title}</h4>
+          <p>${notif.message}</p>
+          <div class="timestamp">${formattedDate} ${formattedTime}</div>
+        `;
+        notifItem.addEventListener('click', () => markNotificationAsRead(notif.id, notifItem));
+        notificationList.appendChild(notifItem);
+      });
+      updateNotificationBadge(); // নোটিফিকেশন ডিসপ্লে হওয়ার পর ব্যাজ আপডেট করুন
+    })
+    .catch(error => {
+      console.error("নোটিফিকেশন লোড করতে সমস্যা হয়েছে:", error);
+      notificationList.innerHTML = '<p class="no-notifications-message">নোটিফিকেশন লোড করতে সমস্যা হয়েছে।</p>';
+    });
+}
+
+function updateNotificationBadge() {
+  db.ref('notifications').orderByChild('read').equalTo(false).once('value')
+    .then(snapshot => {
+      const unreadCount = snapshot.numChildren();
+      setNotificationCount(unreadCount);
+    })
+    .catch(error => {
+      console.error("আনরিড নোটিফিকেশন গণনা করতে সমস্যা হয়েছে:", error);
+      setNotificationCount(0); // এরর হলে ০ দেখান
+    });
+}
+
+function markNotificationAsRead(notificationId, element) {
+  db.ref(`notifications/${notificationId}`).update({ read: true })
+    .then(() => {
+      console.log(`নোটিফিকেশন ${notificationId} পঠিত হিসেবে চিহ্নিত হয়েছে।`);
+      if (element) {
+        element.classList.remove('unread'); // CSS ক্লাস সরান
+        element.style.backgroundColor = ''; // ব্যাকগ্রাউন্ড রঙ রিসেট করুন
+        element.querySelector('p').style.color = ''; // টেক্সট রঙ রিসেট করুন
+        element.querySelector('.timestamp').style.color = ''; // টাইমস্ট্যাম্প রঙ রিসেট করুন
+      }
+      updateNotificationBadge(); // ব্যাজ আপডেট করুন
+    })
+    .catch(error => {
+      console.error(`নোটিফিকেশন ${notificationId} পঠিত হিসেবে চিহ্নিত করতে সমস্যা হয়েছে:`, error);
+    });
+}
+
+
 // --- Profile Image Handling ---
 const headerProfileImgElement = document.getElementById('profileImg');
 const drawerProfileImgElement = document.getElementById('drawerProfileImg');
@@ -181,7 +276,37 @@ let loadingTimeout = setTimeout(() => {
   document.getElementById("loadingScreen").style.display = "none";
   document.getElementById("dashboardContent").style.display = "block";
   loadProfileImage(auth.currentUser);
-  updateProfileDrawerUI(auth.currentUser); // লোডিং শেষে ড্রয়ার UI আপডেট করুন
+ 
+// লোডিং স্ক্রিন টাইমআউট
+let loadingTimeout = setTimeout(() => {
+  document.getElementById("loadingScreen").style.display = "none";
+  document.getElementById("dashboardContent").style.display = "block";
+  loadProfileImage(auth.currentUser);
+  updateProfileDrawerUI(auth.currentUser);
+  closeProfileDrawer();
+  if (!auth.currentUser) {
+      document.getElementById('headerUserPoints').innerText = '';
+  }
+  updateNotificationBadge(); // এখানে যোগ করুন
+}, 3000);
+
+// auth.onAuthStateChanged এর ভেতরেও নিশ্চিত করুন যে এটি কল হচ্ছে
+auth.onAuthStateChanged(user => {
+  // ... (existing code) ...
+  if (user) {
+    // ... (existing code) ...
+    updateNotificationBadge(); // এখানেও যোগ করুন
+  } else {
+    // ... (existing code) ...
+    updateNotificationBadge(); // এবং এখানেও যোগ করুন
+  }
+});
+
+// --- Utility Functions & Animations ---
+// setNotificationCount ফাংশনটি আগের মতোই থাকবে
+// setTimeout(() => { setNotificationCount(7); }, 5000); এই লাইনটি মুছে ফেলুন, কারণ এটি এখন Firebase থেকে আসবে।
+
+ updateProfileDrawerUI(auth.currentUser); // লোডিং শেষে ড্রয়ার UI আপডেট করুন
   closeProfileDrawer(); // নিশ্চিত করুন প্রোফাইল ড্রয়ার বন্ধ আছে যখন লোডিং শেষ হয়
   // ব্যবহারকারী লগইন না থাকলে হেডারের পয়েন্ট অংশ খালি করে দিন
   if (!auth.currentUser) {
