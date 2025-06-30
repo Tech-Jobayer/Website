@@ -529,7 +529,7 @@ input[type="text"], input[type="email"], input[type="password"] {
 .progress-bar {
   height: 100%;
   /* এখানে গ্রেডিয়েন্ট ব্যাকগ্রাউন্ড আবার যোগ করা হয়েছে */
-  background: linear-gradient(to right, #e91e63, #c2185b) !important;
+  background: linear-gradient(to right, #03A9F4, #00C853) !important;
   transition: width 0.3s ease; /* মসৃণ অ্যানিমেশন */
   border-radius: 5px; /* কোণাগুলোকে গোলাকার রাখুন */
   /* চলমান স্ট্রাইপ অ্যানিমেশনের কোডগুলো এখানে নেই, কারণ আপনি এটি চান না */
