@@ -25,6 +25,7 @@ function closeProfileDrawer() {
   profileDrawer.style.display = "none"; // তাৎক্ষণিকভাবে ডিসপ্লে বন্ধ করুন
 }
 
+// --- Firebase Initialization & Core Functions ---
 // Firebase Config
 const firebaseConfig = {
   apiKey: "AIzaSyAC4h55aA0Zz--V5ejyndzR5WC_-9rAPio",
@@ -39,6 +40,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.database();
+// const storage = firebase.storage(); // যদি প্রোফাইল পিকচার আপলোড ফাংশনালিটি যোগ করেন তাহলে এটি আনকমেন্ট করুন
 
 function redirectToLogin() {
   const basePath = window.location.pathname.split('/')[1];
@@ -48,14 +50,15 @@ function redirectToLogin() {
 function logout() {
   auth.signOut().then(() => {
     document.getElementById('headerUserPoints').innerText = '';
-    updateProfileDrawerUI(null);
+    updateProfileDrawerUI(null); // লগআউট করার পর প্রোফাইল ড্রয়ারের তথ্য আপডেট করুন
     closeProfileDrawer(); // লগআউট হলে ড্রয়ার বন্ধ করুন
-    location.reload();
+    location.reload(); // পৃষ্ঠা রিলোড করুন
   }).catch(error => {
     console.error("Logout error:", error);
   });
 }
 
+// --- User Data Loading Functions ---
 function loadPoints(uid) {
   const headerUserPointsElement = document.getElementById('headerUserPoints');
   const drawerUserPointsElement = document.getElementById('drawerUserPoints');
@@ -82,7 +85,6 @@ function loadTasks() {
         return;
       }
       Object.entries(data).forEach(([key, ch]) => {
-        // টাস্কের স্ট্যাটাস নির্ধারণ করুন
         const isCompleted = ch.completed >= ch.max;
         const statusText = isCompleted ? 'সম্পন্ন হয়েছে' : 'বাকি';
         const statusClass = isCompleted ? 'status-completed' : 'status-pending';
@@ -113,6 +115,7 @@ function loadTasks() {
     });
 }
 
+// --- Profile Image Handling ---
 const headerProfileImgElement = document.getElementById('profileImg');
 const drawerProfileImgElement = document.getElementById('drawerProfileImg');
 const defaultProfileImgUrl = "https://raw.githubusercontent.com/tech-jobayer/Website/main/data/default-profile.png";
@@ -147,58 +150,64 @@ function loadProfileImage(user) {
   }
 }
 
+// --- Profile Drawer UI Update ---
 function updateProfileDrawerUI(user) {
   const drawerUserName = document.getElementById('drawerUserName');
   const drawerUserEmail = document.getElementById('drawerUserEmail');
   const drawerLoginSignupBtn = document.getElementById('drawerLoginSignupBtn');
   const drawerLogoutBtn = document.getElementById('drawerLogoutBtn');
+  const drawerUserPoints = document.getElementById('drawerUserPoints'); // পয়েন্ট এলিমেন্ট পেতে
 
   if (user) {
     drawerUserName.innerText = user.displayName || 'User';
     drawerUserEmail.innerText = user.email;
     drawerLoginSignupBtn.style.display = 'none';
     drawerLogoutBtn.style.display = 'block';
-    loadPoints(user.uid);
+    loadPoints(user.uid); // লগইন থাকলে ড্রয়ারের পয়েন্ট লোড করুন
   } else {
     drawerUserName.innerText = 'Guest User';
     drawerUserEmail.innerText = 'Not logged in';
     drawerLoginSignupBtn.style.display = 'block';
     drawerLogoutBtn.style.display = 'none';
-    document.getElementById('drawerUserPoints').innerHTML = '🔥 0 পয়েন্ট';
+    drawerUserPoints.innerHTML = '🔥 0 পয়েন্ট'; // লগইন না থাকলে ডিফল্ট পয়েন্ট
   }
 }
 
+// --- Global UI & Loading Logic ---
+// লোডিং স্ক্রিন টাইমআউট
 let loadingTimeout = setTimeout(() => {
   document.getElementById("loadingScreen").style.display = "none";
   document.getElementById("dashboardContent").style.display = "block";
   loadProfileImage(auth.currentUser);
-  updateProfileDrawerUI(auth.currentUser);
-  closeProfileDrawer();
+  updateProfileDrawerUI(auth.currentUser); // লোডিং শেষে ড্রয়ার UI আপডেট করুন
+  closeProfileDrawer(); // নিশ্চিত করুন প্রোফাইল ড্রয়ার বন্ধ আছে যখন লোডিং শেষ হয়
+  // ব্যবহারকারী লগইন না থাকলে হেডারের পয়েন্ট অংশ খালি করে দিন
   if (!auth.currentUser) {
       document.getElementById('headerUserPoints').innerText = '';
   }
 }, 3000);
 
+// লগইন স্ট্যাটাস অনুযায়ী UI আপডেট
 auth.onAuthStateChanged(user => {
   const headerUserPointsElement = document.getElementById('headerUserPoints');
 
   if (user) {
     loadProfileImage(user);
-    updateProfileDrawerUI(user);
+    updateProfileDrawerUI(user); // authStateChanged এ ড্রয়ার UI আপডেট করুন
     loadPoints(user.uid);
     Promise.all([loadTasks()])
       .then(() => {
         clearTimeout(loadingTimeout);
         document.getElementById("loadingScreen").style.display = "none";
         document.getElementById("dashboardContent").style.display = "block";
-        closeProfileDrawer();
+        closeProfileDrawer(); // নিশ্চিত করুন প্রোফাইল ড্রয়ার বন্ধ আছে যখন ইউজার লগইন করে
       })
       .catch((err) => {
         console.error("ড্যাশবোর্ড লোড সমস্যা:", err);
         clearTimeout(loadingTimeout);
         document.getElementById("loadingScreen").style.display = "none";
         document.getElementById("dashboardContent").style.display = "block";
-        closeProfileDrawer();
+        closeProfileDrawer(); // এরর হলেও বন্ধ করুন
       });
   } else {
     clearTimeout(loadingTimeout);
@@ -207,13 +216,14 @@ auth.onAuthStateChanged(user => {
     document.getElementById("taskList").innerHTML = "<p class='task-message'>🔐 দয়া করে লগইন করুন, তারপর টাস্ক দেখতে পারবেন।</p>";
     loadProfileImage(null);
     updateProfileDrawerUI(null);
-    closeProfileDrawer();
+    closeProfileDrawer(); // নিশ্চিত করুন প্রোফাইল ড্রয়ার বন্ধ আছে যখন ইউজার লগইন না থাকে
     if (headerUserPointsElement) {
         headerUserPointsElement.innerText = '';
     }
   }
 });
 
+// Loading dots animation
 const loadingText = document.querySelector('.loading-text');
 let dotCount = 0;
 setInterval(() => {
