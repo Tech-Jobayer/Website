@@ -147,7 +147,7 @@ body {
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
   color: #333;
   transition: box-shadow 0.3s, transform 0.3s;
-  **position: relative;** /* এই লাইনটি যোগ করা হয়েছে ট্যাগ পজিশন করার জন্য */
+  position: relative;
 }
 
 .card:hover {
@@ -333,36 +333,7 @@ input[type="text"], input[type="email"], input[type="password"] {
   cursor: pointer;
 }
 
-@media (max-width: 600px) {
-  .card {
-    margin: 5px;
-    padding: 10px;
-  }
-  .sidebar a { font-size: 16px; }
-  .btn {
-    font-size: 14px;
-    padding: 8px 12px;
-  }
-  .header h2 {
-    font-size: 18px;
-  }
-  .profile {
-    margin: 5px 0;
-  }
-  .loading-text {
-    font-size: 16px;
-  }
-  .spinner {
-    width: 40px;
-    height: 40px;
-  }
-  .profile-img {
-    width: 26px;
-    height: 26px;
-  }
-}
-
-/* Profile Drawer স্টাইল */
+/* প্রোফাইল ড্রয়ার স্টাইল */
 .profile-drawer {
   height: 100%;
   width: 0; /* ডিফল্টভাবে লুকানো থাকবে */
@@ -471,14 +442,6 @@ input[type="text"], input[type="email"], input[type="password"] {
   background-color: #314156; /* হোভার করলে হালকা ধূসর ব্যাকগ্রাউন্ড */
 }
 
-/* Header এর জন্য ফ্লেক্সবক্স স্টাইল নিশ্চিত করুন, এটি আগে থেকেই আছে */
-/* .header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  ... (আপনার বিদ্যমান হেডার স্টাইল) ...
-} */
-
 /* হেডারের পয়েন্ট দেখানোর জন্য */
 .header-user-points {
   color: #fff; /* টেক্সটের রঙ সাদা করুন */
@@ -531,4 +494,12 @@ input[type="text"], input[type="email"], input[type="password"] {
   text-transform: uppercase;
   box-shadow: 0 2px 5px rgba(0,0,0,0.2);
   z-index: 1; /* কার্ডের অন্যান্য কন্টেন্টের উপরে রাখতে */
+}
+
+.status-pending {
+  background-color: #2196F3; /* নতুন পেন্ডিং রঙ: মেটেরিয়াল ডিজাইন ব্লু */
+}
+
+.status-completed {
+  background-color: #4CAF50; /* সম্পন্ন রঙ: আগের সবুজ রঙ, যা বেশ মানানসই */
 }
