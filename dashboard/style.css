@@ -528,19 +528,11 @@ input[type="text"], input[type="email"], input[type="password"] {
 /* প্রোগ্রেস বার নিজেই (ভেতরের রঙীন অংশ) */
 .progress-bar {
   height: 100%;
-  background: #e91e63 !important; /* এখানে !important যোগ করা হয়েছে */
+  /* এখানে গ্রেডিয়েন্ট ব্যাকগ্রাউন্ড আবার যোগ করা হয়েছে */
+  background: linear-gradient(to right, #e91e63, #c2185b) !important;
   transition: width 0.3s ease; /* মসৃণ অ্যানিমেশন */
   border-radius: 5px; /* কোণাগুলোকে গোলাকার রাখুন */
-  /* এই অংশগুলো সরানো হয়েছে কারণ আপনি চলমান অ্যানিমেশন চান না */
-  /* background-size: 30px 30px; */
-  /* background-image: linear-gradient(...); */
-  /* animation: progress-stripes 1s linear infinite; */
+  /* চলমান স্ট্রাইপ অ্যানিমেশনের কোডগুলো এখানে নেই, কারণ আপনি এটি চান না */
 }
 
-/* স্ট্রাইপ অ্যানিমেশনের জন্য @keyframes নিয়ম - এই অংশটিও সরানো হয়েছে */
-/*
-@keyframes progress-stripes {
-  0% { background-position: 0 0; }
-  100% { background-position: 30px 0; }
-}
-*/
+/* স্ট্রাইপ অ্যানিমেশনের জন্য @keyframes নিয়ম - এই অংশটিও নেই */
