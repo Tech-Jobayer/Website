@@ -85,13 +85,9 @@ function loadTasks() {
         list.innerHTML = "<p>😢 কোনো টাস্ক নেই</p>";
         return;
       }
-      // এইখান থেকে এরর ছিল। `Object.entries(data).forEach(([key, ch]) => {` এর শুরু এবং শেষ ব্র্যাকেট বন্ধ হয়নি।
-      // এখানে লুপটি সঠিকভাবে শুরু এবং শেষ করা হয়েছে।
       Object.entries(data).forEach(([key, ch]) => {
-        // টাস্ক স্ট্যাটাসের কোড সরানোর কারণে `statusText` এবং `statusClass` এর প্রয়োজন নেই
-        // const isCompleted = ch.completed >= ch.max;
-        // const statusText = isCompleted ? 'সম্পন্ন হয়েছে' : 'বাকি';
-        // const statusClass = isCompleted ? 'status-completed' : 'status-pending';
+        // পার্সেন্টেজ গণনা করুন
+        const percentage = Math.round((ch.completed / ch.max) * 100); // এটি এখানে আছে
 
         const cardLink = document.createElement('a');
         cardLink.href = `${window.location.origin}/Website/dashboard/task.html?taskId=${encodeURIComponent(key)}`;
@@ -102,15 +98,16 @@ function loadTasks() {
           <div class="card">
             <div class="card-header">
               <h3>${ch.title}</h3>
-              </div>
+            </div>
             <p>সাবস্ক্রাইবার: ${ch.completed} / ${ch.max}</p>
-            <div class="progress">
-              <div class="progress-bar" style="width: ${(ch.completed / ch.max) * 100}%"></div>
+            <div class="progress-container"> <div class="progress-percentage">${percentage}%</div>  <div class="progress">
+                <div class="progress-bar" style="width: ${percentage}%"></div>
+              </div>
             </div>
           </div>
         `;
         list.appendChild(cardLink);
-      }); // <<< এইখানে forEach লুপের শেষ ব্র্যাকেটটি ছিল না
+      });
     })
     .catch(err => {
       console.error("টাস্ক লোড সমস্যা:", err);
