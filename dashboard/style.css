@@ -498,3 +498,7 @@ input[type="text"], input[type="email"], input[type="password"] {
     width: 250px; /* ছোট স্ক্রিনে প্রোফাইল ড্রয়ারের প্রস্থ */
   }
 }
+
+.sidebar, .profile-drawer {
+  transition: all 0.3s ease;
+}
