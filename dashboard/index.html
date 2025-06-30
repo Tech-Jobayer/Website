@@ -11,6 +11,16 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 </head>
 <body>
+<div id="notificationDrawer" class="notification-drawer">
+  <button class="closebtn" onclick="closeNotificationDrawer()">&times;</button>
+  <div class="drawer-header">
+    <h3>নোটিফিকেশনস</h3>
+  </div>
+  <div id="notificationList" class="notification-list">
+    <p class="no-notifications-message">কোনো নতুন নোটিফিকেশন নেই।</p>
+  </div>
+</div>
+
   <div id="sidebar" class="sidebar">
     <button class="closebtn" onclick="closeSidebar()">&times;</button>
     <a href="/Website/dashboard/">🏠 ড্যাশবোর্ড</a>
