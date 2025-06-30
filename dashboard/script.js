@@ -84,10 +84,6 @@ function loadTasks() {
         list.innerHTML = "<p>😢 কোনো টাস্ক নেই</p>";
         return;
       }
-      Object.entries(data).forEach(([key, ch]) => {
-        const isCompleted = ch.completed >= ch.max;
-        const statusText = isCompleted ? 'সম্পন্ন হয়েছে' : 'বাকি';
-        const statusClass = isCompleted ? 'status-completed' : 'status-pending';
 
         const cardLink = document.createElement('a');
         cardLink.href = `${window.location.origin}/Website/dashboard/task.html?taskId=${encodeURIComponent(key)}`;
