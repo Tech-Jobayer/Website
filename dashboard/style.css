@@ -285,6 +285,11 @@ input[type="text"], input[type="email"], input[type="password"] {
   overflow: hidden;
 }
 
+.card-link, .card-link * {
+  text-decoration: none !important;
+  color: inherit !important;
+}
+
 /* --- Sidebar Drawer Styles --- */
 .sidebar {
   height: 100%;
