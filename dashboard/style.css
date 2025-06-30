@@ -1,8 +1,8 @@
-body { 
+body {
   font-family: 'Noto Sans Bengali', 'Hind Siliguri', sans-serif;
-  background: #f2f2f2; 
-  margin: 0; 
-  padding: 0; 
+  background: #f2f2f2;
+  margin: 0;
+  padding: 0;
   line-height: 1.6;
 }
 
@@ -10,7 +10,7 @@ body {
   display: flex;
   align-items: center;
   background: #e91e63;   /* গোলাপী রং */
-  color: white; 
+  color: white;
   padding: 15px;
   text-align: center;
   gap: 12px;
@@ -93,9 +93,9 @@ body {
   background: #eee;
 }
 
-.profile { 
-  text-align: center; 
-  margin: 10px 0; 
+.profile {
+  text-align: center;
+  margin: 10px 0;
 }
 
 .btn {
@@ -147,6 +147,7 @@ body {
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
   color: #333;
   transition: box-shadow 0.3s, transform 0.3s;
+  **position: relative;** /* এই লাইনটি যোগ করা হয়েছে ট্যাগ পজিশন করার জন্য */
 }
 
 .card:hover {
@@ -154,8 +155,8 @@ body {
   transform: translateY(-5px);
 }
 
-.card h3 { 
-  margin: 0 0 10px; 
+.card h3 {
+  margin: 0 0 10px;
 }
 
 input[type="text"], input[type="email"], input[type="password"] {
@@ -376,7 +377,7 @@ input[type="text"], input[type="email"], input[type="password"] {
   box-shadow: -4px 0 10px rgba(0,0,0,0.3); /* বাম দিকে গাঢ় শ্যাডো */
   color: white; /* টেক্সটের রঙ */
   text-align: center; /* কন্টেন্ট মাঝখানে আনতে */
-  **display: none;** /* এটি যোগ করুন: ডিফল্টভাবে ড্রয়ার লুকানো থাকবে */
+  display: none; /* এটি যোগ করুন: ডিফল্টভাবে ড্রয়ার লুকানো থাকবে */
 }
 
 /* প্রোফাইল ড্রয়ারের ক্লোজ বাটন */
@@ -501,4 +502,41 @@ input[type="text"], input[type="email"], input[type="password"] {
 
 .sidebar, .profile-drawer {
   transition: all 0.3s ease;
+}
+
+/* টাস্ক কার্ডের হেডার স্টাইল */
+.card-header {
+  display: flex;
+  justify-content: space-between; /* টাইটেল এবং স্ট্যাটাসকে দুই পাশে সরাতে */
+  align-items: center;
+  margin-bottom: 10px; /* নিচের কন্টেন্ট থেকে কিছুটা দূরত্ব */
+  position: relative; /* স্ট্যাটাস ট্যাগ পজিশন করার জন্য */
+}
+
+.card-header h3 {
+  margin: 0; /* h3 এর ডিফল্ট মার্জিন সরান */
+  flex-grow: 1; /* টাইটেলকে যতটুকু সম্ভব জায়গা নিতে দিন */
+}
+
+/* টাস্ক স্ট্যাটাস ট্যাগ স্টাইল */
+.task-status {
+  position: absolute; /* কার্ডের ডান পাশে উপরে পজিশন করার জন্য */
+  top: -10px; /* কার্ডের উপরে কিছুটা বাইরে */
+  right: -10px; /* কার্ডের ডান পাশে কিছুটা বাইরে */
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 0.85em;
+  font-weight: bold;
+  color: white;
+  text-transform: uppercase;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  z-index: 1; /* কার্ডের অন্যান্য কন্টেন্টের উপরে রাখতে */
+}
+
+.status-pending {
+  background-color: #ff9800; /* কমলা রং পেন্ডিং এর জন্য */
+}
+
+.status-completed {
+  background-color: #4CAF50; /* সবুজ রং সম্পন্ন এর জন্য */
 }
