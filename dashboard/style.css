@@ -534,9 +534,9 @@ input[type="text"], input[type="email"], input[type="password"] {
 }
 
 .status-pending {
-  background-color: #ff9800; /* কমলা রং পেন্ডিং এর জন্য */
+  background-color: #2196F3;
 }
 
 .status-completed {
-  background-color: #4CAF50; /* সবুজ রং সম্পন্ন এর জন্য */
+  background-color: #4CAF50; /*
 }
