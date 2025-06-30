@@ -194,7 +194,7 @@ input[type="text"], input[type="email"], input[type="password"] {
   color: #a94442;
 }
 
-/* ✅ লোডিং স্ক্রিন স্টাইল */
+/* লোডিং স্ক্রিন স্টাইল */
 #loadingScreen {
   position: fixed;
   top: 0; left: 0;
@@ -295,7 +295,7 @@ input[type="text"], input[type="email"], input[type="password"] {
   color: inherit !important;
 }
 
-/* Sidebar Drawer Styles */
+/* --- Sidebar Drawer Styles --- */
 .sidebar {
   height: 100%;
   width: 0;
@@ -333,7 +333,7 @@ input[type="text"], input[type="email"], input[type="password"] {
   cursor: pointer;
 }
 
-/* প্রোফাইল ড্রয়ার স্টাইল */
+/* --- Profile Drawer Styles --- */
 .profile-drawer {
   height: 100%;
   width: 0; /* ডিফল্টভাবে লুকানো থাকবে */
@@ -449,20 +449,45 @@ input[type="text"], input[type="email"], input[type="password"] {
   font-weight: bold; /* টেক্সট বোল্ড করুন */
   margin-right: 15px; /* প্রোফাইল আইকন থেকে একটু দূরত্ব রাখুন */
   white-space: nowrap; /* পয়েন্ট এক লাইনেই রাখতে */
-  /* ফ্লেক্সবক্স যদি প্রয়োজন হয় */
   display: flex;
   align-items: center;
   gap: 5px; /* যদি টেক্সট ও ইমোজি/আইকনের মধ্যে ব্যবধান চান */
 }
 
-/* @media query এর ভিতরে .profile-drawer এর width অ্যাডজাস্ট করতে পারেন যদি প্রয়োজন হয় */
+/* রেসপন্সিভ ডিজাইন */
 @media (max-width: 600px) {
-  /* অন্যান্য বিদ্যমান মিডিয়া কোয়েরি স্টাইল */
+  .card {
+    margin: 5px;
+    padding: 10px;
+  }
+  .sidebar a { font-size: 16px; }
+  .btn {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+  .header h2 {
+    font-size: 18px;
+  }
+  .profile {
+    margin: 5px 0;
+  }
+  .loading-text {
+    font-size: 16px;
+  }
+  .spinner {
+    width: 40px;
+    height: 40px;
+  }
+  .profile-img {
+    width: 26px;
+    height: 26px;
+  }
   .profile-drawer {
     width: 250px; /* ছোট স্ক্রিনে প্রোফাইল ড্রয়ারের প্রস্থ */
   }
 }
 
+/* ট্রানজিশন স্মুথ করার জন্য */
 .sidebar, .profile-drawer {
   transition: all 0.3s ease;
 }
