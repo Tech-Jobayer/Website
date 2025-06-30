@@ -532,11 +532,3 @@ input[type="text"], input[type="email"], input[type="password"] {
   box-shadow: 0 2px 5px rgba(0,0,0,0.2);
   z-index: 1; /* কার্ডের অন্যান্য কন্টেন্টের উপরে রাখতে */
 }
-
-.status-pending {
-  background-color: #2196F3;
-}
-
-.status-completed {
-  background-color: #4CAF50; /*
-}
