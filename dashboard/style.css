@@ -505,26 +505,3 @@ input[type="text"], input[type="email"], input[type="password"] {
   margin: 0; /* h3 এর ডিফল্ট মার্জিন সরান */
   flex-grow: 1; /* টাইটেলকে যতটুকু সম্ভব জায়গা নিতে দিন */
 }
-
-/* টাস্ক স্ট্যাটাস ট্যাগ স্টাইল */
-.task-status {
-  position: absolute; /* কার্ডের ডান পাশে উপরে পজিশন করার জন্য */
-  top: -10px; /* কার্ডের উপরে কিছুটা বাইরে */
-  right: -10px; /* কার্ডের ডান পাশে কিছুটা বাইরে */
-  padding: 5px 10px;
-  border-radius: 5px;
-  font-size: 0.85em;
-  font-weight: bold;
-  color: white;
-  text-transform: uppercase;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-  z-index: 1; /* কার্ডের অন্যান্য কন্টেন্টের উপরে রাখতে */
-}
-
-.status-pending {
-  background-color: #2196F3; /* নতুন পেন্ডিং রঙ: মেটেরিয়াল ডিজাইন ব্লু */
-}
-
-.status-completed {
-  background-color: #4CAF50; /* সম্পন্ন রঙ: আগের সবুজ রঙ, যা বেশ মানানসই */
-}
