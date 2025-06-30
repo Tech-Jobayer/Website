@@ -505,3 +505,65 @@ input[type="text"], input[type="email"], input[type="password"] {
   margin: 0; /* h3 এর ডিফল্ট মার্জিন সরান */
   flex-grow: 1; /* টাইটেলকে যতটুকু সম্ভব জায়গা নিতে দিন */
 }
+
+
+
+
+/* style.css */
+
+/* ... (আপনার style.css ফাইলের অন্যান্য বিদ্যমান কোড) ... */
+
+/* --- প্রোগ্রেস বার পার্সেন্টেজ ও অ্যানিমেশন স্টাইল --- */
+
+/* প্রোগ্রেস বারের কন্টেইনার (পার্সেন্টেজ ও বারকে ঘিরে থাকবে) */
+.progress-container {
+  position: relative; /* পার্সেন্টেজকে সঠিকভাবে পজিশন করার জন্য */
+  margin-top: 10px; /* কার্ডের অন্যান্য কন্টেন্ট থেকে দূরত্ব */
+}
+
+/* প্রোগ্রেস বারের পার্সেন্টেজ টেক্সট স্টাইল */
+.progress-percentage {
+  text-align: right; /* টেক্সটকে ডান দিকে সারিবদ্ধ করুন */
+  font-size: 0.95em; /* ফন্টের আকার */
+  font-weight: bold; /* টেক্সটকে বোল্ড করুন */
+  color: #555; /* টেক্সটের ডিফল্ট রঙ */
+  margin-bottom: 5px; /* প্রোগ্রেস বারের উপরে কিছুটা জায়গা */
+  position: absolute; /* প্রোগ্রেস বারের উপরে ভাসিয়ে রাখতে */
+  right: 0; /* ডান প্রান্তে সেট করুন */
+  top: -20px; /* প্রোগ্রেস বারের উপরে নেগেটিভ মার্জিন দিয়ে পজিশন করুন */
+  background: rgba(255, 255, 255, 0.8); /* টেক্সটকে স্পষ্ট করতে হালকা সাদা ব্যাকগ্রাউন্ড */
+  padding: 2px 6px;
+  border-radius: 3px;
+  z-index: 2; /* প্রোগ্রেস বারের উপরে দেখাতে */
+}
+
+/* প্রোগ্রেস বার নিজেই (ভেতরের রঙীন অংশ) */
+.progress-bar {
+  height: 100%;
+  /* গ্রেডিয়েন্ট ব্যাকগ্রাউন্ড আপনার থিমের গোলাপী রঙের সাথে মানানসই */
+  background: linear-gradient(to right, #e91e63, #c2185b);
+  transition: width 0.5s ease-out; /* প্রস্থ পরিবর্তনের জন্য মসৃণ অ্যানিমেশন */
+  border-radius: 5px; /* কোণাগুলোকে গোলাকার রাখুন */
+
+  /* চলমান স্ট্রাইপ অ্যানিমেশনের জন্য */
+  background-size: 30px 30px; /* স্ট্রাইপের আকার */
+  background-image: linear-gradient(
+    -45deg,
+    rgba(255, 255, 255, 0.15) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0.15) 75%,
+    transparent 75%,
+    transparent
+  );
+  animation: progress-stripes 1s linear infinite; /* অ্যানিমেশন চালু করুন */
+}
+
+/* স্ট্রাইপ অ্যানিমেশনের জন্য @keyframes নিয়ম */
+@keyframes progress-stripes {
+  0% { background-position: 0 0; }
+  100% { background-position: 30px 0; }
+}
+
+/* --- প্রোগ্রেস বার পার্সেন্টেজ ও অ্যানিমেশন স্টাইল শেষ --- */
