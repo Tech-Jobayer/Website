@@ -536,3 +536,118 @@ input[type="text"], input[type="email"], input[type="password"] {
 }
 
 /* স্ট্রাইপ অ্যানিমেশনের জন্য @keyframes নিয়ম - এই অংশটিও নেই */
+
+/* --- Notification Drawer Styles --- */
+.notification-drawer {
+  height: 100%;
+  width: 0; /* ডিফল্টভাবে লুকানো থাকবে */
+  position: fixed;
+  z-index: 1000; /* সাইডবার (999) এবং প্রোফাইল ড্রয়ার (1001) এর মাঝামাঝি, যাতে এটি প্রোফাইল ড্রয়ারের নিচে থাকে */
+  top: 0;
+  right: 0; /* ডান দিক থেকে আসবে */
+  background-color: #2a313e; /* প্রোফাইল ড্রয়ারের মতো একই ব্যাকগ্রাউন্ড */
+  overflow-x: hidden;
+  transition: 0.3s ease-in-out; /* মসৃণ অ্যানিমেশন */
+  padding-top: 60px; /* হেডার কন্টেন্টের জন্য জায়গা */
+  box-shadow: -4px 0 10px rgba(0,0,0,0.3); /* বাম দিকে গাঢ় শ্যাডো */
+  color: white; /* টেক্সটের রঙ */
+  display: none; /* ডিফল্টভাবে ড্রয়ার লুকানো থাকবে */
+}
+
+/* নোটিফিকেশন ড্রয়ারের ক্লোজ বাটন */
+.notification-drawer .closebtn {
+  position: absolute;
+  top: 12px;
+  left: 16px; /* বাম দিকে ক্লোজ বাটন */
+  font-size: 36px;
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* ড্রয়ার হেডার */
+.notification-drawer .drawer-header {
+  padding: 15px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  text-align: center;
+}
+
+.notification-drawer .drawer-header h3 {
+  margin: 0;
+  color: #fff;
+  font-size: 1.5em;
+}
+
+/* নোটিফিকেশন লিস্ট কন্টেইনার */
+.notification-list {
+  padding: 10px 15px;
+  max-height: calc(100% - 120px); /* হেডার এবং প্যাডিং এর জন্য জায়গা রেখে */
+  overflow-y: auto; /* নোটিফিকেশন বেশি হলে স্ক্রলবার দেখাবে */
+}
+
+/* প্রতিটি নোটিফিকেশন আইটেমের স্টাইল */
+.notification-item {
+  background-color: #3e4a59; /* নোটিফিকেশন আইটেমের ব্যাকগ্রাউন্ড */
+  margin-bottom: 10px;
+  padding: 12px 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  transition: background-color 0.2s ease;
+  cursor: pointer; /* ক্লিকযোগ্য বোঝাতে */
+}
+
+.notification-item:hover {
+  background-color: #4a5768; /* হোভার ইফেক্ট */
+}
+
+.notification-item.unread {
+  background-color: #e91e63; /* আনরিড নোটিফিকেশনের জন্য উজ্জ্বল গোলাপী */
+  color: white;
+  font-weight: bold;
+}
+
+.notification-item.unread:hover {
+  background-color: #c2185b; /* আনরিড হোভার ইফেক্ট */
+}
+
+.notification-item h4 {
+  margin: 0 0 5px;
+  font-size: 1.1em;
+}
+
+.notification-item p {
+  margin: 0;
+  font-size: 0.9em;
+  color: #ccc;
+}
+
+.notification-item.unread p {
+  color: #fff; /* আনরিড হলে মেসেজ টেক্সট সাদা */
+}
+
+.notification-item .timestamp {
+  font-size: 0.75em;
+  color: #a0a0a0;
+  margin-top: 5px;
+  text-align: right;
+}
+
+.notification-item.unread .timestamp {
+  color: #f0f0f0; /* আনরিড হলে টাইমস্ট্যাম্প হালকা সাদা */
+}
+
+/* যখন কোনো নোটিফিকেশন নেই */
+.no-notifications-message {
+  text-align: center;
+  color: #ccc;
+  padding: 20px;
+  font-size: 1.1em;
+}
+
+/* রেসপন্সিভ ডিজাইন */
+@media (max-width: 600px) {
+  .notification-drawer {
+    width: 250px; /* ছোট স্ক্রিনে নোটিফিকেশন ড্রয়ারের প্রস্থ */
+  }
+}
