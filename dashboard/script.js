@@ -396,7 +396,3 @@ function setNotificationCount(count) {
     notifyCount.style.display = count > 0 ? 'inline-block' : 'none';
   }
 }
-
-setTimeout(() => {
-  setNotificationCount(7);
-}, 5000);
