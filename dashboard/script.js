@@ -86,7 +86,7 @@ function loadPoints(uid) {
   db.ref('users/' + uid + '/points').on('value', snap => {
     const points = snap.val() || 0;
     if (headerUserPointsElement) {
-      headerUserPointsElement.innerHTML = `${points} 💰`;
+      headerUserPointsElement.innerHTML = `💰 ${points}`;
     }
     if (drawerUserPointsElement) {
       drawerUserPointsElement.innerHTML = `🔥 ${points} পয়েন্ট`;
