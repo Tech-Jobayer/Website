@@ -1,110 +1,653 @@
-/* buy-subscription.css */
-
 body {
-  padding-top: 20px; /* হেডার না থাকায় উপরের প্যাডিং যোগ করা হয়েছে */
-  background: #f2f2f2; /* বডির ব্যাকগ্রাউন্ড সাদা থেকে হালকা ধূসর করা হয়েছে */
-  color: #333; /* ডিফল্ট টেক্সট কালার */
+  font-family: 'Noto Sans Bengali', 'Hind Siliguri', sans-serif;
+  background: #f2f2f2;
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
 }
 
-.container {
-  max-width: 600px;
-  margin: 20px auto;
-  padding: 0 15px;
+.header {
+  display: flex;
+  align-items: center;
+  background: #2C3E50;
+  color: white;
+  padding: 7px 15px;
+  text-align: center;
+  gap: 12px;
+  border-bottom: 1px solid #ddd;
+  position: relative;
+}
+
+.menu-btn {
+  font-size: 26px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-right: 15px;
+  color: #fff;
+}
+
+.notify-btn {
+  font-size: 22px;
+  background: none;
+  border: none;
+  margin-right: 14px;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.2s;
+  color: #fff;
+}
+
+.notify-btn:hover {
+  background: #f3f3f3;
+  border-radius: 50%;
+  color: #e91e63;
+}
+
+/* Notification count badge */
+.notify-count {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: red;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 12px;
+  padding: 0 5px;
+  min-width: 18px;
+  line-height: 18px;
+  text-align: center;
+  font-family: inherit;
+  pointer-events: none;
+}
+
+.header h2 {
+  flex: 1;
+  margin: 0;
+  text-align: center;
+  font-size: 20px;
+}
+
+/* Profile button & image */
+.profile-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 12px;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  transition: background 0.2s;
+}
+.profile-btn:hover {
+  background: #f3f3f3;
+  border-radius: 50%;
+}
+.profile-img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.10);
+  background: #eee;
+}
+
+.profile {
+  text-align: center;
+  margin: 10px 0;
+}
+
+.btn {
+  padding: 10px 15px;
+  margin: 5px;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  border: none;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+}
+
+.btn-primary:hover {
+  background-color: #c2185b;
+}
+
+.btn-danger:hover {
+  background-color: #d32f2f;
+}
+
+.btn-primary {
+  background-color: #e91e63;
+  color: white;
+}
+
+.btn-danger {
+  background-color: #f44336;
+  color: white;
+}
+
+.btn:focus {
+  outline: 3px solid #e91e63;
+  outline-offset: 2px;
+}
+
+.btn:active {
+  transform: scale(0.98);
 }
 
 .card {
-  margin-bottom: 20px; /* কার্ডগুলোর মধ্যে ব্যবধান বাড়ানো হয়েছে */
+  background: white;
+  margin: 10px;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  color: #333;
+  transition: box-shadow 0.3s, transform 0.3s;
+  position: relative;
 }
 
-.form-group {
-  margin-bottom: 15px;
+.card:hover {
+  box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);
+  transform: translateY(-5px);
 }
 
-.form-group label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: bold;
-  color: #555;
+.card h3 {
+  margin: 0 0 10px;
 }
 
-.form-group input[type="text"],
-.form-group input[type="number"],
-.form-group textarea { /* নতুন: textarea এর জন্য স্টাইল */
-  width: 100%;
+input[type="text"], input[type="email"], input[type="password"] {
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 6px;
   font-size: 16px;
+  width: 100%;
   box-sizing: border-box;
-  font-family: 'Noto Sans Bengali', 'Hind Siliguri', sans-serif; /* ফন্ট নিশ্চিত করুন */
 }
 
-.form-group textarea {
-    resize: vertical; /* টেক্সটবক্স উল্লম্বভাবে রিসাইজ করা যাবে */
-    min-height: 80px; /* নূন্যতম উচ্চতা */
+.input-error {
+  border-color: #f44336;
+  background-color: #ffebee;
 }
 
-.error-message {
-  color: #f44336;
-  font-size: 0.85em;
-  margin-top: 5px;
-  display: block;
+.input-error::placeholder {
+  color: #d32f2f;
 }
 
-#totalCost {
-  font-weight: bold;
+.alert {
+  padding: 12px 20px;
+  border-radius: 6px;
+  margin: 10px 0;
+  font-weight: 500;
+}
+
+.alert-success {
+  background-color: #dff0d8;
+  color: #3c763d;
+}
+
+.alert-danger {
+  background-color: #f2dede;
+  color: #a94442;
+}
+
+/* লোডিং স্ক্রিন স্টাইল */
+#loadingScreen {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.spinner {
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid #e91e63;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  margin-bottom: 10px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 20px;
+  font-weight: 600;
   color: #e91e63;
+  user-select: none;
+  letter-spacing: 0.05em;
+  text-align: center;
+  margin-top: 10px;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.7;
+  }
+}
+
+.toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #333;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  animation: fadeIn 0.5s ease, fadeOut 0.5s ease 4s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(20px); }
+}
+
+.task-message {
+  text-align: center;
+  margin: 20px auto;
+  padding: 12px 16px;
+  font-size: 18px;
+  color: #856404;
+  background-color: #fff3cd;
+  border: 1px solid #ffeeba;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  max-width: 90%;
+}
+
+.progress {
+  background: #eee;
+  height: 10px;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.card-link, .card-link * {
+  text-decoration: none !important;
+  color: inherit !important;
+}
+
+/* --- Sidebar Drawer Styles --- */
+.sidebar {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 999;
+  top: 0;
+  left: 0;
+  background-color: #20242c;
+  overflow-x: hidden;
+  transition: width 0.3s;
+  padding-top: 60px;
+}
+
+.sidebar a {
+  padding: 16px 24px;
+  text-decoration: none;
+  font-size: 20px;
+  color: #fff;
+  display: block;
+  transition: 0.2s;
+}
+
+.sidebar a:hover {
+  background: #314156;
+}
+
+.closebtn {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  font-size: 36px;
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* --- Profile Drawer Styles --- */
+.profile-drawer {
+  height: 100%;
+  width: 0; /* ডিফল্টভাবে লুকানো থাকবে */
+  position: fixed;
+  z-index: 1001; /* সাইডবারের (z-index: 999) চেয়ে বেশি যাতে এটি সাইডবারের উপরে থাকে */
+  top: 0;
+  right: 0; /* ডান দিক থেকে আসবে */
+  background-color: #2a313e; /* সাইডবারের থেকে কিছুটা ভিন্ন রঙ, কিন্তু থিমের সাথে মানানসই */
+  overflow-x: hidden;
+  transition: 0.3s ease-in-out; /* মসৃণ অ্যানিমেশন */
+  padding-top: 60px; /* হেডার কন্টেন্টের জন্য জায়গা */
+  box-shadow: -4px 0 10px rgba(0,0,0,0.3); /* বাম দিকে গাঢ় শ্যাডো */
+  color: white; /* টেক্সটের রঙ */
+  text-align: center; /* কন্টেন্ট মাঝখানে আনতে */
+  display: none; /* ডিফল্টভাবে ড্রয়ার লুকানো থাকবে */
+}
+
+/* প্রোফাইল ড্রয়ারের ক্লোজ বাটন */
+.profile-drawer .closebtn {
+  position: absolute;
+  top: 12px;
+  left: 16px; /* বাম দিকে ক্লোজ বাটন */
+  font-size: 36px;
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* প্রোফাইল তথ্যের সেকশন */
+.profile-info {
+  padding: 20px 15px;
+  border-bottom: 1px solid rgba(255,255,255,0.1); /* হালকা বর্ডার */
+  margin-bottom: 20px;
+}
+
+/* প্রোফাইল ড্রয়ারের ভেতরে বড় প্রোফাইল ছবি */
+.profile-img-large {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover; /* ছবির অনুপাত ঠিক রাখতে */
+  margin: 0 auto 10px; /* মাঝখানে আনতে ও নিচের মার্জিন */
+  border: 3px solid #e91e63; /* গোলাপী বর্ডার */
+  box-shadow: 0 0 8px rgba(233, 30, 99, 0.5); /* গোলাপী শ্যাডো */
+}
+
+/* প্রোফাইল তথ্য টেক্সট স্টাইল */
+.profile-info h3 {
+  margin: 10px 0 5px;
+  color: #fff; /* নাম সাদা */
+  font-size: 1.4em;
+}
+
+.profile-info p {
+  margin: 5px 0;
+  color: #bbb; /* ইমেইল ও পয়েন্ট হালকা ধূসর */
+  font-size: 0.95em;
+}
+
+/* প্রোফাইল অ্যাকশন বাটনগুলির কন্টেইনার */
+.profile-actions {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column; /* বাটনগুলো উল্লম্বভাবে সাজাতে */
+  gap: 10px; /* বাটনগুলোর মধ্যে ব্যবধান */
+  padding: 0 20px;
+}
+
+/* প্রোফাইল ড্রয়ারের ভিতরের বাটনগুলোর স্টাইল */
+.profile-drawer .btn {
+  width: 100%; /* পূর্ণ প্রস্থ */
+  box-sizing: border-box; /* প্যাডিং এবং বর্ডার প্রস্থের মধ্যে অন্তর্ভুক্ত */
+  padding: 12px 15px;
+  font-size: 1em;
+  background-color: #e91e63; /* গোলাপী বাটন */
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.profile-drawer .btn:hover {
+  background-color: #c2185b; /* গোলাপীর গাঢ় শেড */
+  transform: translateY(-2px);
+}
+
+/* প্রোফাইল ড্রয়ারের লিঙ্কগুলির স্টাইল */
+.profile-drawer-links {
+  padding-bottom: 20px; /* নিচের প্যাডিং */
+}
+
+.profile-drawer-links a {
+  padding: 15px 20px;
+  text-decoration: none;
+  font-size: 1em;
+  color: #ccc; /* হালকা ধূসর রঙ */
+  display: block;
+  transition: 0.2s;
+  text-align: left; /* লিঙ্কগুলো বাম দিকে সারিবদ্ধ করতে */
+}
+
+.profile-drawer-links a:hover {
+  color: #fff;
+  background-color: #314156; /* হোভার করলে হালকা ধূসর ব্যাকগ্রাউন্ড */
+}
+
+/* হেডারের পয়েন্ট দেখানোর জন্য */
+.header-user-points {
+  color: #fff; /* টেক্সটের রঙ সাদা করুন */
+  font-size: 1.1em; /* ফন্ট সাইজ একটু বড় করুন */
+  font-weight: bold; /* টেক্সট বোল্ড করুন */
+  margin-right: 15px; /* প্রোফাইল আইকন থেকে একটু দূরত্ব রাখুন */
+  white-space: nowrap; /* পয়েন্ট এক লাইনেই রাখতে */
+  display: flex;
+  align-items: center;
+  gap: 5px; /* যদি টেক্সট ও ইমোজি/আইকনের মধ্যে ব্যবধান চান */
+}
+
+/* রেসপন্সিভ ডিজাইন */
+@media (max-width: 600px) {
+  .card {
+    margin: 5px;
+    padding: 10px;
+  }
+  .sidebar a { font-size: 16px; }
+  .btn {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+  .header h2 {
+    font-size: 18px;
+  }
+  .profile {
+    margin: 5px 0;
+  }
+  .loading-text {
+    font-size: 16px;
+  }
+  .spinner {
+    width: 40px;
+    height: 40px;
+  }
+  .profile-img {
+    width: 26px;
+    height: 26px;
+  }
+  .profile-drawer {
+    width: 250px; /* ছোট স্ক্রিনে প্রোফাইল ড্রয়ারের প্রস্থ */
+  }
+}
+
+/* ট্রানজিশন স্মুথ করার জন্য */
+.sidebar, .profile-drawer {
+  transition: all 0.3s ease;
+}
+
+/* টাস্ক কার্ডের হেডার স্টাইল */
+.card-header {
+  display: flex;
+  justify-content: space-between; /* টাইটেল এবং স্ট্যাটাসকে দুই পাশে সরাতে */
+  align-items: center;
+  margin-bottom: 10px; /* নিচের কন্টেন্ট থেকে কিছুটা দূরত্ব */
+  position: relative;
+}
+
+.card-header h3 {
+  margin: 0; /* h3 এর ডিফল্ট মার্জিন সরান */
+  flex-grow: 1; /* টাইটেলকে যতটুকু সম্ভব জায়গা নিতে দিন */
+}
+
+/* --- প্রোগ্রেস বার পার্সেন্টেজ ও অ্যানিমেশন স্টাইল --- */
+
+/* প্রোগ্রেস বারের কন্টেইনার (পার্সেন্টেজ ও বারকে ঘিরে থাকবে) */
+.progress-container {
+  position: relative; /* পার্সেন্টেজকে সঠিকভাবে পজিশন করার জন্য */
+  margin-top: 10px; /* কার্ডের অন্যান্য কন্টেন্ট থেকে দূরত্ব */
+}
+
+/* প্রোগ্রেস বারের পার্সেন্টেজ টেক্সট স্টাইল */
+.progress-percentage {
+  text-align: right; /* টেক্সটকে ডান দিকে সারিবদ্ধ করুন */
+  font-size: 0.95em; /* ফন্টের আকার */
+  font-weight: bold; /* টেক্সটকে বোল্ড করুন */
+  color: #555; /* টেক্সটের ডিফল্ট রঙ */
+  margin-bottom: 5px; /* প্রোগ্রেস বারের উপরে কিছুটা জায়গা */
+  position: absolute; /* প্রোগ্রেস বারের উপরে ভাসিয়ে রাখতে */
+  right: 0; /* ডান প্রান্তে সেট করুন */
+  top: -20px; /* প্রোগ্রেস বারের উপরে নেগেটিভ মার্জিন দিয়ে পজিশন করুন */
+  background: rgba(255, 255, 255, 0.8); /* টেক্সটকে স্পষ্ট করতে হালকা সাদা ব্যাকগ্রাউন্ড */
+  padding: 2px 6px;
+  border-radius: 3px;
+  z-index: 2; /* প্রোগ্রেস বারের উপরে দেখাতে */
+}
+
+/* প্রোগ্রেস বার নিজেই (ভেতরের রঙীন অংশ) */
+.progress-bar {
+  height: 100%;
+  /* এখানে গ্রেডিয়েন্ট ব্যাকগ্রাউন্ড আবার যোগ করা হয়েছে */
+  background: linear-gradient(to right, #03A9F4, #00C853) !important;
+  transition: width 0.3s ease; /* মসৃণ অ্যানিমেশন */
+  border-radius: 5px; /* কোণাগুলোকে গোলাকার রাখুন */
+  /* চলমান স্ট্রাইপ অ্যানিমেশনের কোডগুলো এখানে নেই, কারণ আপনি এটি চান না */
+}
+
+/* স্ট্রাইপ অ্যানিমেশনের জন্য @keyframes নিয়ম - এই অংশটিও নেই */
+
+/* --- Notification Drawer Styles --- */
+.notification-drawer {
+  height: 100%;
+  width: 0; /* ডিফল্টভাবে লুকানো থাকবে */
+  position: fixed;
+  z-index: 1000; /* সাইডবার (999) এবং প্রোফাইল ড্রয়ার (1001) এর মাঝামাঝি, যাতে এটি প্রোফাইল ড্রয়ারের নিচে থাকে */
+  top: 0;
+  right: 0; /* ডান দিক থেকে আসবে */
+  background-color: #2a313e; /* প্রোফাইল ড্রয়ারের মতো একই ব্যাকগ্রাউন্ড */
+  overflow-x: hidden;
+  transition: 0.3s ease-in-out; /* মসৃণ অ্যানিমেশন */
+  padding-top: 60px; /* হেডার কন্টেন্টের জন্য জায়গা */
+  box-shadow: -4px 0 10px rgba(0,0,0,0.3); /* বাম দিকে গাঢ় শ্যাডো */
+  color: white; /* টেক্সটের রঙ */
+  display: none; /* ডিফল্টভাবে ড্রয়ার লুকানো থাকবে */
+}
+
+/* নোটিফিকেশন ড্রয়ারের ক্লোজ বাটন */
+.notification-drawer .closebtn {
+  position: absolute;
+  top: 12px;
+  left: 16px; /* বাম দিকে ক্লোজ বাটন */
+  font-size: 36px;
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* ড্রয়ার হেডার */
+.notification-drawer .drawer-header {
+  padding: 15px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  text-align: center;
+}
+
+.notification-drawer .drawer-header h3 {
+  margin: 0;
+  color: #fff;
+  font-size: 1.5em;
+}
+
+/* নোটিফিকেশন লিস্ট কন্টেইনার */
+.notification-list {
+  padding: 10px 15px;
+  max-height: calc(100% - 120px); /* হেডার এবং প্যাডিং এর জন্য জায়গা রেখে */
+  overflow-y: auto; /* নোটিফিকেশন বেশি হলে স্ক্রলবার দেখাবে */
+}
+
+/* প্রতিটি নোটিফিকেশন আইটেমের স্টাইল */
+.notification-item {
+  background-color: #3e4a59; /* নোটিফিকেশন আইটেমের ব্যাকগ্রাউন্ড */
+  margin-bottom: 10px;
+  padding: 12px 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  transition: background-color 0.2s ease;
+  cursor: pointer; /* ক্লিকযোগ্য বোঝাতে */
+}
+
+.notification-item:hover {
+  background-color: #4a5768; /* হোভার ইফেক্ট */
+}
+
+.notification-item.unread {
+  background-color: #e91e63; /* আনরিড নোটিফিকেশনের জন্য উজ্জ্বল গোলাপী */
+  color: white;
+  font-weight: bold;
+}
+
+.notification-item.unread:hover {
+  background-color: #c2185b; /* আনরিড হোভার ইফেক্ট */
+}
+
+.notification-item h4 {
+  margin: 0 0 5px;
   font-size: 1.1em;
 }
 
-/* কেনা চ্যানেলের তালিকা */
-#purchasedChannelList .channel-item {
-  background-color: #f9f9f9;
-  border: 1px solid #eee;
-  padding: 10px 15px;
-  margin-bottom: 10px;
-  border-radius: 6px;
-  display: flex;
-  flex-direction: column; /* কন্টেন্ট উল্লম্বভাবে সাজাতে */
-  align-items: flex-start; /* বাম দিকে সারিবদ্ধ করতে */
-}
-
-#purchasedChannelList .channel-item h4 {
-  margin: 0 0 5px; /* টাইটেলের নিচে মার্জিন */
-  color: #333;
-}
-
-#purchasedChannelList .channel-item p {
-  margin: 2px 0; /* প্যারাগ্রাফের মধ্যে ছোট ব্যবধান */
-  color: #666;
+.notification-item p {
+  margin: 0;
   font-size: 0.9em;
+  color: #ccc;
 }
 
-.no-purchases-message {
+.notification-item.unread p {
+  color: #fff; /* আনরিড হলে মেসেজ টেক্সট সাদা */
+}
+
+.notification-item .timestamp {
+  font-size: 0.75em;
+  color: #a0a0a0;
+  margin-top: 5px;
+  text-align: right;
+}
+
+.notification-item.unread .timestamp {
+  color: #f0f0f0; /* আনরিড হলে টাইমস্ট্যাম্প হালকা সাদা */
+}
+
+/* যখন কোনো নোটিফিকেশন নেই */
+.no-notifications-message {
   text-align: center;
-  color: #777;
+  color: #ccc;
   padding: 20px;
-  font-style: italic;
+  font-size: 1.1em;
 }
 
-/* ড্যাশবোর্ডে ফিরে যাওয়ার বাটন */
-#backToDashboardBtn {
-  display: block; /* পুরো প্রস্থ জুড়ে দেখাবে */
-  width: fit-content; /* কন্টেন্ট অনুযায়ী প্রস্থ */
-  margin: 30px auto; /* মাঝখানে আনতে এবং উপর-নীচে মার্জিন */
-  background-color: #f44336; /* লাল রঙ */
-  color: white;
-  padding: 10px 20px;
-  border-radius: 6px;
-  text-decoration: none;
-  font-size: 16px;
-  cursor: pointer;
-  border: none;
-  transition: background-color 0.3s ease;
+/* রেসপন্সিভ ডিজাইন */
+@media (max-width: 600px) {
+  .notification-drawer {
+    width: 250px; /* ছোট স্ক্রিনে নোটিফিকেশন ড্রয়ারের প্রস্থ */
+  }
 }
-
-#backToDashboardBtn:hover {
-  background-color: #d32f2f;
-}
-
-/* লোডিং স্ক্রিন এবং অন্যান্য গ্লোবাল স্টাইল style.css থেকে আসবে */
