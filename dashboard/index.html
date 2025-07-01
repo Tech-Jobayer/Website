@@ -2,71 +2,77 @@
 <html lang="bn">
 <head>
   <meta charset="UTF-8" />
-  <title>সাবস্ক্রিপশন কিনুন - Sub Exchange</title>
+  <title>DashBoard - Sub Exchange</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri&family=Noto+Sans+Bengali&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../style.css" />
-  <link rel="stylesheet" href="buy-subscription.css" />
+  <link rel="stylesheet" href="style.css" />
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 </head>
 <body>
+<div id="notificationDrawer" class="notification-drawer">
+  <button class="closebtn" onclick="closeNotificationDrawer()">&times;</button>
+  <div class="drawer-header">
+    <h3>নোটিফিকেশনস</h3>
+  </div>
+  <div id="notificationList" class="notification-list">
+    <p class="no-notifications-message">কোনো নতুন নোটিফিকেশন নেই।</p>
+  </div>
+</div>
+
+  <div id="sidebar" class="sidebar">
+    <button class="closebtn" onclick="closeSidebar()">&times;</button>
+    <a href="/Website/dashboard/">🏠 ড্যাশবোর্ড</a>
+    <a href="/Website/profile/">👤 প্রোফাইল</a>
+    <a href="/Website/tasks/">📝 টাস্ক</a>
+    <a href="/Website/rewards/">🎁 রিওয়ার্ড</a>
+    <a href="/Website/buy-subscribe/">🛒সাবস্ক্রাইব কিনুন</a>
+    <a href="/Website/support/">📞 সাপোর্ট</a>
+  </div>
+
+  <div id="profileDrawer" class="profile-drawer">
+    <button class="closebtn" onclick="closeProfileDrawer()">&times;</button>
+    <div class="profile-info">
+      <img id="drawerProfileImg" src="https://raw.githubusercontent.com/tech-jobayer/Website/main/data/default-profile.png" alt="Profile" class="profile-img-large">
+      <h3 id="drawerUserName">Guest User</h3>
+      <p id="drawerUserEmail">Not logged in</p>
+      <p id="drawerUserPoints">🔥 0 পয়েন্ট</p>
+      <div class="profile-actions">
+        <button id="drawerLoginSignupBtn" class="btn" onclick="redirectToLogin()">🔐 Login / Signup</button>
+        <button id="drawerLogoutBtn" class="btn" onclick="logout()" style="display: none;">🚪 Logout</button>
+      </div>
+    </div>
+    <div class="profile-drawer-links">
+        <a href="/Website/profile/">👤 প্রোফাইল সেটিংস</a>
+        <a href="/Website/rewards/">🎁 আমার রিওয়ার্ড</a>
+    </div>
+  </div>
+
+  <div class="header">
+  <button id="menuBtn" class="menu-btn">&#9776;</button>
+  <button id="notifyBtn" class="notify-btn">
+    🔔
+    <span class="notify-count">0</span>
+  </button>
+  <h2>JOBAYER</h2>
+  <span id="headerUserPoints" class="header-user-points">
+    </span>
+  <button id="profileBtn" class="profile-btn">
+   <img id="profileImg" src="https://raw.githubusercontent.com/tech-jobayer/Website/main/data/default-profile.png" alt="Profile" class="profile-img">
+  </button>
+</div>
 
   <div id="loadingScreen">
     <div class="spinner"></div>
     <div class="loading-text">অনুগ্রহ করে অপেক্ষা করুন</div>
   </div>
 
-  <div id="buySubscriptionContent" style="display: none;">
-    <div class="container">
-
-      <div class="card">
-        <h3>সাবস্ক্রিপশন কিনুন</h3>
-        <p>আপনার ইউটিউব চ্যানেলের URL দিন এবং কতজন সাবস্ক্রাইবার কিনতে চান তা উল্লেখ করুন।</p>
-        <div class="form-group">
-          <label for="channelUrl">ইউটিউব চ্যানেল URL:</label>
-          <input type="text" id="channelUrl" placeholder="উদাহরণ: youtube.com/channel/UC..." />
-          <small class="error-message" id="urlError"></small>
-        </div>
-        <div class="form-group">
-          <label for="subscribersToBuy">কতজন সাবস্ক্রাইবার কিনতে চান?</label>
-          <input type="number" id="subscribersToBuy" value="10" min="1" />
-          <small class="error-message" id="subscribersError"></small>
-        </div>
-        <p>মোট খরচ: <span id="totalCost">0</span> পয়েন্ট</p>
-        <button id="addChannelBtn" class="btn btn-primary">সাবস্ক্রিপশন কিনুন</button>
-        <div id="purchaseMessage" class="alert" style="display:none;"></div>
+  <div id="dashboardContent" style="display: none;">
+    <div id="taskList">
       </div>
-
-      <div class="card">
-        <h3>টাস্কের বিবরণ</h3>
-        <p>আপনার টাস্কের একটি শিরোনাম এবং বিস্তারিত বিবরণ দিন।</p>
-        <div class="form-group">
-          <label for="taskTitle">টাস্ক টাইটেল:</label>
-          <input type="text" id="taskTitle" placeholder="উদাহরণ: আমার ইউটিউব চ্যানেল সাবস্ক্রাইব করুন" />
-          <small class="error-message" id="titleError"></small>
-        </div>
-        <div class="form-group">
-          <label for="taskDescription">টাস্কের বিস্তারিত:</label>
-          <textarea id="taskDescription" rows="4" placeholder="টাস্কটি কীভাবে সম্পূর্ণ করতে হবে তার বিস্তারিত নির্দেশাবলী দিন।"></textarea>
-          <small class="error-message" id="descriptionError"></small>
-        </div>
-        <button id="submitTaskDetailsBtn" class="btn btn-primary">টাস্ক বিবরণ সাবমিট করুন</button>
-        <div id="taskDetailsMessage" class="alert" style="display:none;"></div>
-      </div>
-
-      <div class="card" id="myPurchasedChannels" style="display: none;">
-        <h3>আপনার কেনা সাবস্ক্রিপশন</h3>
-        <div id="purchasedChannelList">
-          <p class="no-purchases-message">আপনি এখনো কোনো সাবস্ক্রিপশন কিনেননি।</p>
-        </div>
-      </div>
-       <button id="backToDashboardBtn" class="btn btn-danger">ড্যাশবোর্ডে ফিরে যান</button>
-    </div>
   </div>
 
-  <script src="../script.js"></script>
-  <script src="buy-subscription.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
