@@ -14,5 +14,5 @@ document.getElementById('submitBtn').addEventListener('click', function () {
   console.log("টাস্ক টাইটেল:", title);
   console.log("টাস্ক বিস্তারিত:", desc);
 
-  alert('ফর্ম সফলভাবে জমা হয়েছে ✅ (কনসোলে দেখুন)');
+  alert('ফর্ম সফলভাবে সাবমিট হয়েছে ✅');
 });
