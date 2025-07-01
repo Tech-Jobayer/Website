@@ -89,7 +89,7 @@ function loadPoints(uid) {
       headerUserPointsElement.innerHTML = `💰 ${points}`;
     }
     if (drawerUserPointsElement) {
-      drawerUserPointsElement.innerHTML = `🔥 ${points} পয়েন্ট`;
+      drawerUserPointsElement.innerHTML = `💰 ${points} পয়েন্ট`;
     }
   });
 }
@@ -266,7 +266,7 @@ function updateProfileDrawerUI(user) {
     drawerUserEmail.innerText = 'Not logged in';
     drawerLoginSignupBtn.style.display = 'block';
     drawerLogoutBtn.style.display = 'none';
-    drawerUserPoints.innerHTML = '🔥 0 পয়েন্ট'; // লগইন না থাকলে ডিফল্ট পয়েন্ট
+    drawerUserPoints.innerHTML = '💰 0 পয়েন্ট'; // লগইন না থাকলে ডিফল্ট পয়েন্ট
   }
 }
 
