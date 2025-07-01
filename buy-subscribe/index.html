@@ -5,19 +5,13 @@
   <title>সাবস্ক্রিপশন কিনুন - Sub Exchange</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri&family=Noto+Sans+Bengali&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../style.css" /> <link rel="stylesheet" href="style.css" /> <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="buy-subscription.css" />
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 </head>
 <body>
-
-  <div class="header">
-    <button id="backBtn" class="menu-btn">&#8592;</button> <h2>সাবস্ক্রিপশন কিনুন</h2>
-    <span id="headerUserPoints" class="header-user-points"></span>
-    <button id="profileBtn" class="profile-btn">
-      <img id="profileImg" src="https://raw.githubusercontent.com/tech-jobayer/Website/main/data/default-profile.png" alt="Profile" class="profile-img">
-    </button>
-  </div>
 
   <div id="loadingScreen">
     <div class="spinner"></div>
@@ -26,12 +20,13 @@
 
   <div id="buySubscriptionContent" style="display: none;">
     <div class="container">
+
       <div class="card">
-        <h3>আপনার চ্যানেল যুক্ত করুন</h3>
-        <p>আপনার ইউটিউব চ্যানেলের URL দিন যার জন্য আপনি সাবস্ক্রিপশন কিনতে চান।</p>
+        <h3>সাবস্ক্রিপশন কিনুন</h3>
+        <p>আপনার ইউটিউব চ্যানেলের URL দিন এবং কতজন সাবস্ক্রাইবার কিনতে চান তা উল্লেখ করুন।</p>
         <div class="form-group">
           <label for="channelUrl">ইউটিউব চ্যানেল URL:</label>
-          <input type="text" id="channelUrl" placeholder="উদাহরণ: https://www.youtube.com/channel/UC..." />
+          <input type="text" id="channelUrl" placeholder="উদাহরণ: youtube.com/channel/UC..." />
           <small class="error-message" id="urlError"></small>
         </div>
         <div class="form-group">
@@ -40,8 +35,25 @@
           <small class="error-message" id="subscribersError"></small>
         </div>
         <p>মোট খরচ: <span id="totalCost">0</span> পয়েন্ট</p>
-        <button id="addChannelBtn" class="btn btn-primary">চ্যানেল যুক্ত করুন ও কিনুন</button>
+        <button id="addChannelBtn" class="btn btn-primary">সাবস্ক্রিপশন কিনুন</button>
         <div id="purchaseMessage" class="alert" style="display:none;"></div>
+      </div>
+
+      <div class="card">
+        <h3>টাস্কের বিবরণ</h3>
+        <p>আপনার টাস্কের একটি শিরোনাম এবং বিস্তারিত বিবরণ দিন।</p>
+        <div class="form-group">
+          <label for="taskTitle">টাস্ক টাইটেল:</label>
+          <input type="text" id="taskTitle" placeholder="উদাহরণ: আমার ইউটিউব চ্যানেল সাবস্ক্রাইব করুন" />
+          <small class="error-message" id="titleError"></small>
+        </div>
+        <div class="form-group">
+          <label for="taskDescription">টাস্কের বিস্তারিত:</label>
+          <textarea id="taskDescription" rows="4" placeholder="টাস্কটি কীভাবে সম্পূর্ণ করতে হবে তার বিস্তারিত নির্দেশাবলী দিন।"></textarea>
+          <small class="error-message" id="descriptionError"></small>
+        </div>
+        <button id="submitTaskDetailsBtn" class="btn btn-primary">টাস্ক বিবরণ সাবমিট করুন</button>
+        <div id="taskDetailsMessage" class="alert" style="display:none;"></div>
       </div>
 
       <div class="card" id="myPurchasedChannels" style="display: none;">
@@ -50,8 +62,11 @@
           <p class="no-purchases-message">আপনি এখনো কোনো সাবস্ক্রিপশন কিনেননি।</p>
         </div>
       </div>
+       <button id="backToDashboardBtn" class="btn btn-danger">ড্যাশবোর্ডে ফিরে যান</button>
     </div>
   </div>
 
-  <script src="../script.js"></script> <script src="script.js"></script> </body>
+  <script src="../script.js"></script>
+  <script src="buy-subscription.js"></script>
+</body>
 </html>
