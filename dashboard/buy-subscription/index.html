@@ -1,1 +1,57 @@
-buy-subscription
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <title>সাবস্ক্রিপশন কিনুন - Sub Exchange</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri&family=Noto+Sans+Bengali&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css" /> <link rel="stylesheet" href="buy-subscription.css" /> <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+</head>
+<body>
+
+  <div class="header">
+    <button id="backBtn" class="menu-btn">&#8592;</button> <h2>সাবস্ক্রিপশন কিনুন</h2>
+    <span id="headerUserPoints" class="header-user-points"></span>
+    <button id="profileBtn" class="profile-btn">
+      <img id="profileImg" src="https://raw.githubusercontent.com/tech-jobayer/Website/main/data/default-profile.png" alt="Profile" class="profile-img">
+    </button>
+  </div>
+
+  <div id="loadingScreen">
+    <div class="spinner"></div>
+    <div class="loading-text">অনুগ্রহ করে অপেক্ষা করুন</div>
+  </div>
+
+  <div id="buySubscriptionContent" style="display: none;">
+    <div class="container">
+      <div class="card">
+        <h3>আপনার চ্যানেল যুক্ত করুন</h3>
+        <p>আপনার ইউটিউব চ্যানেলের URL দিন যার জন্য আপনি সাবস্ক্রিপশন কিনতে চান।</p>
+        <div class="form-group">
+          <label for="channelUrl">ইউটিউব চ্যানেল URL:</label>
+          <input type="text" id="channelUrl" placeholder="উদাহরণ: https://www.youtube.com/channel/UC..." />
+          <small class="error-message" id="urlError"></small>
+        </div>
+        <div class="form-group">
+          <label for="subscribersToBuy">কতজন সাবস্ক্রাইবার কিনতে চান?</label>
+          <input type="number" id="subscribersToBuy" value="10" min="1" />
+          <small class="error-message" id="subscribersError"></small>
+        </div>
+        <p>মোট খরচ: <span id="totalCost">0</span> পয়েন্ট</p>
+        <button id="addChannelBtn" class="btn btn-primary">চ্যানেল যুক্ত করুন ও কিনুন</button>
+        <div id="purchaseMessage" class="alert" style="display:none;"></div>
+      </div>
+
+      <div class="card" id="myPurchasedChannels" style="display: none;">
+        <h3>আপনার কেনা সাবস্ক্রিপশন</h3>
+        <div id="purchasedChannelList">
+          <p class="no-purchases-message">আপনি এখনো কোনো সাবস্ক্রিপশন কিনেননি।</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../script.js"></script> <script src="buy-subscription.js"></script> </body>
+</html>
