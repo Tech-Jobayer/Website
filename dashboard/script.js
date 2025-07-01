@@ -332,8 +332,6 @@ auth.onAuthStateChanged(user => {
 
 // --- Utility Functions & Animations ---
 // setNotificationCount ফাংশনটি আগের মতোই থাকবে
-// setTimeout(() => { setNotificationCount(7); }, 5000); এই লাইনটি মুছে ফেলুন, কারণ এটি এখন Firebase থেকে আসবে।
-
  updateProfileDrawerUI(auth.currentUser); // লোডিং শেষে ড্রয়ার UI আপডেট করুন
   closeProfileDrawer(); // নিশ্চিত করুন প্রোফাইল ড্রয়ার বন্ধ আছে যখন লোডিং শেষ হয়
   // ব্যবহারকারী লগইন না থাকলে হেডারের পয়েন্ট অংশ খালি করে দিন
