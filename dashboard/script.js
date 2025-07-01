@@ -183,10 +183,38 @@ function fetchAndDisplayNotifications() {
 }
 
 function updateNotificationBadge() {
-  db.ref('notifications').orderByChild('read').equalTo(false).once('value')
+  const currentUser = auth.currentUser;
+  const notifyCountElement = document.querySelector('.notify-count'); // নোটিফিকেশন ব্যাজ এলিমেন্ট
+
+  if (!currentUser) {
+    // যদি কোনো ব্যবহারকারী লগইন করা না থাকে
+    // এই ক্ষেত্রে আপনি সিদ্ধান্ত নিতে পারেন যে ডিফল্টভাবে কতগুলো নোটিফিকেশন দেখাবেন
+    // অথবা ব্যাজটি খালি রাখবেন বা লুকিয়ে রাখবেন।
+    setNotificationCount(0); // আপাতত ০ দেখাচ্ছি
+    return;
+  }
+
+  const userId = currentUser.uid; // বর্তমান লগইন করা ব্যবহারকারীর UID
+
+  db.ref('notifications').once('value') // সমস্ত নোটিফিকেশন লোড করুন
     .then(snapshot => {
-      const unreadCount = snapshot.numChildren();
-      setNotificationCount(unreadCount);
+      let unreadCount = 0;
+      snapshot.forEach(childSnapshot => {
+        const notification = childSnapshot.val();
+        // প্রতিটি নোটিফিকেশনের ID পেতে
+        notification.id = childSnapshot.key;
+
+        // এই নোটিফিকেশনটি এই ব্যবহারকারী পড়েছে কিনা চেক করুন
+        // যদি notification.readBy অবজেক্ট না থাকে OR
+        // যদি notification.readBy অবজেক্ট থাকে কিন্তু তার মধ্যে এই userId এর জন্য true না থাকে
+        const isReadByUser = notification.readBy && notification.readBy[userId];
+
+        if (!isReadByUser) {
+          // যদি এটি এই ব্যবহারকারীর জন্য আনরিড হয়
+          unreadCount++;
+        }
+      });
+      setNotificationCount(unreadCount); // নতুন কাউন্ট সেট করুন
     })
     .catch(error => {
       console.error("আনরিড নোটিফিকেশন গণনা করতে সমস্যা হয়েছে:", error);
