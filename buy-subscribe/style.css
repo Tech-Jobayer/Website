@@ -1,9 +1,19 @@
 /* buy-subscription.css */
 
+body {
+  padding-top: 20px; /* হেডার না থাকায় উপরের প্যাডিং যোগ করা হয়েছে */
+  background: #f2f2f2; /* বডির ব্যাকগ্রাউন্ড সাদা থেকে হালকা ধূসর করা হয়েছে */
+  color: #333; /* ডিফল্ট টেক্সট কালার */
+}
+
 .container {
   max-width: 600px;
   margin: 20px auto;
   padding: 0 15px;
+}
+
+.card {
+  margin-bottom: 20px; /* কার্ডগুলোর মধ্যে ব্যবধান বাড়ানো হয়েছে */
 }
 
 .form-group {
@@ -18,23 +28,29 @@
 }
 
 .form-group input[type="text"],
-.form-group input[type="number"] {
+.form-group input[type="number"],
+.form-group textarea { /* নতুন: textarea এর জন্য স্টাইল */
   width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 6px;
   font-size: 16px;
   box-sizing: border-box;
+  font-family: 'Noto Sans Bengali', 'Hind Siliguri', sans-serif; /* ফন্ট নিশ্চিত করুন */
+}
+
+.form-group textarea {
+    resize: vertical; /* টেক্সটবক্স উল্লম্বভাবে রিসাইজ করা যাবে */
+    min-height: 80px; /* নূন্যতম উচ্চতা */
 }
 
 .error-message {
   color: #f44336;
   font-size: 0.85em;
   margin-top: 5px;
-  display: block; /* যাতে প্রতিটি এরর মেসেজ আলাদা লাইনে আসে */
+  display: block;
 }
 
-/* মোট খরচ দেখানোর জন্য */
 #totalCost {
   font-weight: bold;
   color: #e91e63;
@@ -49,17 +65,17 @@
   margin-bottom: 10px;
   border-radius: 6px;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column; /* কন্টেন্ট উল্লম্বভাবে সাজাতে */
+  align-items: flex-start; /* বাম দিকে সারিবদ্ধ করতে */
 }
 
 #purchasedChannelList .channel-item h4 {
-  margin: 0;
+  margin: 0 0 5px; /* টাইটেলের নিচে মার্জিন */
   color: #333;
 }
 
 #purchasedChannelList .channel-item p {
-  margin: 0;
+  margin: 2px 0; /* প্যারাগ্রাফের মধ্যে ছোট ব্যবধান */
   color: #666;
   font-size: 0.9em;
 }
@@ -71,15 +87,24 @@
   font-style: italic;
 }
 
-/* ফিরে যাওয়ার বাটন */
-.header #backBtn {
-  margin-right: 0; /* মেনু বাটনের মার্জিন সরান */
-  margin-left: 0;
+/* ড্যাশবোর্ডে ফিরে যাওয়ার বাটন */
+#backToDashboardBtn {
+  display: block; /* পুরো প্রস্থ জুড়ে দেখাবে */
+  width: fit-content; /* কন্টেন্ট অনুযায়ী প্রস্থ */
+  margin: 30px auto; /* মাঝখানে আনতে এবং উপর-নীচে মার্জিন */
+  background-color: #f44336; /* লাল রঙ */
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.3s ease;
 }
-.header h2 {
-  text-align: left; /* টাইটেল বাম দিকে সারিবদ্ধ করুন */
-  flex: none; /* ফ্লেক্স গ্রো সরান */
-  margin-right: auto; /* ডান দিকে পুশ করুন */
+
+#backToDashboardBtn:hover {
+  background-color: #d32f2f;
 }
 
 /* লোডিং স্ক্রিন এবং অন্যান্য গ্লোবাল স্টাইল style.css থেকে আসবে */
