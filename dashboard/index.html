@@ -11,15 +11,53 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 </head>
 <body>
-<div id="notificationDrawer" class="notification-drawer">
-  <button class="closebtn" onclick="closeNotificationDrawer()">&times;</button>
-  <div class="drawer-header">
-    <h3>নোটিফিকেশনস</h3>
+<body>
+
+  <div id="notification-drawer-placeholder"></div>
+
+  <script>
+    fetch("x/notifications_drawer.html")
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById("notification-drawer-placeholder").innerHTML = data;
+      });
+  </script>
+
+  <!-- বাকি কনটেন্ট -->
+  <div id="sidebar" class="sidebar">
+    <!-- sidebar content -->
   </div>
-  <div id="notificationList" class="notification-list">
-    <p class="no-notifications-message">কোনো নতুন নোটিফিকেশন নেই।</p>
+
+  <!-- প্রোফাইল ড্রয়ার -->
+  <div id="profileDrawer" class="profile-drawer">
+    <!-- profile drawer content -->
   </div>
-</div>
+
+  <!-- ✅ হেডার placeholder -->
+  <div id="header-placeholder"></div>
+
+  <script>
+    fetch("x/header.html")
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById("header-placeholder").innerHTML = data;
+      });
+  </script>
+
+  <!-- লোডিং স্ক্রিন -->
+  <div id="loadingScreen">
+    <div class="spinner"></div>
+    <div class="loading-text">অনুগ্রহ করে অপেক্ষা করুন</div>
+  </div>
+
+  <!-- ড্যাশবোর্ড কনটেন্ট -->
+  <div id="dashboardContent" style="display: none;">
+    <div id="taskList"></div>
+  </div>
+
+  <!-- স্ক্রিপ্ট -->
+  <script src="script.js"></script>
+</body>
 
   <div id="sidebar" class="sidebar">
     <button class="closebtn" onclick="closeSidebar()">&times;</button>
