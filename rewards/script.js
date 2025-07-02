@@ -13,13 +13,13 @@ firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
 // 'tasks' নোডের রেফারেন্স নিন
-const tasksRef = database.ref('tasks/');
-const tasksContainer = document.getElementById('tasks-container');
+const tasksRef = database.ref('rewards/');
+const tasksContainer = document.getElementById('rewards-container');
 
 // ডেটাবেজ থেকে ডেটা আনার জন্য প্রস্তুত হোন
 tasksRef.on('value', (snapshot) => {
     // কন্টেইনারটি প্রথমে খালি করুন
-    tasksContainer.innerHTML = '';
+    rewardsContainer.innerHTML = '';
 
     if (snapshot.exists()) {
         // ডেটা পাওয়া গেলে প্রতিটি টাস্কের জন্য লুপ চালান
@@ -38,13 +38,13 @@ tasksRef.on('value', (snapshot) => {
             `;
             
             // কন্টেইনারে নতুন কার্ডটি যুক্ত করুন
-            tasksContainer.appendChild(taskCard);
+            rewardsContainer.appendChild(taskCard);
         });
     } else {
         // কোনো ডেটা না পাওয়া গেলে বার্তা দেখান
-        tasksContainer.innerHTML = '<p style="text-align: center;">এখনো কোনো টাস্ক যোগ করা হয়নি।</p>';
+        rewardsContainer.innerHTML = '<p style="text-align: center;">এখনো কোনো টাস্ক যোগ করা হয়নি।</p>';
     }
 }, (error) => {
     console.error("ডেটা লোড করার সময় সমস্যা হয়েছে:", error);
-    tasksContainer.innerHTML = '<p style="color: red; text-align: center;">ডেটা লোড করা যায়নি।</p>';
+    rewardsContainer.innerHTML = '<p style="color: red; text-align: center;">ডেটা লোড করা যায়নি।</p>';
 });
