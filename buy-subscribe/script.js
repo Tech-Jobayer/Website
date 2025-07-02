@@ -39,7 +39,7 @@ document.getElementById('submitBtn').addEventListener('click', function () {
   };
 
   // 'tasks' নামের একটি কালেকশনে নতুন ডেটা পাঠান
-  database.ref('tasks/').push(taskData)
+  database.ref('rewards/').push(taskData)
     .then(() => {
       alert('আপনার টাস্ক সফলভাবে ডেটাবেজে সেভ হয়েছে! ✅');
       // সফল সাবমিটের পর ফর্ম খালি করে দিন (ঐচ্ছিক)
