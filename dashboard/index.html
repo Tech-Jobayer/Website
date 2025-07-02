@@ -49,19 +49,16 @@
     </div>
   </div>
 
-  <div class="header">
-  <button id="menuBtn" class="menu-btn">&#9776;</button>
-  <button id="notifyBtn" class="notify-btn">
-    🔔
-    <span class="notify-count">0</span>
-  </button>
-  <h2>JOBAYER</h2>
-  <span id="headerUserPoints" class="header-user-points">
-    </span>
-  <button id="profileBtn" class="profile-btn">
-   <img id="profileImg" src="https://raw.githubusercontent.com/tech-jobayer/Website/main/data/default-profile.png" alt="Profile" class="profile-img">
-  </button>
-</div>
+
+<div id="header-placeholder"></div>
+
+<script>
+  fetch("x/header.html")
+    .then(res => res.text())
+    .then(data => {
+      document.getElementById("header-placeholder").innerHTML = data;
+    });
+</script>
 
   <div id="loadingScreen">
     <div class="spinner"></div>
