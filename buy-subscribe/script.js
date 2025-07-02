@@ -1,12 +1,12 @@
 // 🔔 আপনার নিজের ফায়ারবেস কনফিগারেশন এখানে পেস্ট করুন
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyAC4h55aA0Zz--V5ejyndzR5WC_-9rAPio",
+  authDomain: "subscribe-bot-6f9b2.firebaseapp.com",
+  databaseURL: "https://subscribe-bot-6f9b2-default-rtdb.firebaseio.com",
+  projectId: "subscribe-bot-6f9b2",
+  storageBucket: "subscribe-bot-6f9b2.appspot.com",
+  messagingSenderId: "141787931031",
+  appId: "1:141787931031:web:2108a3e930f5ce4fbc64d2"
 };
 
 // ফায়ারবেস চালু করুন
