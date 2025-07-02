@@ -11,18 +11,16 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 </head>
 <body>
+<div id="notificationDrawer" class="notification-drawer">
+  <button class="closebtn" onclick="closeNotificationDrawer()">&times;</button>
+  <div class="drawer-header">
+    <h3>নোটিফিকেশনস</h3>
+  </div>
+  <div id="notificationList" class="notification-list">
+    <p class="no-notifications-message">কোনো নতুন নোটিফিকেশন নেই।</p>
+  </div>
+</div>
 
-  <!-- ✅ Notification Drawer Placeholder -->
-  <div id="notification-drawer-placeholder"></div>
-  <script>
-    fetch("x/notifications_drawer.html")
-      .then(res => res.text())
-      .then(data => {
-        document.getElementById("notification-drawer-placeholder").innerHTML = data;
-      });
-  </script>
-
-  <!-- ✅ Sidebar -->
   <div id="sidebar" class="sidebar">
     <button class="closebtn" onclick="closeSidebar()">&times;</button>
     <a href="/Website/dashboard/">🏠 ড্যাশবোর্ড</a>
@@ -33,7 +31,6 @@
     <a href="/Website/support/">📞 সাপোর্ট</a>
   </div>
 
-  <!-- ✅ Profile Drawer -->
   <div id="profileDrawer" class="profile-drawer">
     <button class="closebtn" onclick="closeProfileDrawer()">&times;</button>
     <div class="profile-info">
@@ -52,28 +49,30 @@
     </div>
   </div>
 
-  <!-- ✅ Header -->
-  <div id="header-placeholder"></div>
-  <script>
-    fetch("x/header.html")
-      .then(res => res.text())
-      .then(data => {
-        document.getElementById("header-placeholder").innerHTML = data;
-      });
-  </script>
+  <div class="header">
+  <button id="menuBtn" class="menu-btn">&#9776;</button>
+  <button id="notifyBtn" class="notify-btn">
+    🔔
+    <span class="notify-count">0</span>
+  </button>
+  <h2>JOBAYER</h2>
+  <span id="headerUserPoints" class="header-user-points">
+    </span>
+  <button id="profileBtn" class="profile-btn">
+   <img id="profileImg" src="https://raw.githubusercontent.com/tech-jobayer/Website/main/data/default-profile.png" alt="Profile" class="profile-img">
+  </button>
+</div>
 
-  <!-- ✅ Loading Screen -->
   <div id="loadingScreen">
     <div class="spinner"></div>
     <div class="loading-text">অনুগ্রহ করে অপেক্ষা করুন</div>
   </div>
 
-  <!-- ✅ Dashboard Content -->
   <div id="dashboardContent" style="display: none;">
-    <div id="taskList"></div>
+    <div id="taskList">
+      </div>
   </div>
 
-  <!-- ✅ Main Script -->
   <script src="script.js"></script>
 </body>
 </html>
