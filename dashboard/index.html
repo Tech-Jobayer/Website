@@ -12,8 +12,8 @@
 </head>
 <body>
 
+  <!-- ✅ Notification Drawer Placeholder -->
   <div id="notification-drawer-placeholder"></div>
-
   <script>
     fetch("x/notifications_drawer.html")
       .then(res => res.text())
@@ -22,42 +22,7 @@
       });
   </script>
 
-  <!-- বাকি কনটেন্ট -->
-  <div id="sidebar" class="sidebar">
-    <!-- sidebar content -->
-  </div>
-
-  <!-- প্রোফাইল ড্রয়ার -->
-  <div id="profileDrawer" class="profile-drawer">
-    <!-- profile drawer content -->
-  </div>
-
-  <!-- ✅ হেডার placeholder -->
-  <div id="header-placeholder"></div>
-
-  <script>
-    fetch("x/header.html")
-      .then(res => res.text())
-      .then(data => {
-        document.getElementById("header-placeholder").innerHTML = data;
-      });
-  </script>
-
-  <!-- লোডিং স্ক্রিন -->
-  <div id="loadingScreen">
-    <div class="spinner"></div>
-    <div class="loading-text">অনুগ্রহ করে অপেক্ষা করুন</div>
-  </div>
-
-  <!-- ড্যাশবোর্ড কনটেন্ট -->
-  <div id="dashboardContent" style="display: none;">
-    <div id="taskList"></div>
-  </div>
-
-  <!-- স্ক্রিপ্ট -->
-  <script src="script.js"></script>
-</body>
-
+  <!-- ✅ Sidebar -->
   <div id="sidebar" class="sidebar">
     <button class="closebtn" onclick="closeSidebar()">&times;</button>
     <a href="/Website/dashboard/">🏠 ড্যাশবোর্ড</a>
@@ -68,6 +33,7 @@
     <a href="/Website/support/">📞 সাপোর্ট</a>
   </div>
 
+  <!-- ✅ Profile Drawer -->
   <div id="profileDrawer" class="profile-drawer">
     <button class="closebtn" onclick="closeProfileDrawer()">&times;</button>
     <div class="profile-info">
@@ -86,27 +52,28 @@
     </div>
   </div>
 
+  <!-- ✅ Header -->
+  <div id="header-placeholder"></div>
+  <script>
+    fetch("x/header.html")
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById("header-placeholder").innerHTML = data;
+      });
+  </script>
 
-<div id="header-placeholder"></div>
-
-<script>
-  fetch("x/header.html")
-    .then(res => res.text())
-    .then(data => {
-      document.getElementById("header-placeholder").innerHTML = data;
-    });
-</script>
-
+  <!-- ✅ Loading Screen -->
   <div id="loadingScreen">
     <div class="spinner"></div>
     <div class="loading-text">অনুগ্রহ করে অপেক্ষা করুন</div>
   </div>
 
+  <!-- ✅ Dashboard Content -->
   <div id="dashboardContent" style="display: none;">
-    <div id="taskList">
-      </div>
+    <div id="taskList"></div>
   </div>
 
+  <!-- ✅ Main Script -->
   <script src="script.js"></script>
 </body>
 </html>
