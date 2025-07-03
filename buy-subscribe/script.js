@@ -24,8 +24,17 @@ document.getElementById('submitBtn').addEventListener('click', function () {
   const desc = document.getElementById('taskDescription').value.trim();
 
   // সবগুলো ফিল্ড পূরণ করা হয়েছে কিনা তা পরীক্ষা করুন
-  if (!url || !count || !title || !desc) {
-    alert('অনুগ্রহ করে সব ঘর পূরণ করুন');
+ if (!url) {
+    alert('চ্যানেলের লিংক বসান');
+    return;
+  } else if (!count) {
+    alert('কত সাবস্ক্রাইব লাগবে তা বসান');
+    return;
+  } else if (!title) {
+    alert('টাইটেল দিন');
+    return;
+  } else if (!desc) {
+    alert('ডিসক্রিপশন লিখুন');
     return;
   }
 
