@@ -17,7 +17,7 @@ const submitBtn = document.getElementById('submitBtn');
 
 // --- YouTube API Config ---
 // 🚨 এখানে আপনার ইউটিউব এপিআই কী বসান
-const YOUTUBE_API_KEY = "YOUR_YOUTUBE_API_KEY"; 
+const YOUTUBE_API_KEY = "AIzaSyD5wCkpL3LghaFrBf3YxGQ8I1ig1wbSn3A"; 
 
 /**
  * URL থেকে চ্যানেল আইডি বা ইউজারনেম বের করে।
