@@ -96,7 +96,7 @@ function loadPoints(uid) {
 
 function loadTasks() {
   const list = document.getElementById("taskList");
-  return db.ref('channels').once('value')
+  return db.ref('tasks').once('value')
     .then(snap => {
       const data = snap.val();
       list.innerHTML = '';
