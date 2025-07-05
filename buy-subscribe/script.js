@@ -9,13 +9,15 @@ const firebaseConfig = {
   appId: "1:141787931031:web:2108a3e930f5ce4fbc64d2"
 };
 
-// ফায়ারবেস চালু করুন
+// ফায়ারবেস সার্ভিস চালু করুন
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
+const auth = firebase.auth();
 const submitBtn = document.getElementById('submitBtn');
 
 // --- YouTube API Config ---
-const YOUTUBE_API_KEY = "AIzaSyD5wCkpL3LghaFrBf3YxGQ8I1ig1wbSn3A"; // 🚨 এখানে আপনার ইউটিউব এপিআই কী বসান
+// 🚨 এখানে আপনার ইউটিউব এপিআই কী বসান
+const YOUTUBE_API_KEY = "YOUR_YOUTUBE_API_KEY"; 
 
 /**
  * URL থেকে চ্যানেল আইডি বা ইউজারনেম বের করে।
@@ -23,14 +25,10 @@ const YOUTUBE_API_KEY = "AIzaSyD5wCkpL3LghaFrBf3YxGQ8I1ig1wbSn3A"; // 🚨 এ�
  * @returns {string|null}
  */
 function getIdentifierFromUrl(url) {
-    // স্ট্যান্ডার্ড URL ফরম্যাট: /channel/UC...
     let match = url.match(/\/channel\/([a-zA-Z0-9_-]{24})/);
     if (match) return match[1];
-
-    // কাস্টম ইউজারনেম URL: /@username, /c/username, /user/username
     match = url.match(/\/(?:@|c\/|user\/)([a-zA-Z0-9_.-]+)/);
     if (match) return match[1];
-    
     return null;
 }
 
@@ -44,105 +42,128 @@ async function fetchChannelIdFromAPI(identifier) {
     try {
         const response = await fetch(apiUrl);
         const data = await response.json();
-        if (data.items && data.items.length > 0) {
-            return data.items[0].id.channelId; // চ্যানেল আইডি রিটার্ন করুন
-        }
-        return null;
+        return (data.items && data.items.length > 0) ? data.items[0].id.channelId : null;
     } catch (error) {
         console.error("YouTube API error:", error);
         return null;
     }
 }
 
-// --- মূল সাবমিট ফাংশন ---
-submitBtn.addEventListener('click', async function () {
-    const url = document.getElementById('channelUrl').value.trim();
-    const count = document.getElementById('subscriberCount').value;
-    const title = document.getElementById('taskTitle').value.trim();
-    const desc = document.getElementById('taskDescription').value.trim();
-
-    if (!url || !count || !title || !desc) {
-        alert('অনুগ্রহ করে সব ঘর পূরণ করুন।');
-        return;
-    }
-    
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'চ্যানেল যাচাই করা হচ্ছে...';
-
-    const identifier = getIdentifierFromUrl(url);
-    if (!identifier) {
-        alert('সঠিক ইউটিউব চ্যানেল লিঙ্ক দিন।');
+// --- মূল التنفيذ লজিক ---
+auth.onAuthStateChanged(user => {
+    if (user) {
+        // ব্যবহারকারী লগইন করা থাকলে
         submitBtn.disabled = false;
         submitBtn.textContent = 'সাবমিট করুন';
-        return;
-    }
 
-    let finalChannelId = null;
-    let isIdFromCache = false;
+        submitBtn.addEventListener('click', async function () {
+            const currentUser = user;
+            
+            const url = document.getElementById('channelUrl').value.trim();
+            const count = document.getElementById('subscriberCount').value;
+            const title = document.getElementById('taskTitle').value.trim();
+            const desc = document.getElementById('taskDescription').value.trim();
 
-    // ১. প্রথমে আমাদের নিজস্ব ডেটাবেস চেক করুন
-    const cacheRef = database.ref(`allChannelIds/${identifier}`);
-    const snapshot = await cacheRef.once('value');
+            if (!url || !count || !title || !desc) {
+                alert('অনুগ্রহ করে সব ঘর পূরণ করুন।');
+                return;
+            }
 
-    if (snapshot.exists()) {
-        finalChannelId = snapshot.val(); // ক্যাশ থেকে আইডি নিন
-        isIdFromCache = true;
-        console.log("চ্যানেল আইডি ডেটাবেস থেকে পাওয়া গেছে।");
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'পয়েন্ট চেক করা হচ্ছে...';
+
+            const userPointsRef = database.ref(`users/${currentUser.uid}/points`);
+            const userPointsSnap = await userPointsRef.once('value');
+            const currentPoints = userPointsSnap.val() || 0;
+            const taskCost = Number(count);
+
+            if (currentPoints < taskCost) {
+                alert(`দুঃখিত! এই টাস্কটির জন্য আপনার ${taskCost} পয়েন্ট প্রয়োজন। আপনার আছে ${currentPoints} পয়েন্ট।`);
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'সাবমিট করুন';
+                return;
+            }
+            
+            submitBtn.textContent = 'চ্যানেল যাচাই করা হচ্ছে...';
+            
+            const identifier = getIdentifierFromUrl(url);
+            if (!identifier) {
+                alert('সঠিক ইউটিউব চ্যানেল লিঙ্ক দিন।');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'সাবমিট করুন';
+                return;
+            }
+
+            let finalChannelId = null;
+            let isIdFromCache = false;
+
+            const cacheRef = database.ref(`allChannelIds/${identifier}`);
+            const snapshot = await cacheRef.once('value');
+
+            if (snapshot.exists()) {
+                finalChannelId = snapshot.val();
+                isIdFromCache = true;
+            } else {
+                if (identifier.startsWith('UC')) {
+                     finalChannelId = identifier;
+                } else {
+                     finalChannelId = await fetchChannelIdFromAPI(identifier);
+                }
+            }
+            
+            if (!finalChannelId) {
+                alert('এই চ্যানেলটি খুঁজে পাওয়া যায়নি।');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'সাবমিট করুন';
+                return;
+            }
+            
+            submitBtn.textContent = 'টাস্ক সেভ করা হচ্ছে...';
+
+            const newPoints = currentPoints - taskCost;
+            const newTaskRef = database.ref('tasks').push();
+            const newTaskId = newTaskRef.key;
+
+            const taskData = {
+                taskId: newTaskId,
+                ownerId: currentUser.uid,
+                channelId: finalChannelId,
+                title: title,
+                description: desc,
+                link: `http://googleusercontent.com/youtube.com/channel/${finalChannelId}`,
+                completed: 0,
+                max: Number(count),
+                createdAt: new Date().toISOString()
+            };
+            
+            const updates = {};
+            updates[`/tasks/${newTaskId}`] = taskData;
+            updates[`/users/${currentUser.uid}/points`] = newPoints;
+
+            if (!isIdFromCache) {
+                updates[`/allChannelIds/${identifier}`] = finalChannelId;
+            }
+
+            try {
+                await database.ref().update(updates);
+                alert(`টাস্ক সফলভাবে যোগ করা হয়েছে এবং আপনার অ্যাকাউন্ট থেকে ${taskCost} পয়েন্ট কাটা হয়েছে। ✅`);
+                
+                document.getElementById('channelUrl').value = '';
+                document.getElementById('subscriberCount').value = '10';
+                document.getElementById('taskTitle').value = '';
+                document.getElementById('taskDescription').value = '';
+
+            } catch (error) {
+                console.error("ডেটা সেভ করার সময় সমস্যা হয়েছে:", error);
+                alert('দুঃখিত! ডেটা সেভ করা যায়নি।');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'সাবমিট করুন';
+            }
+        });
     } else {
-        // ২. যদি ডেটাবেসে না থাকে, তবেই API কল করুন
-        console.log("ডেটাবেসে আইডি নেই, API কল করা হচ্ছে...");
-        if (identifier.startsWith('UC')) {
-             finalChannelId = identifier; // যদি শনাক্তকারী নিজেই একটি আইডি হয়
-        } else {
-             finalChannelId = await fetchChannelIdFromAPI(identifier);
-        }
-    }
-    
-    if (!finalChannelId) {
-        alert('এই চ্যানেলটি খুঁজে পাওয়া যায়নি।');
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'সাবমিট করুন';
-        return;
-    }
-    
-    submitBtn.textContent = 'টাস্ক সেভ করা হচ্ছে...';
-
-    const newTaskRef = database.ref('tasks').push();
-    const newTaskId = newTaskRef.key;
-
-    const taskData = {
-        taskId: newTaskId,
-        channelId: finalChannelId,
-        title: title,
-        description: desc,
-        link: `https://www.youtube.com/channel/${finalChannelId}`,
-        completed: 0,
-        max: Number(count),
-        createdAt: new Date().toISOString()
-    };
-    
-    const updates = {};
-    updates[`/tasks/${newTaskId}`] = taskData; // নতুন টাস্ক সবসময় সেভ হবে
-
-    // ৩. যদি আইডি ক্যাশে না থাকে, তবেই `allChannelIds`-এ সেভ করুন
-    if (!isIdFromCache) {
-        updates[`/allChannelIds/${identifier}`] = finalChannelId;
-    }
-
-    try {
-        await database.ref().update(updates);
-        alert('আপনার টাস্ক সফলভাবে যোগ করা হয়েছে! ✅');
-        // ফর্ম রিসেট
-        document.getElementById('channelUrl').value = '';
-        document.getElementById('subscriberCount').value = '10';
-        document.getElementById('taskTitle').value = '';
-        document.getElementById('taskDescription').value = '';
-
-    } catch (error) {
-        console.error("ডেটা সেভ করার সময় সমস্যা হয়েছে:", error);
-        alert('দুঃখিত! ডেটা সেভ করা যায়নি।');
-    } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'সাবমিট করুন';
+        // ব্যবহারকারী লগইন করা না থাকলে
+        submitBtn.textContent = 'লগইন করুন';
+        submitBtn.disabled = true;
     }
 });
