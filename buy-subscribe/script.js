@@ -15,7 +15,7 @@ const database = firebase.database();
 const submitBtn = document.getElementById('submitBtn');
 
 // --- YouTube API Config ---
-const YOUTUBE_API_KEY = "YOUR_YOUTUBE_API_KEY"; // 🚨 এখানে আপনার ইউটিউব এপিআই কী বসান
+const YOUTUBE_API_KEY = "AIzaSyD5wCkpL3LghaFrBf3YxGQ8I1ig1wbSn3A"; // 🚨 এখানে আপনার ইউটিউব এপিআই কী বসান
 
 /**
  * URL থেকে চ্যানেল আইডি বা ইউজারনেম বের করে।
