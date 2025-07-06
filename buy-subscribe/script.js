@@ -44,7 +44,7 @@ async function fetchChannelIdFromAPI(identifier) {
         const data = await response.json();
         return (data.items && data.items.length > 0) ? data.items[0].id.channelId : null;
     } catch (error) {
-        console.error("YouTube API error:", error);
+        alert("❌ ইউটিউব চ্যানেল খুঁজে পাওয়া যায়নি বা ইন্টারনেট সমস্যা হচ্ছে। দয়া করে আবার চেষ্টা করুন।");
         return null;
     }
 }
@@ -154,8 +154,7 @@ auth.onAuthStateChanged(user => {
                 document.getElementById('taskDescription').value = '';
 
             } catch (error) {
-                console.error("ডেটা সেভ করার সময় সমস্যা হয়েছে:", error);
-                alert('দুঃখিত! ডেটা সেভ করা যায়নি।');
+                alert("❌ ডেটা সেভ করা যায়নি। ইন্টারনেট বা সার্ভার সমস্যার জন্য হতে পারে।\nবিস্তারিত: " + error.message);
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'সাবমিট করুন';
