@@ -11,7 +11,6 @@
 </head>
 <body>
 
-
 <div class="header">
   <h2>টাস্ক বিস্তারিত</h2>
 </div>
@@ -51,17 +50,54 @@
           document.getElementById('taskDetail').innerHTML = "<p>টাস্ক পাওয়া যায়নি।</p>";
           return;
         }
-        document.getElementById('taskDetail').innerHTML = `
+
+        const taskDetailDiv = document.getElementById('taskDetail');
+        taskDetailDiv.innerHTML = `
           <h3>${ch.title}</h3>
           <p><strong>সাবস্ক্রাইবার:</strong> ${ch.completed} / ${ch.max}</p>
           <div class="progress">
             <div class="progress-bar" style="width: ${(ch.completed / ch.max) * 100}%"></div>
           </div>
           <p style="margin-top: 15px;">${ch.description || "বিস্তারিত তথ্য উপলব্ধ নেই।"}</p>
-          <a href="${ch.link}" target="_blank" class="btn btn-primary" style="margin-top: 10px; display: inline-block;">➡️ সাবস্ক্রাইব করতে এখানে ক্লিক করো</a>
-          <br><br>
-          <a href="index.html" class="btn btn-danger">⬅️ ড্যাশবোর্ডে ফিরে যাও</a>
+          <div id="initialButtons" style="margin-top: 20px;">
+            <button id="showChannelLinkBtn" class="btn btn-primary">চ্যানেলের লিংক</button>
+            <a href="index.html" class="btn btn-danger" style="margin-left: 10px;">⬅️ ড্যাশবোর্ডে ফিরে যাও</a>
+          </div>
+          <div id="channelLinkSection" style="display: none; margin-top: 20px;">
+            <p>চ্যানেলের লিংক: <a href="${ch.link}" target="_blank">${ch.link}</a></p>
+            <a href="${ch.link}" target="_blank" class="btn btn-primary" style="margin-top: 10px; display: inline-block;">➡️ সাবস্ক্রাইব করতে এখানে ক্লিক করো</a>
+            <button id="doneBtn" class="btn btn-success" style="margin-top: 10px; margin-left: 10px;">Done ✅</button>
+          </div>
+          <div id="confirmationSection" style="display: none; margin-top: 20px;">
+            <p>আপনি কি সত্যিই সাবস্ক্রাইব করেছেন?</p>
+            <button id="iHaveSubscribedBtn" class="btn btn-success">আমি সাবস্ক্রাইব করেছি</button>
+          </div>
         `;
+
+        const showChannelLinkBtn = document.getElementById('showChannelLinkBtn');
+        const doneBtn = document.getElementById('doneBtn');
+        const iHaveSubscribedBtn = document.getElementById('iHaveSubscribedBtn');
+        const initialButtons = document.getElementById('initialButtons');
+        const channelLinkSection = document.getElementById('channelLinkSection');
+        const confirmationSection = document.getElementById('confirmationSection');
+
+        showChannelLinkBtn.addEventListener('click', () => {
+          initialButtons.style.display = 'none';
+          channelLinkSection.style.display = 'block';
+        });
+
+        doneBtn.addEventListener('click', () => {
+          channelLinkSection.style.display = 'none';
+          confirmationSection.style.display = 'block';
+        });
+
+        iHaveSubscribedBtn.addEventListener('click', () => {
+          alert('আপনার সাবস্ক্রিপশন নিশ্চিত করার জন্য ধন্যবাদ!');
+          // Here you would typically update the 'completed' count in Firebase
+          // For now, we'll just show an alert and redirect to the dashboard
+          window.location.href = 'index.html';
+        });
+
       })
       .catch(err => {
         console.error(err);
