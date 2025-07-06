@@ -1,17 +1,8 @@
-// loading.js
-function showLoadingScreen() {
-  if (document.getElementById('loadingScreen')) return;
+function showLoading() {
+  const screen = document.getElementById('loadingScreen');
+  if (screen) screen.style.display = 'flex';
 
-  const div = document.createElement('div');
-  div.id = 'loadingScreen';
-  div.innerHTML = `
-    <div class="spinner"></div>
-    <div class="loading-text">অনুগ্রহ করে অপেক্ষা করুন</div>
-  `;
-  document.body.appendChild(div);
-
-  // Optional: animated dots
-  const loadingText = div.querySelector('.loading-text');
+  const loadingText = screen.querySelector('.loading-text');
   let dotCount = 0;
   setInterval(() => {
     dotCount = (dotCount + 1) % 4;
@@ -19,11 +10,17 @@ function showLoadingScreen() {
   }, 500);
 }
 
-function hideLoadingScreen() {
+function hideLoadingAfterMinimumTime() {
   const screen = document.getElementById('loadingScreen');
-  if (screen) screen.style.display = 'none';
+  if (!screen) return;
+
+  const loadEndTime = Date.now();
+  const timeSinceStart = loadEndTime - window.__loadingStartTime;
+  const delay = Math.max(0, 1000 - timeSinceStart); // ১ সেকেন্ডের কম হলে বাকি সময় অপেক্ষা করবে
+
+  setTimeout(() => {
+    screen.style.display = 'none';
+  }, delay);
 }
 
-window.addEventListener('load', () => {
-  hideLoadingScreen();
-});
+window.addEventListener('load', hideLoadingAfterMinimumTime);
