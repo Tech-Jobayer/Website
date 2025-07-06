@@ -22,7 +22,7 @@
 
 <script>
   const firebaseConfig = {
-    apiKey: "AIzaSyD5wCkpL3LghaFrBf3YxGQ8I1ig1wbSn3A", // আপনার Firebase API Key
+    apiKey: "AIzaSyAC4h55aA0Zz--V5ejyndzR5WC_-9rAPio", // আপনার Firebase API Key
     authDomain: "subscribe-bot-6f9b2.firebaseapp.com",
     databaseURL: "https://subscribe-bot-6f9b2-default-rtdb.firebaseio.com",
     projectId: "subscribe-bot-6f9b2",
@@ -49,14 +49,11 @@
   function extractChannelId(url) {
     const channelIdMatch = url.match(/(?:youtube\.com\/(?:channel\/|user\/|c\/)|youtu\.be\/|youtube\.com\/watch\?v=.*?&channel=)([\w-]{24}|[\w-]+)/);
     if (channelIdMatch && channelIdMatch[1]) {
-      // যদি URL channel ID ফরম্যাটে থাকে (UC...)
       if (channelIdMatch[1].startsWith('UC')) {
         return channelIdMatch[1];
       }
-      // যদি URL user বা c ফরম্যাটে থাকে, সরাসরি Channel ID না হলেও API-কে পাঠানোর চেষ্টা করবে
-      // তবে সেরা পদ্ধতি হলো Firebase-এ সরাসরি Channel ID সংরক্ষণ করা
-      console.warn("সরাসরি Channel ID পাওয়া যায়নি। ইউআরএল থেকে এক্সট্র্যাক্ট করার চেষ্টা করা হচ্ছে। নিশ্চিত করুন যে ch.link এ Channel ID আছে অথবা আপনি তা Firebase-এ সরাসরি সংরক্ষণ করছেন।");
-      return channelIdMatch[1]; // এই ক্ষেত্রে এটি ইউজারনেম বা কাস্টম URL হতে পারে
+      console.warn("সরাসরি Channel ID (UC...) পাওয়া যায়নি। ইউআরএল থেকে এক্সট্র্যাক্ট করার চেষ্টা করা হচ্ছে। নিশ্চিত করুন যে ch.link এ Channel ID আছে অথবা আপনি তা Firebase-এ সরাসরি সংরক্ষণ করছেন।");
+      return channelIdMatch[1];
     }
     return null;
   }
@@ -67,7 +64,7 @@
         console.error("Channel ID পাওয়া যায়নি।");
         throw new Error("Channel ID পাওয়া যায়নি।");
     }
-    if (!youtubeApiKey || youtubeApiKey === "AIzaSyD5wCkpL3LghaFrBf3YxGQ8I1ig1wbSn3A") {
+    if (!youtubeApiKey || youtubeApiKey === "YOUR_YOUTUBE_API_KEY_HERE") {
         console.error("YouTube API Key সেট করা হয়নি।");
         throw new Error("YouTube API Key সেট করা হয়নি।");
     }
@@ -98,9 +95,8 @@
       return;
     }
 
-    if (!currentUserId) {
-        return; // ইউজার আইডি না পাওয়া গেলে, onAuthStateChanged হ্যান্ডেল করবে
-    }
+    // এই চেকটি এখন এখানে অপ্রয়োজনীয়, কারণ loadTaskDetail() শুধুমাত্র currentUserId সেট হওয়ার পরেই কল করা হবে।
+    // if (!currentUserId) { return; } 
 
     db.ref('tasks/' + taskId).once('value')
       .then(snap => {
@@ -269,7 +265,7 @@
           console.log("কোনো ব্যবহারকারী লগইন করা নেই।");
           document.getElementById('taskDetail').innerHTML = "<p>এই টাস্কটি দেখতে হলে আপনাকে লগইন করতে হবে।</p>";
           // আপনি চাইলে এখানে ব্যবহারকারীকে লগইন পেজে রিডাইরেক্ট করতে পারেন:
-          // window.location.href = "login.html";
+          // window.location.href = "login.html"; // যেমন: একটি লগইন পেজ
       }
   });
 </script>
