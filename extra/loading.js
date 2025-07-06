@@ -1,17 +1,29 @@
 // loading.js
+function showLoadingScreen() {
+  if (document.getElementById('loadingScreen')) return;
 
-// লোডিং ডিভ তৈরি ও DOM এ অ্যাড করা
-const loadingOverlay = document.createElement('div');
-loadingOverlay.id = 'loadingOverlay';
-loadingOverlay.innerHTML = `<div class="spinner"></div>`;
-document.body.appendChild(loadingOverlay);
+  const div = document.createElement('div');
+  div.id = 'loadingScreen';
+  div.innerHTML = `
+    <div class="spinner"></div>
+    <div class="loading-text">অনুগ্রহ করে অপেক্ষা করুন</div>
+  `;
+  document.body.appendChild(div);
 
-// লোডিং দেখানোর ফাংশন
-function showLoading() {
-  loadingOverlay.style.display = 'flex';
+  // Optional: animated dots
+  const loadingText = div.querySelector('.loading-text');
+  let dotCount = 0;
+  setInterval(() => {
+    dotCount = (dotCount + 1) % 4;
+    loadingText.textContent = `অনুগ্রহ করে অপেক্ষা করুন${'.'.repeat(dotCount)}`;
+  }, 500);
 }
 
-// লোডিং হাইড করার ফাংশন
-function hideLoading() {
-  loadingOverlay.style.display = 'none';
+function hideLoadingScreen() {
+  const screen = document.getElementById('loadingScreen');
+  if (screen) screen.style.display = 'none';
 }
+
+window.addEventListener('load', () => {
+  hideLoadingScreen();
+});
