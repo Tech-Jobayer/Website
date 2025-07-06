@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="style.css" />
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
 </head>
 <body>
 
@@ -15,7 +16,9 @@
   <h2>টাস্ক বিস্তারিত</h2>
 </div>
 
-<div id="taskDetail" class="card" style="margin: 20px;"></div>
+<div id="taskDetail" class="card" style="margin: 20px;">
+  <p>তথ্য লোড হচ্ছে...</p>
+</div>
 
 <script>
   const firebaseConfig = {
@@ -31,11 +34,13 @@
   firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
 
-  // URL থেকে taskId নেয়ার ফাংশন
+  // URL থেকে taskId নেওয়ার ফাংশন
   function getTaskId() {
     const params = new URLSearchParams(window.location.search);
     return params.get('taskId');
   }
+
+  let currentUserId = null; // ইউজার আইডি এখানে সংরক্ষণ করা হবে
 
   // টাস্ক ডেটা লোড এবং প্রদর্শন
   function loadTaskDetail(taskId) {
@@ -43,6 +48,15 @@
       document.getElementById('taskDetail').innerHTML = "<p>টাস্ক আইডি পাওয়া যায়নি।</p>";
       return;
     }
+
+    // নিশ্চিত করুন যে ইউজার আইডি পাওয়া গেছে
+    if (!currentUserId) {
+        // যদি ইউজার আইডি না পাওয়া যায়, তবে loadTaskDetail() function এর
+        // বাইরে onAuthStateChanged এ handle করা হবে।
+        // এই ক্ষেত্রে, এখানে কিছু করার দরকার নেই, শুধু রিটার্ন করে দেওয়া হলো
+        return;
+    }
+
     db.ref('tasks/' + taskId).once('value')
       .then(snap => {
         const ch = snap.val();
@@ -80,7 +94,7 @@
         const initialButtons = document.getElementById('initialButtons');
         const channelLinkSection = document.getElementById('channelLinkSection');
         const confirmationSection = document.getElementById('confirmationSection');
-        const currentCompletedSpan = document.getElementById('currentCompleted'); // নতুন যোগ করা হয়েছে
+        const currentCompletedSpan = document.getElementById('currentCompleted');
 
         showChannelLinkBtn.addEventListener('click', () => {
           initialButtons.style.display = 'none';
@@ -93,21 +107,34 @@
         });
 
         iHaveSubscribedBtn.addEventListener('click', () => {
-          // Firebase এ 'completed' সংখ্যা আপডেট করার লজিক
-          const taskRef = db.ref('tasks/' + taskId);
-          taskRef.transaction(currentData => {
-            if (currentData) {
-              if (currentData.completed < currentData.max) { // নিশ্চিত করুন যে max অতিক্রম না করে
-                currentData.completed = (currentData.completed || 0) + 1;
-                // আপনি এখানে পয়েন্ট বাড়ানোর লজিকও যোগ করতে পারেন, যদি আপনার ডেটাবেসে পয়েন্ট থাকে
+          // সাবস্ক্রাইব সংখ্যা এবং পয়েন্ট উভয়ই আপডেট করার জন্য প্রমিস.অল ব্যবহার করা হয়েছে
+          // নিশ্চিত করুন যে currentUserId পাওয়া গেছে
+          if (!currentUserId) {
+            alert('ব্যবহারকারীর তথ্য পাওয়া যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন বা লগইন করুন।');
+            console.error("currentUserId is null. User not authenticated or not loaded yet.");
+            return;
+          }
+
+          Promise.all([
+            // টাস্কের 'completed' সংখ্যা আপডেট করুন
+            db.ref('tasks/' + taskId).transaction(currentData => {
+              if (currentData) {
+                if (currentData.completed < currentData.max) { // নিশ্চিত করুন যে max অতিক্রম না করে
+                  currentData.completed = (currentData.completed || 0) + 1;
+                }
               }
-            }
-            return currentData;
-          })
+              return currentData;
+            }),
+            // ইউজারের 'points' আপডেট করুন
+            db.ref('users/' + currentUserId + '/points').transaction(currentPoints => {
+              // যদি বর্তমান পয়েন্ট না থাকে, তাহলে ০ থেকে শুরু করুন, এবং ১ যোগ করুন
+              return (currentPoints || 0) + 1;
+            })
+          ])
           .then(() => {
-            alert('আপনার সাবস্ক্রিপশন নিশ্চিত করার জন্য ধন্যবাদ! সংখ্যা আপডেট করা হয়েছে।');
+            alert('আপনার সাবস্ক্রিপশন নিশ্চিত করার জন্য ধন্যবাদ! সংখ্যা ও পয়েন্ট আপডেট করা হয়েছে।');
             // UI আপডেট করুন
-            taskRef.once('value').then(updatedSnap => {
+            db.ref('tasks/' + taskId).once('value').then(updatedSnap => {
               const updatedCh = updatedSnap.val();
               if (updatedCh) {
                 currentCompletedSpan.textContent = updatedCh.completed;
@@ -117,8 +144,8 @@
             window.location.href = 'index.html'; // ড্যাশবোর্ডে ফিরে যান
           })
           .catch(error => {
-            console.error("Firebase ডেটা আপডেট করতে সমস্যা হয়েছে:", error);
-            alert('সাবস্ক্রিপশন আপডেট করতে সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।');
+            console.error("ডেটা আপডেট করতে সমস্যা হয়েছে:", error);
+            alert('সাবস্ক্রিপশন বা পয়েন্ট আপডেট করতে সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।');
           });
         });
 
@@ -129,8 +156,22 @@
       });
   }
 
-  const taskId = getTaskId();
-  loadTaskDetail(taskId);
+  // Firebase Authentication স্টেট পরিবর্তনের জন্য অপেক্ষা করুন
+  firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+          // ব্যবহারকারী লগইন করা থাকলে, তার UID নিন
+          currentUserId = user.uid;
+          console.log("লগইন করা ব্যবহারকারীর আইডি:", currentUserId);
+          // ইউজার আইডি পাওয়ার পর টাস্কের বিস্তারিত লোড করুন
+          loadTaskDetail(getTaskId());
+      } else {
+          // ব্যবহারকারী লগইন করা না থাকলে
+          console.log("কোনো ব্যবহারকারী লগইন করা নেই।");
+          document.getElementById('taskDetail').innerHTML = "<p>এই টাস্কটি দেখতে হলে আপনাকে লগইন করতে হবে।</p>";
+          // আপনি চাইলে এখানে ব্যবহারকারীকে লগইন পেজে রিডাইরেক্ট করতে পারেন:
+          // window.location.href = "login.html";
+      }
+  });
 </script>
 
 </body>
