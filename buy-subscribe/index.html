@@ -8,10 +8,17 @@
   <!-- তোমার মূল CSS -->
   <link rel="stylesheet" href="style.css" />
   <!-- লোডিং CSS -->
-<link rel="stylesheet" href="/extra/loading.css" />
+  <link rel="stylesheet" href="/extra/loading.css" />
 </head>
 
 <body>
+  <!-- ✅ লোডিং স্ক্রিন HTML (আদর্শভাবে body এর শুরুতে রাখো) -->
+  <div id="loadingScreen">
+    <div class="spinner"></div>
+    <div class="loading-text">অনুগ্রহ করে অপেক্ষা করুন</div>
+  </div>
+
+  <!-- 🔽 টাস্ক ফর্ম -->
   <div class="form-group">
     <label for="channelUrl">ইউটিউব চ্যানেলের URL</label>
     <input type="text" id="channelUrl" placeholder="উদাহরণ: youtube.com/channel/UC..." />
@@ -34,21 +41,22 @@
 
   <button id="submitBtn">সাবমিট করুন</button>
 
-  <!-- Firebase SDKs -->
+  <!-- 🔥 Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
-  <!-- লোডিং JS -->
-<script src="/extra/loading.js"></script>
-  <!-- মেইন JS -->
+  <!-- ✅ লোডিং JS -->
+  <script src="/extra/loading.js"></script>
+
+  <!-- 🎯 মেইন স্ক্রিপ্ট -->
   <script src="script.js"></script>
 
   <script>
-    // পেজ লোড শুরুতেই লোডিং দেখাও
+    // লোডিং শুরুতেই দেখাও
     showLoading();
 
-    // পেজ সম্পূর্ণ লোড হলে লোডিং লুকাও
+    // পুরো পেজ লোড হলে লুকিয়ে ফেলো
     window.addEventListener('load', () => {
       hideLoading();
     });
