@@ -54,7 +54,7 @@
         const taskDetailDiv = document.getElementById('taskDetail');
         taskDetailDiv.innerHTML = `
           <h3>${ch.title}</h3>
-          <p><strong>সাবস্ক্রাইবার:</strong> ${ch.completed} / ${ch.max}</p>
+          <p><strong>সাবস্ক্রাইবার:</strong> <span id="currentCompleted">${ch.completed}</span> / ${ch.max}</p>
           <div class="progress">
             <div class="progress-bar" style="width: ${(ch.completed / ch.max) * 100}%"></div>
           </div>
@@ -80,6 +80,7 @@
         const initialButtons = document.getElementById('initialButtons');
         const channelLinkSection = document.getElementById('channelLinkSection');
         const confirmationSection = document.getElementById('confirmationSection');
+        const currentCompletedSpan = document.getElementById('currentCompleted'); // নতুন যোগ করা হয়েছে
 
         showChannelLinkBtn.addEventListener('click', () => {
           initialButtons.style.display = 'none';
@@ -92,10 +93,33 @@
         });
 
         iHaveSubscribedBtn.addEventListener('click', () => {
-          alert('আপনার সাবস্ক্রিপশন নিশ্চিত করার জন্য ধন্যবাদ!');
-          // Here you would typically update the 'completed' count in Firebase
-          // For now, we'll just show an alert and redirect to the dashboard
-          window.location.href = 'index.html';
+          // Firebase এ 'completed' সংখ্যা আপডেট করার লজিক
+          const taskRef = db.ref('tasks/' + taskId);
+          taskRef.transaction(currentData => {
+            if (currentData) {
+              if (currentData.completed < currentData.max) { // নিশ্চিত করুন যে max অতিক্রম না করে
+                currentData.completed = (currentData.completed || 0) + 1;
+                // আপনি এখানে পয়েন্ট বাড়ানোর লজিকও যোগ করতে পারেন, যদি আপনার ডেটাবেসে পয়েন্ট থাকে
+              }
+            }
+            return currentData;
+          })
+          .then(() => {
+            alert('আপনার সাবস্ক্রিপশন নিশ্চিত করার জন্য ধন্যবাদ! সংখ্যা আপডেট করা হয়েছে।');
+            // UI আপডেট করুন
+            taskRef.once('value').then(updatedSnap => {
+              const updatedCh = updatedSnap.val();
+              if (updatedCh) {
+                currentCompletedSpan.textContent = updatedCh.completed;
+                document.querySelector('.progress-bar').style.width = `${(updatedCh.completed / updatedCh.max) * 100}%`;
+              }
+            });
+            window.location.href = 'index.html'; // ড্যাশবোর্ডে ফিরে যান
+          })
+          .catch(error => {
+            console.error("Firebase ডেটা আপডেট করতে সমস্যা হয়েছে:", error);
+            alert('সাবস্ক্রিপশন আপডেট করতে সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।');
+          });
         });
 
       })
