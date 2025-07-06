@@ -53,13 +53,8 @@
   <script src="script.js"></script>
 
   <script>
-  // লোডিং শুরুতেই দেখাও
-  showLoadingScreen();
-
-  // পুরো পেজ লোড হলে লুকিয়ে ফেলো
-  window.addEventListener('load', () => {
-    hideLoadingScreen();
-  });
+  window.__loadingStartTime = Date.now();
+  showLoading();
 </script>
 </body>
 </html>
