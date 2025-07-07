@@ -58,7 +58,7 @@ auth.onAuthStateChanged(user => {
 
         submitBtn.addEventListener('click', async function () {
             const currentUser = user;
-            
+
             const url = document.getElementById('channelUrl').value.trim();
             const count = document.getElementById('subscriberCount').value;
             const title = document.getElementById('taskTitle').value.trim();
@@ -83,9 +83,9 @@ auth.onAuthStateChanged(user => {
                 submitBtn.textContent = 'সাবমিট করুন';
                 return;
             }
-            
+
             submitBtn.textContent = 'চ্যানেল যাচাই করা হচ্ছে...';
-            
+
             const identifier = getIdentifierFromUrl(url);
             if (!identifier) {
                 alert('সঠিক ইউটিউব চ্যানেল লিঙ্ক দিন।');
@@ -110,14 +110,14 @@ auth.onAuthStateChanged(user => {
                      finalChannelId = await fetchChannelIdFromAPI(identifier);
                 }
             }
-            
+
             if (!finalChannelId) {
                 alert('এই চ্যানেলটি খুঁজে পাওয়া যায়নি।');
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'সাবমিট করুন';
                 return;
             }
-            
+
             submitBtn.textContent = 'টাস্ক সেভ করা হচ্ছে...';
 
             const newPoints = currentPoints - taskCost;
@@ -130,12 +130,12 @@ auth.onAuthStateChanged(user => {
                 channelId: finalChannelId,
                 title: title,
                 description: desc,
-                link: `http://googleusercontent.com/youtube.com/channel/${finalChannelId}`,
+                link: `https://www.youtube.com/channel/${finalChannelId}`,
                 completed: 0,
                 max: Number(count),
                 createdAt: new Date().toISOString()
             };
-            
+
             const updates = {};
             updates[`/tasks/${newTaskId}`] = taskData;
             updates[`/users/${currentUser.uid}/points`] = newPoints;
@@ -147,7 +147,7 @@ auth.onAuthStateChanged(user => {
             try {
                 await database.ref().update(updates);
                 alert(`টাস্ক সফলভাবে যোগ করা হয়েছে এবং আপনার অ্যাকাউন্ট থেকে ${taskCost} পয়েন্ট কাটা হয়েছে। ✅`);
-                
+
                 document.getElementById('channelUrl').value = '';
                 document.getElementById('subscriberCount').value = '10';
                 document.getElementById('taskTitle').value = '';
