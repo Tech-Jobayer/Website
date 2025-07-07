@@ -22,7 +22,7 @@
 
 <script>
   const firebaseConfig = {
-    apiKey: "AIzaSyAC4h55aA0Zz--V5ejyndzR5WC_-9rAPio", // আপনার Firebase API Key
+    apiKey: "AIzaSyAC4h55aA0Zz--V5ejyndzR5WC_-9rAPio",
     authDomain: "subscribe-bot-6f9b2.firebaseapp.com",
     databaseURL: "https://subscribe-bot-6f9b2-default-rtdb.firebaseio.com",
     projectId: "subscribe-bot-6f9b2",
@@ -34,69 +34,40 @@
   firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
 
-  // আপনার YouTube Data API Key এখানে বসান
-  const YOUTUBE_API_KEY = "AIzaSyD5wCkpL3LghaFrBf3YxGQ8I1ig1wbSn3A"; // <-- এটি আপনার YouTube API Key!
+  const YOUTUBE_API_KEY = "AIzaSyD5wCkpL3LghaFrBf3YxGQ8I1ig1wbSn3A";
 
-  // URL থেকে taskId নেওয়ার ফাংশন
   function getTaskId() {
     const params = new URLSearchParams(window.location.search);
     return params.get('taskId');
   }
 
-  let currentUserId = null; // ইউজার আইডি এখানে সংরক্ষণ করা হবে
+  let currentUserId = null;
 
-  // YouTube Channel URL থেকে Channel ID বের করার ফাংশন
   function extractChannelId(url) {
     const channelIdMatch = url.match(/(?:youtube\.com\/(?:channel\/|user\/|c\/)|youtu\.be\/|youtube\.com\/watch\?v=.*?&channel=)([\w-]{24}|[\w-]+)/);
     if (channelIdMatch && channelIdMatch[1]) {
-      if (channelIdMatch[1].startsWith('UC')) {
-        return channelIdMatch[1];
-      }
-      console.warn("সরাসরি Channel ID (UC...) পাওয়া যায়নি। ইউআরএল থেকে এক্সট্র্যাক্ট করার চেষ্টা করা হচ্ছে। নিশ্চিত করুন যে ch.link এ Channel ID আছে অথবা আপনি তা Firebase-এ সরাসরি সংরক্ষণ করছেন।");
       return channelIdMatch[1];
     }
     return null;
   }
 
-  // YouTube API থেকে সাবস্ক্রাইবার সংখ্যা আনার ফাংশন
   async function getYouTubeSubscriberCount(channelId, youtubeApiKey) {
-    if (!channelId) {
-        console.error("Channel ID পাওয়া যায়নি।");
-        throw new Error("Channel ID পাওয়া যায়নি।");
-    }
-    if (!youtubeApiKey || youtubeApiKey === "YOUR_YOUTUBE_API_KEY_HERE") {
-        console.error("YouTube API Key সেট করা হয়নি।");
-        throw new Error("YouTube API Key সেট করা হয়নি।");
-    }
-
     const apiUrl = `https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${channelId}&fields=items%2Fstatistics%2FsubscriberCount&key=${youtubeApiKey}`;
-
-    try {
-      const response = await fetch(apiUrl);
-      const data = await response.json();
-
-      if (response.ok && data.items && data.items.length > 0) {
-        return parseInt(data.items[0].statistics.subscriberCount, 10);
-      } else {
-        console.error("YouTube API ত্রুটি:", data);
-        throw new Error(data.error ? data.error.message : "সাবস্ক্রাইবার ডেটা লোড করা যায়নি।");
-      }
-    } catch (error) {
-      console.error("YouTube API কল করতে সমস্যা:", error);
-      throw new Error("সাবস্ক্রাইবার সংখ্যা পেতে ব্যর্থ।");
+    const response = await fetch(apiUrl);
+    const data = await response.json();
+    if (response.ok && data.items && data.items.length > 0) {
+      return parseInt(data.items[0].statistics.subscriberCount, 10);
+    } else {
+      console.error("YouTube API error:", data);
+      throw new Error("সাবস্ক্রাইবার ডেটা লোড করা যায়নি।");
     }
   }
 
-
-  // টাস্ক ডেটা লোড এবং প্রদর্শন
   function loadTaskDetail(taskId) {
     if (!taskId) {
       document.getElementById('taskDetail').innerHTML = "<p>টাস্ক আইডি পাওয়া যায়নি।</p>";
       return;
     }
-
-    // এই চেকটি এখন এখানে অপ্রয়োজনীয়, কারণ loadTaskDetail() শুধুমাত্র currentUserId সেট হওয়ার পরেই কল করা হবে।
-    // if (!currentUserId) { return; } 
 
     db.ref('tasks/' + taskId).once('value')
       .then(snap => {
@@ -118,133 +89,111 @@
             <button id="showChannelLinkBtn" class="btn btn-primary">চ্যানেলের লিংক</button>
             <a href="index.html" class="btn btn-danger" style="margin-left: 10px;">⬅️ ড্যাশবোর্ডে ফিরে যাও</a>
           </div>
-          <div id="channelLinkSection" style="display: none; margin-top: 20px;">
-            <p>চ্যানেলের লিংক: <a href="${ch.link}" target="_blank">${ch.link}</a></p>
-            <a href="${ch.link}" target="_blank" class="btn btn-primary" style="margin-top: 10px; display: inline-block;">➡️ সাবস্ক্রাইব করতে এখানে ক্লিক করো</a>
-            <button id="doneBtn" class="btn btn-success" style="margin-top: 10px; margin-left: 10px;">Done ✅</button>
-          </div>
-          <div id="confirmationSection" style="display: none; margin-top: 20px;">
-            <p>আপনি কি সত্যিই সাবস্ক্রাইব করেছেন?</p>
-            <button id="iHaveSubscribedBtn" class="btn btn-success">আমি সাবস্ক্রাইব করেছি</button>
-          </div>
+          <div id="channelLinkSection" style="display: none; margin-top: 20px;"></div>
+          <div id="confirmationSection" style="display: none; margin-top: 20px;"></div>
         `;
 
         const showChannelLinkBtn = document.getElementById('showChannelLinkBtn');
-        const doneBtn = document.getElementById('doneBtn');
-        const iHaveSubscribedBtn = document.getElementById('iHaveSubscribedBtn');
-        const initialButtons = document.getElementById('initialButtons');
         const channelLinkSection = document.getElementById('channelLinkSection');
         const confirmationSection = document.getElementById('confirmationSection');
         const currentCompletedSpan = document.getElementById('currentCompleted');
 
-        // প্রথম বাটন ক্লিক করলে beforeCount সংরক্ষণ করুন
         showChannelLinkBtn.addEventListener('click', async () => {
-            if (!currentUserId) {
-                alert('অনুগ্রহ করে লগইন করুন।');
-                return;
-            }
-            initialButtons.style.display = 'none';
-            channelLinkSection.style.display = 'block';
+          if (!currentUserId) {
+            alert('অনুগ্রহ করে লগইন করুন।');
+            return;
+          }
 
-            try {
-                const channelId = extractChannelId(ch.link);
-                if (!channelId) {
-                    alert('চ্যানেল আইডি পাওয়া যায়নি। অনুগ্রহ করে লিংকটি পরীক্ষা করুন।');
-                    return;
-                }
+          document.getElementById('initialButtons').style.display = 'none';
+          channelLinkSection.style.display = 'block';
 
-                // YouTube API থেকে beforeCount নিন
-                const beforeCount = await getYouTubeSubscriberCount(channelId, YOUTUBE_API_KEY);
-                
-                // Firebase এ beforeCount সংরক্ষণ করুন
-                await db.ref('users/' + currentUserId + '/taskProgress/' + taskId).set({
-                    beforeCount: beforeCount,
-                    status: 'started', // কাজের অবস্থা সেট করুন
-                    startTime: firebase.database.ServerValue.TIMESTAMP // সময় সংরক্ষণ করুন
-                });
-                console.log("Before count Firebase এ সংরক্ষণ করা হয়েছে:", beforeCount);
-            } catch (error) {
-                console.error("beforeCount সংরক্ষণ করতে সমস্যা হয়েছে:", error);
-                alert('সাবস্ক্রাইবার সংখ্যা লোড করতে সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।');
-            }
-        });
-
-        doneBtn.addEventListener('click', () => {
-          channelLinkSection.style.display = 'none';
-          confirmationSection.style.display = 'block';
-        });
-
-        // "আমি সাবস্ক্রাইব করেছি" বাটনে ক্লিক করলে চেক ও আপডেট করুন
-        iHaveSubscribedBtn.addEventListener('click', async () => {
-            if (!currentUserId) {
-                alert('ব্যবহারকারীর তথ্য পাওয়া যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন বা লগইন করুন।');
-                console.error("currentUserId is null. User not authenticated or not loaded yet.");
-                return;
+          try {
+            const channelId = extractChannelId(ch.link);
+            if (!channelId) {
+              alert('চ্যানেল আইডি পাওয়া যায়নি।');
+              return;
             }
 
-            try {
-                // Firebase থেকে পূর্বে সংরক্ষণ করা beforeCount নিয়ে আসুন
-                const taskProgressSnap = await db.ref('users/' + currentUserId + '/taskProgress/' + taskId).once('value');
-                const taskProgress = taskProgressSnap.val();
+            const beforeCount = await getYouTubeSubscriberCount(channelId, YOUTUBE_API_KEY);
 
-                if (!taskProgress || taskProgress.status !== 'started' || typeof taskProgress.beforeCount !== 'number') {
-                    alert('আপনার টাস্ক শুরু হয়নি বা পূর্বে সাবস্ক্রাইব করার কাউন্ট পাওয়া যায়নি। অনুগ্রহ করে চ্যানেলের লিংকে ক্লিক করে শুরু করুন।');
+            await db.ref('users/' + currentUserId + '/taskProgress/' + taskId).set({
+              beforeCount: beforeCount,
+              status: 'started',
+              startTime: firebase.database.ServerValue.TIMESTAMP
+            });
+
+            channelLinkSection.innerHTML = `
+              <p>চ্যানেলের লিংক: <a href="${ch.link}" target="_blank">${ch.link}</a></p>
+              <p id="beforeCountDisplay">🔢 সাবস্ক্রাইবার সংখ্যা (শুরুর সময়): ${beforeCount}</p>
+              <a href="${ch.link}" target="_blank" class="btn btn-primary" style="margin-top: 10px;">➡️ সাবস্ক্রাইব করতে এখানে ক্লিক করো</a>
+              <button id="doneBtn" class="btn btn-success" style="margin-top: 10px; margin-left: 10px;">Done ✅</button>
+            `;
+
+            document.getElementById('doneBtn').addEventListener('click', () => {
+              channelLinkSection.style.display = 'none';
+              confirmationSection.style.display = 'block';
+              confirmationSection.innerHTML = `
+                <p>আপনি কি সত্যিই সাবস্ক্রাইব করেছেন?</p>
+                <button id="iHaveSubscribedBtn" class="btn btn-success">আমি সাবস্ক্রাইব করেছি</button>
+              `;
+              document.getElementById('iHaveSubscribedBtn').addEventListener('click', async () => {
+                try {
+                  const taskProgressSnap = await db.ref('users/' + currentUserId + '/taskProgress/' + taskId).once('value');
+                  const taskProgress = taskProgressSnap.val();
+                  if (!taskProgress || taskProgress.status !== 'started') {
+                    alert('আপনার টাস্ক শুরু হয়নি।');
                     return;
-                }
+                  }
 
-                const beforeCount = taskProgress.beforeCount;
-                const channelId = extractChannelId(ch.link);
-                if (!channelId) {
-                    alert('চ্যানেল আইডি পাওয়া যায়নি। অনুগ্রহ করে লিংকটি পরীক্ষা করুন।');
-                    return;
-                }
+                  const beforeCount = taskProgress.beforeCount;
+                  const newCount = await getYouTubeSubscriberCount(channelId, YOUTUBE_API_KEY);
 
-                // YouTube API থেকে নতুন কাউন্ট নিন
-                const newCount = await getYouTubeSubscriberCount(channelId, YOUTUBE_API_KEY);
+                  confirmationSection.innerHTML += `<p>🔁 বর্তমান সাবস্ক্রাইবার সংখ্যা: ${newCount}</p>`;
 
-                if (newCount > beforeCount) {
-                    // সাবস্ক্রাইবার সংখ্যা বেড়েছে, পয়েন্ট দিন এবং টাস্ক আপডেট করুন
+                  const difference = newCount - beforeCount;
+                  if (difference > 0) {
+                    confirmationSection.innerHTML += `<p style="color:green;">🎉 সাবস্ক্রাইব বেড়েছে: ${difference} জন</p>`;
+
                     await Promise.all([
-                        db.ref('tasks/' + taskId).transaction(currentData => {
-                            if (currentData) {
-                                if (currentData.completed < currentData.max) {
-                                    currentData.completed = (currentData.completed || 0) + 1;
-                                }
-                            }
-                            return currentData;
-                        }),
-                        db.ref('users/' + currentUserId + '/points').transaction(currentPoints => {
-                            return (currentPoints || 0) + 1; // 1 পয়েন্ট যোগ করুন
-                        }),
-                        // টাস্কের অবস্থা 'completed' এ আপডেট করুন
-                        db.ref('users/' + currentUserId + '/taskProgress/' + taskId).update({
-                            status: 'completed',
-                            completionTime: firebase.database.ServerValue.TIMESTAMP
-                        })
+                      db.ref('tasks/' + taskId).transaction(data => {
+                        if (data && data.completed < data.max) {
+                          data.completed += 1;
+                        }
+                        return data;
+                      }),
+                      db.ref('users/' + currentUserId + '/points').transaction(points => (points || 0) + 1),
+                      db.ref('users/' + currentUserId + '/taskProgress/' + taskId).update({
+                        status: 'completed',
+                        completionTime: firebase.database.ServerValue.TIMESTAMP
+                      })
                     ]);
 
-                    alert('আপনার সাবস্ক্রিপশন নিশ্চিত করার জন্য ধন্যবাদ! সংখ্যা ও পয়েন্ট আপডেট করা হয়েছে।');
-                    // UI আপডেট করুন
                     db.ref('tasks/' + taskId).once('value').then(updatedSnap => {
                       const updatedCh = updatedSnap.val();
                       if (updatedCh) {
-                          currentCompletedSpan.textContent = updatedCh.completed;
-                          document.querySelector('.progress-bar').style.width = `${(updatedCh.completed / updatedCh.max) * 100}%`;
+                        currentCompletedSpan.textContent = updatedCh.completed;
+                        document.querySelector('.progress-bar').style.width = `${(updatedCh.completed / updatedCh.max) * 100}%`;
                       }
                     });
-                    window.location.href = 'index.html'; // ড্যাশবোর্ডে ফিরে যান
 
-                } else {
-                    // সাবস্ক্রাইবার সংখ্যা বাড়েনি
-                    alert('মনে হচ্ছে আপনি এখনও সাবস্ক্রাইব করেননি। অনুগ্রহ করে প্রথমে চ্যানেলটি সাবস্ক্রাইব করুন, তারপর এই বাটন চাপুন।');
+                    alert('✅ সাবস্ক্রিপশন সফল! আপনাকে 1 পয়েন্ট দেওয়া হয়েছে।');
+                    window.location.href = 'index.html';
+                  } else {
+                    confirmationSection.innerHTML += `<p style="color:red;">⚠️ সাবস্ক্রাইব সংখ্যা বাড়েনি। অনুগ্রহ করে সাবস্ক্রাইব করুন।</p>`;
+                    alert('সাবস্ক্রাইব নিশ্চিত হয়নি। আবার চেষ্টা করুন।');
+                  }
+                } catch (err) {
+                  console.error(err);
+                  alert('সমস্যা হয়েছে। আবার চেষ্টা করুন।');
                 }
+              });
+            });
 
-            } catch (error) {
-                console.error("যাচাই বা ডেটা আপডেট করতে সমস্যা হয়েছে:", error);
-                alert('যাচাইকরণে সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।');
-            }
+          } catch (error) {
+            console.error(error);
+            alert('সাবস্ক্রাইবার সংখ্যা লোড করতে ব্যর্থ।');
+          }
         });
-
       })
       .catch(err => {
         console.error(err);
@@ -252,21 +201,13 @@
       });
   }
 
-  // Firebase Authentication স্টেট পরিবর্তনের জন্য অপেক্ষা করুন
   firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-          // ব্যবহারকারী লগইন করা থাকলে, তার UID নিন
-          currentUserId = user.uid;
-          console.log("লগইন করা ব্যবহারকারীর আইডি:", currentUserId);
-          // ইউজার আইডি পাওয়ার পর টাস্কের বিস্তারিত লোড করুন
-          loadTaskDetail(getTaskId());
-      } else {
-          // ব্যবহারকারী লগইন করা না থাকলে
-          console.log("কোনো ব্যবহারকারী লগইন করা নেই।");
-          document.getElementById('taskDetail').innerHTML = "<p>এই টাস্কটি দেখতে হলে আপনাকে লগইন করতে হবে।</p>";
-          // আপনি চাইলে এখানে ব্যবহারকারীকে লগইন পেজে রিডাইরেক্ট করতে পারেন:
-          // window.location.href = "login.html"; // যেমন: একটি লগইন পেজ
-      }
+    if (user) {
+      currentUserId = user.uid;
+      loadTaskDetail(getTaskId());
+    } else {
+      document.getElementById('taskDetail').innerHTML = "<p>এই টাস্কটি দেখতে হলে আপনাকে লগইন করতে হবে।</p>";
+    }
   });
 </script>
 
