@@ -1,4 +1,4 @@
-<script>
+
   const firebaseConfig = {
     apiKey: "AIzaSyAC4h55aA0Zz--V5ejyndzR5WC_-9rAPio",
     authDomain: "subscribe-bot-6f9b2.firebaseapp.com",
@@ -187,4 +187,3 @@
       document.getElementById('taskDetail').innerHTML = "<p>এই টাস্কটি দেখতে হলে আপনাকে লগইন করতে হবে।</p>";
     }
   });
-</script>
