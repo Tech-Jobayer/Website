@@ -1,3 +1,4 @@
+/* location: Website/task_auto/script.js */
 const firebaseConfig = {
       apiKey: "AIzaSyAC4h55aA0Zz--V5ejyndzR5WC_-9rAPio",
       authDomain: "subscribe-bot-6f9b2.firebaseapp.com",
