@@ -191,6 +191,9 @@
         currentUserId = user.uid;
         loadTaskDetail(getTaskId());
       } else {
-        document.getElementById('taskDetail').innerHTML = "<p>এই টাস্কটি দেখতে হলে আপনাকে লগইন করতে হবে।</p>";
+  
+document.getElementById("closeDrawerBtn").addEventListener("click", () => {
+  document.getElementById("profileDrawer").classList.remove("open");
+});      document.getElementById('taskDetail').innerHTML = "<p>এই টাস্কটি দেখতে হলে আপনাকে লগইন করতে হবে।</p>";
       }
     });
