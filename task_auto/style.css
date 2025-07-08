@@ -98,6 +98,11 @@ body {
   margin: 10px 0;
 }
 
+.profile-drawer.open, .notification-drawer.open {
+  display: block;
+  width: 300px;
+}
+
 .btn {
   padding: 10px 15px;
   margin: 5px;
@@ -130,13 +135,9 @@ body {
   color: white;
 }
 
-.btn:focus {
-  outline: 3px solid #e91e63;
+.btn-primary:focus, .btn-danger:focus {
+  outline: 3px solid #ffc0cb;
   outline-offset: 2px;
-}
-
-.btn:active {
-  transform: scale(0.98);
 }
 
 .card {
