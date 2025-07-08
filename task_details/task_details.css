@@ -1,0 +1,129 @@
+/* task_details.css */
+
+/* পুরো পেজ ব্যাকগ্রাউন্ড */
+body {
+  font-family: 'Noto Sans Bengali', 'Hind Siliguri', sans-serif;
+  background-color: #fafafa;
+  margin: 0;
+  padding: 20px;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Container for task details */
+.task-details-container {
+  max-width: 700px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  padding: 30px 25px;
+}
+
+/* Task Title */
+.task-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #e91e63;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Task description or info text */
+.task-description {
+  font-size: 18px;
+  color: #555;
+  margin-bottom: 30px;
+  white-space: pre-wrap; /* preserve line breaks */
+}
+
+/* Subscriber counts */
+.subscriber-info {
+  font-size: 16px;
+  margin-bottom: 20px;
+  font-weight: 600;
+  color: #222;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Progress bar container */
+.progress-container {
+  background: #eee;
+  border-radius: 8px;
+  overflow: hidden;
+  height: 18px;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+}
+
+/* Progress bar fill */
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(to right, #03A9F4, #00C853);
+  transition: width 0.5s ease;
+  border-radius: 8px 0 0 8px;
+}
+
+/* Percentage label */
+.progress-percentage {
+  font-weight: 700;
+  color: #444;
+  text-align: right;
+  margin-bottom: 30px;
+}
+
+/* Action buttons */
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.btn-primary, .btn-danger {
+  padding: 12px 25px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  color: white;
+  min-width: 140px;
+  text-align: center;
+}
+
+.btn-primary {
+  background-color: #e91e63;
+}
+
+.btn-primary:hover {
+  background-color: #c2185b;
+}
+
+.btn-danger {
+  background-color: #f44336;
+}
+
+.btn-danger:hover {
+  background-color: #d32f2f;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .task-details-container {
+    padding: 20px 15px;
+  }
+
+  .task-title {
+    font-size: 24px;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+
+  .btn-primary, .btn-danger {
+    width: 100%;
+    min-width: unset;
+  }
+}
