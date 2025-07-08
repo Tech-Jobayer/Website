@@ -1,9 +1,15 @@
-Body {
-  font-family: 'Noto Sans Bengali', 'Hind Siliguri', sans-serif;
-  background: #f2f2f2;
+/* style.css */
+* {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Noto Sans Bengali', 'Hind Siliguri', sans-serif;
+  background: #f2f2f2;
   line-height: 1.6;
+  /* padding-top: 54px;  -- এই লাইনটি মুছে ফেলুন, কারণ হেডার ফিক্সড থাকছে না */
 }
 
 .header {
@@ -15,7 +21,8 @@ Body {
   text-align: center;
   gap: 12px;
   border-bottom: 1px solid #ddd;
-  position: relative;
+  position: relative; /* Fixed থেকে Relative করা হয়েছে, তাই হেডার স্ক্রল হবে */
+  /* top, left, width, z-index - এগুলো আর দরকার নেই যদি position: relative; থাকে */
 }
 
 .menu-btn {
@@ -350,7 +357,7 @@ input[type="text"], input[type="email"], input[type="password"] {
   height: 100%;
   /* width: 0; */ /* Managed by .drawer */
   position: fixed;
-  z-index: 1001;
+  z-index: 1001; /* হেডারের (z-index: 1000) উপরে রাখতে */
   top: 0;
   right: 0;
   background-color: #2a313e;
