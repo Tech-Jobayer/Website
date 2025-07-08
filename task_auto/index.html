@@ -21,7 +21,52 @@
   </div>
 </div>
 
+  <div id="sidebar" class="sidebar">
+    <button class="closebtn" onclick="closeSidebar()">&times;</button>
+    <a href="/Website/dashboard/">🏠 ড্যাশবোর্ড</a>
+    <a href="/Website/profile/">👤 প্রোফাইল</a>
+    <a href="/Website/tasks/">📝 টাস্ক</a>
+    <a href="/Website/rewards/">🎁 রিওয়ার্ড</a>
+    <a href="/Website/buy-subscribe/">🛒সাবস্ক্রাইব কিনুন</a>
+    <a href="/Website/support/">📞 সাপোর্ট</a>
+  </div>
 
+  <div id="profileDrawer" class="profile-drawer">
+    <button class="closebtn" onclick="closeProfileDrawer()">&times;</button>
+    <div class="profile-info">
+      <img id="drawerProfileImg" src="https://raw.githubusercontent.com/tech-jobayer/Website/main/data/default-profile.png" alt="Profile" class="profile-img-large">
+      <h3 id="drawerUserName">Guest User</h3>
+      <p id="drawerUserEmail">Not logged in</p>
+      <p id="drawerUserPoints">🔥 0 পয়েন্ট</p>
+      <div class="profile-actions">
+        <button id="drawerLoginSignupBtn" class="btn" onclick="redirectToLogin()">🔐 Login / Signup</button>
+        <button id="drawerLogoutBtn" class="btn" onclick="logout()" style="display: none;">🚪 Logout</button>
+      </div>
+    </div>
+    <div class="profile-drawer-links">
+        <a href="/Website/profile/">👤 প্রোফাইল সেটিংস</a>
+        <a href="/Website/rewards/">🎁 আমার রিওয়ার্ড</a>
+    </div>
+  </div>
+
+  <div class="header">
+  <button id="menuBtn" class="menu-btn">&#9776;</button>
+  <button id="notifyBtn" class="notify-btn">
+    🔔
+    <span class="notify-count">0</span>
+  </button>
+  <h2>JOBAYER</h2>
+  <span id="headerUserPoints" class="header-user-points">
+    </span>
+  <button id="profileBtn" class="profile-btn">
+   <img id="profileImg" src="https://raw.githubusercontent.com/tech-jobayer/Website/main/data/default-profile.png" alt="Profile" class="profile-img">
+  </button>
+</div>
+
+  <div id="loadingScreen">
+    <div class="spinner"></div>
+    <div class="loading-text">অনুগ্রহ করে অপেক্ষা করুন</div>
+  </div>
 <div class="header">
   <h2>টাস্ক বিস্তারিত</h2>
 </div>
