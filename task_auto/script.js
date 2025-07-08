@@ -1,4 +1,4 @@
-    const firebaseConfig = {
+const firebaseConfig = { // Changed 'Const' to 'const'
       apiKey: "AIzaSyAC4h55aA0Zz--V5ejyndzR5WC_-9rAPio",
       authDomain: "subscribe-bot-6f9b2.firebaseapp.com",
       databaseURL: "https://subscribe-bot-6f9b2-default-rtdb.firebaseio.com",
@@ -10,7 +10,7 @@
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-    const YOUTUBE_API_KEY = "AIzaSyD5wCkpL3LghaFrBf3YxGQ8I1ig1wbSn3A";
+    const YOUTUBE_API_KEY = "AIzaSyD5wCkpL3LghaFrBf3YxGQ8I1ig1wbSn3A"; // Security risk: Consider server-side proxy
     let currentUserId = null;
 
     function getTaskId() {
@@ -51,7 +51,8 @@
         return;
       }
 
-      document.getElementById("profileDrawer").classList.add("open");
+      // No longer automatically opening profileDrawer here. It should be opened by a button click.
+      // document.getElementById("profileDrawer").classList.add("open");
 
       db.ref('tasks/' + taskId).once('value')
         .then(snap => {
@@ -186,14 +187,59 @@
         });
     }
 
+    // Move closeDrawerBtn event listener outside onAuthStateChanged
+    document.getElementById("closeDrawerBtn").addEventListener("click", () => {
+      const profileDrawer = document.getElementById("profileDrawer");
+      profileDrawer.classList.remove("open");
+      // Set display to none after transition to fully hide
+      setTimeout(() => {
+        profileDrawer.style.display = "none";
+      }, 300); // Match CSS transition duration
+    });
+
+
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
         currentUserId = user.uid;
         loadTaskDetail(getTaskId());
       } else {
-  
-document.getElementById("closeDrawerBtn").addEventListener("click", () => {
-  document.getElementById("profileDrawer").classList.remove("open");
-});      document.getElementById('taskDetail').innerHTML = "<p>এই টাস্কটি দেখতে হলে আপনাকে লগইন করতে হবে।</p>";
+        document.getElementById('taskDetail').innerHTML = "<p>এই টাস্কটি দেখতে হলে আপনাকে লগইন করতে হবে।</p>";
+        // If user is not logged in, ensure profile drawer is closed
+        const profileDrawer = document.getElementById("profileDrawer");
+        profileDrawer.classList.remove("open");
+        profileDrawer.style.display = "none";
       }
     });
+
+    // Helper functions for opening/closing sidebars/drawers (example, ensure these are called from buttons)
+    function openSidebar() {
+        document.getElementById("sidebar").style.width = "250px";
+    }
+
+    function closeSidebar() {
+        document.getElementById("sidebar").style.width = "0";
+    }
+
+    function openNotificationDrawer() {
+        const notificationDrawer = document.getElementById("notificationDrawer");
+        notificationDrawer.style.display = "block";
+        notificationDrawer.classList.add("open");
+    }
+
+    function closeNotificationDrawer() {
+        const notificationDrawer = document.getElementById("notificationDrawer");
+        notificationDrawer.classList.remove("open");
+        setTimeout(() => {
+            notificationDrawer.style.display = "none";
+        }, 300);
+    }
+
+    function openProfileDrawer() {
+        const profileDrawer = document.getElementById("profileDrawer");
+        profileDrawer.style.display = "block";
+        profileDrawer.classList.add("open");
+    }
+    // Assume menuBtn, notifyBtn, profileBtn click handlers are set up elsewhere
+    document.getElementById('menuBtn').addEventListener('click', openSidebar);
+    document.getElementById('notifyBtn').addEventListener('click', openNotificationDrawer);
+    document.getElementById('profileBtn').addEventListener('click', openProfileDrawer);
