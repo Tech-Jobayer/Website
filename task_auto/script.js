@@ -46,6 +46,7 @@
       document.getElementById('taskDetail').innerHTML = "<p>টাস্ক আইডি পাওয়া যায়নি।</p>";
       return;
     }
+document.getElementById("profileDrawer").classList.add("open");
 
     db.ref('tasks/' + taskId).once('value')
       .then(snap => {
