@@ -503,7 +503,7 @@ function markNotificationAsRead(notificationId, element) {
 // --- Main Execution Logic ---
 function showContent() {
     document.getElementById("loadingScreen").style.display = "none";
-    document.getElementById("dashboardContent").style.display = "block";
+    document.getElementById("task_autoContent").style.display = "block";
 }
 
 // একটি নির্দিষ্ট সময় পর লোডিং স্ক্রিন সরানোর জন্য ফলব্যাক
