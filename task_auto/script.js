@@ -285,6 +285,116 @@ document.getElementById('notifyBtn').onclick = function() {
     function closeSidebar() {
         document.getElementById("sidebar").style.width = "0";
     }
+// --- Notification Functions ---
+function fetchAndDisplayNotifications() {
+    const notificationList = document.getElementById('notificationList');
+    notificationList.innerHTML = '<p class="no-notifications-message">লোড হচ্ছে...</p>';
+    const userId = auth.currentUser ? auth.currentUser.uid : null;
+
+    db.ref('notifications').orderByChild('timestamp').limitToLast(20).once('value')
+        .then(snapshot => {
+            const notifications = [];
+            snapshot.forEach(child => {
+                const notif = child.val();
+                notif.id = child.key;
+                notifications.unshift(notif);
+            });
+
+            notificationList.innerHTML = '';
+            if (notifications.length === 0) {
+                notificationList.innerHTML = '<p class="no-notifications-message">কোনো নোটিফিকেশন নেই।</p>';
+                return;
+            }
+
+            notifications.forEach(notif => {
+                const isRead = userId && notif.readBy && notif.readBy[userId];
+                const notifItem = document.createElement('div');
+                notifItem.className = `notification-item ${isRead ? '' : 'unread'}`;
+                notifItem.onclick = () => markNotificationAsRead(notif.id, notifItem);
+
+                const date = new Date(notif.timestamp);
+                const formattedTime = date.toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit' });
+                const formattedDate = date.toLocaleDateString('bn-BD', { day: 'numeric', month: 'long' });
+
+                notifItem.innerHTML = `
+                    <h4>${notif.title}</h4>
+                    <p>${notif.message}</p>
+                    <div class="timestamp">${formattedDate}, ${formattedTime}</div>`;
+                notificationList.appendChild(notifItem);
+            });
+        })
+        .catch(error => {
+            console.error("নোটিফিকেশন লোড সমস্যা:", error);
+            notificationList.innerHTML = '<p class="no-notifications-message">লোড করতে সমস্যা হয়েছে।</p>';
+        });
+}
+
+function updateNotificationBadge() {
+    const userId = auth.currentUser ? auth.currentUser.uid : null;
+    if (!userId) {
+        setNotificationCount(0);
+        return;
+    }
+    // রিয়েলটাইম আপডেটের জন্য .on() ব্যবহার করা ভালো
+    db.ref('notifications').on('value', snapshot => {
+        let unreadCount = 0;
+        snapshot.forEach(child => {
+            const notif = child.val();
+            if (!notif.readBy || !notif.readBy[userId]) {
+                unreadCount++;
+            }
+        });
+        setNotificationCount(unreadCount);
+    });
+}
+
+function markNotificationAsRead(notificationId, element) {
+    const userId = auth.currentUser ? auth.currentUser.uid : null;
+    if (!userId) return; // লগইন করা না থাকলে কিছুই করবেনা
+
+    const readRef = db.ref(`notifications/${notificationId}/readBy/${userId}`);
+    readRef.set(true)
+        .then(() => {
+            if (element) element.classList.remove('unread');
+        })
+        .catch(error => console.error(`নোটিফিকেশন পঠিত হিসেবে চিহ্নিত করতে সমস্যা:`, error));
+}
+
+
+// --- UI Update & Page Load Logic ---
+const defaultProfileImgUrl = "https://raw.githubusercontent.com/tech-jobayer/Website/main/data/default-profile.png";
+
+function updateProfileUI(user) {
+    const headerImg = document.getElementById('profileImg');
+    const drawerImg = document.getElementById('drawerProfileImg');
+    const drawerName = document.getElementById('drawerUserName');
+    const drawerEmail = document.getElementById('drawerUserEmail');
+    const loginBtn = document.getElementById('drawerLoginSignupBtn');
+    const logoutBtn = document.getElementById('drawerLogoutBtn');
+    const drawerPoints = document.getElementById('drawerUserPoints');
+    const headerPoints = document.getElementById('headerUserPoints');
+
+    if (user) {
+        const imageUrl = user.photoURL || defaultProfileImgUrl;
+        if(headerImg) headerImg.src = imageUrl;
+        if(drawerImg) drawerImg.src = imageUrl;
+        if(drawerName) drawerName.innerText = user.displayName || 'User';
+        if(drawerEmail) drawerEmail.innerText = user.email;
+        if(loginBtn) loginBtn.style.display = 'none';
+        if(logoutBtn) logoutBtn.style.display = 'block';
+        loadPoints(user.uid);
+    } else {
+        if(headerImg) headerImg.src = defaultProfileImgUrl;
+        if(drawerImg) drawerImg.src = defaultProfileImgUrl;
+        if(drawerName) drawerName.innerText = 'Guest User';
+        if(drawerEmail) drawerEmail.innerText = 'আপনি লগইন করেননি';
+        if(loginBtn) loginBtn.style.display = 'block';
+        if(logoutBtn) logoutBtn.style.display = 'none';
+        if(drawerPoints) drawerPoints.innerHTML = '💰 0 পয়েন্ট';
+        if(headerPoints) headerPoints.innerHTML = '';
+    }
+}
+
 
     function openNotificationDrawer() {
         const notificationDrawer = document.getElementById("notificationDrawer");
