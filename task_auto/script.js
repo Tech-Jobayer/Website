@@ -43,6 +43,13 @@ const auth = firebase.auth();
     function hideLoading() {
       document.getElementById('loadingScreen').style.display = 'none';
     }
+document.getElementById('notifyBtn').onclick = function() {
+    openNotificationDrawer(); // সরাসরি এই ফাংশনটি কল করুন
+    closeSidebar();
+    closeProfileDrawer(); // এই ফাংশনটি আপনার কোডে নেই, তাই এটি সমস্যা করতে পারে।
+                          // যদি এই ড্রয়ারগুলি খোলা থাকে তবে সেগুলিকে বন্ধ করার ব্যবস্থা করতে হবে।
+    fetchAndDisplayNotifications();
+};
 
     function loadTaskDetail(taskId) {
       showLoading();
