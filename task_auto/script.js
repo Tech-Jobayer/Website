@@ -499,3 +499,38 @@ function markNotificationAsRead(notificationId, element) {
 };
 
     document.getElementById('profileBtn').addEventListener('click', openProfileDrawer);
+
+// --- Main Execution Logic ---
+function showContent() {
+    document.getElementById("loadingScreen").style.display = "none";
+    document.getElementById("dashboardContent").style.display = "block";
+}
+
+// একটি নির্দিষ্ট সময় পর লোডিং স্ক্রিন সরানোর জন্য ফলব্যাক
+const loadingFallback = setTimeout(showContent, 4000);
+
+auth.onAuthStateChanged(user => {
+    clearTimeout(loadingFallback); // অথ স্ট্যাটাস পেলে ফলব্যাক বন্ধ করুন
+    updateProfileUI(user);
+    updateNotificationBadge();
+    loadTasks(); // ব্যবহারকারী লগইন থাকুক বা না থাকুক, টাস্ক লোড করুন
+    showContent();
+});
+
+// Loading dots animation
+const loadingText = document.querySelector('.loading-text');
+if (loadingText) {
+    let dotCount = 0;
+    setInterval(() => {
+        dotCount = (dotCount + 1) % 4;
+        loadingText.innerHTML = `অনুগ্রহ করে অপেক্ষা করুন${'.'.repeat(dotCount)}`;
+    }, 500);
+}
+
+function setNotificationCount(count) {
+    const notifyCount = document.querySelector('.notify-count');
+    if (notifyCount) {
+        notifyCount.textContent = count;
+        notifyCount.style.display = count > 0 ? 'inline-block' : 'none';
+    }
+}
