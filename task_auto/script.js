@@ -11,9 +11,7 @@ const firebaseConfig = {
 
     firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
-const auth = firebase.auth(); // এই লাইনটি যোগ করুন
-// ...বাকি কোড
-
+const auth = firebase.auth(); 
     const YOUTUBE_API_KEY = "AIzaSyD5wCkpL3LghaFrBf3YxGQ8I1ig1wbSn3A"; // Security risk: Consider server-side proxy
     let currentUserId = null;
 
