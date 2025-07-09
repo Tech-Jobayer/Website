@@ -316,5 +316,12 @@ function markNotificationAsRead(notificationId, element) {
     }
     // Assume menuBtn, notifyBtn, profileBtn click handlers are set up elsewhere
     document.getElementById('menuBtn').addEventListener('click', openSidebar);
-    document.getElementById('notifyBtn').addEventListener('click', openNotificationDrawer);
+    document.getElementById('notifyBtn').onclick = function() {
+    document.getElementById('notificationDrawer').style.display = "block";
+    setTimeout(() => { document.getElementById('notificationDrawer').style.width = "280px"; }, 10);
+    closeSidebar();
+    closeProfileDrawer();
+    fetchAndDisplayNotifications();
+};
+
     document.getElementById('profileBtn').addEventListener('click', openProfileDrawer);
