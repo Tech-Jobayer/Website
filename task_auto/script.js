@@ -44,12 +44,12 @@ const auth = firebase.auth();
       document.getElementById('loadingScreen').style.display = 'none';
     }
 document.getElementById('notifyBtn').onclick = function() {
-    openNotificationDrawer(); // সরাসরি এই ফাংশনটি কল করুন
+    openNotificationDrawer();
     closeSidebar();
-    closeProfileDrawer(); // এই ফাংশনটি আপনার কোডে নেই, তাই এটি সমস্যা করতে পারে।
-                          // যদি এই ড্রয়ারগুলি খোলা থাকে তবে সেগুলিকে বন্ধ করার ব্যবস্থা করতে হবে।
+    closeProfileDrawer(); // নিশ্চিত করুন এই ফাংশনটি উপরে সংজ্ঞায়িত আছে।
     fetchAndDisplayNotifications();
 };
+
 
     function loadTaskDetail(taskId) {
       showLoading();
