@@ -34,19 +34,40 @@ function closeNotificationDrawer() {
     document.getElementById('notificationDrawer').style.width = "0";
     setTimeout(() => { document.getElementById('notificationDrawer').style.display = "none"; }, 300);
 }
-const firebaseConfig = {
-      apiKey: "AIzaSyAC4h55aA0Zz--V5ejyndzR5WC_-9rAPio",
-      authDomain: "subscribe-bot-6f9b2.firebaseapp.com",
-      databaseURL: "https://subscribe-bot-6f9b2-default-rtdb.firebaseio.com",
-      projectId: "subscribe-bot-6f9b2",
-      storageBucket: "subscribe-bot-6f9b2.appspot.com",
-      messagingSenderId: "141787931031",
-      appId: "1:141787931031:web:2108a3e930f5ce4fbc64d2"
-    };
 
-    firebase.initializeApp(firebaseConfig);
+
+// --- Firebase Initialization & Core Functions ---
+const firebaseConfig = {
+    apiKey: "AIzaSyAC4h55aA0Zz--V5ejyndzR5WC_-9rAPio",
+    authDomain: "subscribe-bot-6f9b2.firebaseapp.com",
+    databaseURL: "https://subscribe-bot-6f9b2-default-rtdb.firebaseio.com",
+    projectId: "subscribe-bot-6f9b2",
+    storageBucket: "subscribe-bot-6f9b2.appspot.com",
+    messagingSenderId: "141787931031",
+    appId: "1:141787931031:web:2108a3e930f5ce4fbc64d2"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
 const db = firebase.database();
-const auth = firebase.auth(); 
+
+function logout() {
+    auth.signOut().catch(error => console.error("Logout error:", error));
+}
+
+
+// --- Data Loading and Display Functions ---
+function loadPoints(uid) {
+    const headerPointsEl = document.getElementById('headerUserPoints');
+    const drawerPointsEl = document.getElementById('drawerUserPoints');
+    const userPointsRef = db.ref(`users/${uid}/points`);
+
+    userPointsRef.on('value', snap => {
+        const points = snap.val() || 0;
+        if (headerPointsEl) headerPointsEl.innerHTML = `💰 ${points}`;
+        if (drawerPointsEl) drawerPointsEl.innerHTML = `💰 ${points} পয়েন্ট`;
+    });
+}
     const YOUTUBE_API_KEY = "AIzaSyD5wCkpL3LghaFrBf3YxGQ8I1ig1wbSn3A"; // Security risk: Consider server-side proxy
     let currentUserId = null;
 
