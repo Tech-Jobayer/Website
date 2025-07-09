@@ -188,6 +188,7 @@ const firebaseConfig = {
         });
     }
 
+
     // Move closeDrawerBtn event listener outside onAuthStateChanged
     document.getElementById("closeDrawerBtn").addEventListener("click", () => {
       const profileDrawer = document.getElementById("profileDrawer");
