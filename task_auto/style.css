@@ -560,18 +560,23 @@ input[type="text"], input[type="email"], input[type="password"] {
 /* --- Notification Drawer Styles --- */
 .notification-drawer {
   height: 100%;
-  /* width: 0; */ /* Managed by .drawer */
+  width: 300px; /* এটি ড্রয়ারের সর্বোচ্চ প্রস্থ, যা খোলার সময় হবে */
   position: fixed;
   z-index: 1000;
   top: 0;
   right: 0;
   background-color: #2a313e;
   overflow-x: hidden;
-  /* transition: 0.3s ease-in-out; */ /* Managed by .drawer */
   padding-top: 60px;
   box-shadow: -4px 0 10px rgba(0,0,0,0.3);
   color: white;
-  /* display: none; */ /* Managed by .drawer */
+  transform: translateX(100%); /* এটি ড্রয়ারকে স্ক্রিনের ডান পাশে লুকিয়ে রাখবে */
+  transition: transform 0.3s ease-in-out; /* শুধু transform-এর জন্য transition ব্যবহার করুন */
+}
+
+/* এই নতুন ক্লাসটি জাভাস্ক্রিপ্ট দ্বারা যোগ করা হবে যখন ড্রয়ার খোলা হবে */
+.notification-drawer.open {
+  transform: translateX(0); /* ড্রয়ারকে স্ক্রিনে স্লাইড করে নিয়ে আসবে */
 }
 
 /* নোটিফিকেশন ড্রয়ারের ক্লোজ বাটন */
