@@ -1,38 +1,75 @@
 // --- Drawer Control Functions ---
+// মেনু বাটন ক্লিক হ্যান্ডলার
 document.getElementById('menuBtn').onclick = function() {
-    document.getElementById('sidebar').style.width = "240px";
+    openSidebar();
     closeProfileDrawer();
     closeNotificationDrawer();
 };
+
+function openSidebar() {
+    document.getElementById('sidebar').style.width = "240px";
+}
 
 function closeSidebar() {
     document.getElementById('sidebar').style.width = "0";
 }
 
+// প্রোফাইল বাটন ক্লিক হ্যান্ডলার
 document.getElementById('profileBtn').onclick = function() {
-    document.getElementById('profileDrawer').style.display = "block";
-    setTimeout(() => { document.getElementById('profileDrawer').style.width = "280px"; }, 10);
+    openProfileDrawer();
     closeSidebar();
     closeNotificationDrawer();
 };
 
-function closeProfileDrawer() {
-    document.getElementById('profileDrawer').style.width = "0";
-    setTimeout(() => { document.getElementById('profileDrawer').style.display = "none"; }, 300);
+function openProfileDrawer() {
+    const profileDrawer = document.getElementById('profileDrawer');
+    profileDrawer.style.display = "block"; // ড্রয়ার দৃশ্যমান করুন
+    // ছোট বিরতি দিন যাতে 'display: block' কার্যকর হয় তারপর ট্রানজিশন শুরু হয়
+    setTimeout(() => {
+        profileDrawer.classList.add("open"); // CSS ট্রানজিশনের জন্য 'open' ক্লাস যোগ করুন
+    }, 10);
+    updateProfileUI(auth.currentUser); // প্রোফাইল UI আপডেট করুন
 }
 
+function closeProfileDrawer() {
+    const profileDrawer = document.getElementById('profileDrawer');
+    profileDrawer.classList.remove("open"); // 'open' ক্লাস সরিয়ে ড্রয়ার বন্ধ করুন
+    // ট্রানজিশন শেষ হলে ড্রয়ার লুকিয়ে ফেলুন
+    setTimeout(() => {
+        profileDrawer.style.display = "none";
+    }, 300); // CSS transition duration এর সাথে মিলিয়ে
+}
+
+// নোটিফিকেশন বাটন ক্লিক হ্যান্ডলার
 document.getElementById('notifyBtn').onclick = function() {
-    document.getElementById('notificationDrawer').style.display = "block";
-    setTimeout(() => { document.getElementById('notificationDrawer').style.width = "280px"; }, 10);
+    openNotificationDrawer();
     closeSidebar();
     closeProfileDrawer();
-    fetchAndDisplayNotifications();
+    fetchAndDisplayNotifications(); // নোটিফিকেশন লোড করুন
 };
 
-function closeNotificationDrawer() {
-    document.getElementById('notificationDrawer').style.width = "0";
-    setTimeout(() => { document.getElementById('notificationDrawer').style.display = "none"; }, 300);
+function openNotificationDrawer() {
+    const notificationDrawer = document.getElementById('notificationDrawer');
+    notificationDrawer.style.display = "block"; // ড্রয়ার দৃশ্যমান করুন
+    // ছোট বিরতি দিন যাতে 'display: block' কার্যকর হয় তারপর ট্রানজিশন শুরু হয়
+    setTimeout(() => {
+        notificationDrawer.classList.add("open"); // CSS ট্রানজিশনের জন্য 'open' ক্লাস যোগ করুন
+    }, 10);
 }
+
+function closeNotificationDrawer() {
+    const notificationDrawer = document.getElementById('notificationDrawer');
+    notificationDrawer.classList.remove("open"); // 'open' ক্লাস সরিয়ে ড্রয়ার বন্ধ করুন
+    // ট্রানজিশন শেষ হলে ড্রয়ার লুকিয়ে ফেলুন
+    setTimeout(() => {
+        notificationDrawer.style.display = "none";
+    }, 300); // CSS transition duration এর সাথে মিলিয়ে
+}
+
+// closeDrawerBtn (প্রোফাইল ড্রয়ারের বন্ধ করুন বাটন)
+document.getElementById("closeDrawerBtn").addEventListener("click", () => {
+    closeProfileDrawer();
+});
 
 
 // --- Firebase Initialization & Core Functions ---
@@ -68,49 +105,243 @@ function loadPoints(uid) {
     });
 }
 
-function loadTasks() {
-    const list = document.getElementById("taskList");
-    list.innerHTML = `<p>টাস্ক লোড হচ্ছে...</p>`; // প্রাথমিক লোডিং বার্তা
+// লোডিং স্ক্রিন ফাংশন
+function showLoading() {
+  const loadingScreen = document.getElementById('loadingScreen');
+  if (loadingScreen) {
+    loadingScreen.style.display = 'flex';
+  }
+}
 
-    db.ref('tasks').once('value')
-        .then(snap => {
-            const data = snap.val();
-            list.innerHTML = '';
-            if (!data) {
-                list.innerHTML = "<p class='task-message'>😢 কোনো টাস্ক নেই</p>";
-                return;
-            }
-            Object.entries(data).forEach(([key, ch]) => {
-                const percentage = ch.max > 0 ? Math.round((ch.completed / ch.max) * 100) : 0;
-                const cardLink = document.createElement('a');
-                cardLink.href = `/Website/task_auto/?taskId=${encodeURIComponent(key)}`;
-                cardLink.target = "_blank";
-                cardLink.rel = "noopener noreferrer";
-                cardLink.className = "card-link";
-                cardLink.innerHTML = `
-                    <div class="card">
-                        <div class="card-header"><h3>${ch.title}</h3></div>
-                        <p>সাবস্ক্রাইবার: ${ch.completed} / ${ch.max}</p>
-                        <div class="progress-container">
-                            <div class="progress-percentage">${percentage}%</div>
-                            <div class="progress"><div class="progress-bar" style="width: ${percentage}%"></div></div>
-                        </div>
-                    </div>`;
-                list.appendChild(cardLink);
-            });
-        })
-        .catch(err => {
-            console.error("টাস্ক লোড সমস্যা:", err);
-            list.innerHTML = "<p class='task-message'>❌ টাস্ক লোড করতে সমস্যা হয়েছে</p>";
-        });
+function hideLoading() {
+  const loadingScreen = document.getElementById('loadingScreen');
+  if (loadingScreen) {
+    loadingScreen.style.display = 'none';
+  }
 }
 
 
+const YOUTUBE_API_KEY = "AIzaSyD5wCkpL3LghaFrBf3YxGQ8I1ig1wbSn3A"; // Security risk: Consider server-side proxy
+let currentUserId = null;
+
+function getTaskId() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('taskId');
+}
+
+function extractChannelId(url) {
+  const match = url.match(/(?:youtube\.com\/(?:channel\/|user\/|c\/)|youtu\.be\/|youtube\.com\/watch\?v=.*?&channel=)([\w-]{24}|[\w-]+)/);
+  return match ? match[1] : null;
+}
+
+async function getYouTubeSubscriberCount(channelId, apiKey) {
+  const apiUrl = `https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${channelId}&fields=items%2Fstatistics%2FsubscriberCount&key=${apiKey}`;
+  const response = await fetch(apiUrl);
+  const data = await response.json();
+  if (response.ok && data.items?.length > 0) {
+    return parseInt(data.items[0].statistics.subscriberCount);
+  } else {
+    throw new Error("সাবস্ক্রাইবার ডেটা লোড করা যায়নি।");
+  }
+}
+
+
+function loadTaskDetail(taskId) {
+  showLoading();
+
+  if (!taskId) {
+    document.getElementById('taskDetail').innerHTML = "<p>টাস্ক আইডি পাওয়া যায়নি।</p>";
+    hideLoading();
+    return;
+  }
+
+  db.ref('tasks/' + taskId).once('value')
+    .then(snap => {
+      const ch = snap.val();
+      if (!ch) {
+        document.getElementById('taskDetail').innerHTML = "<p>টাস্ক পাওয়া যায়নি।</p>";
+        hideLoading();
+        return;
+      }
+
+      const taskDetailDiv = document.getElementById('taskDetail');
+      taskDetailDiv.innerHTML = `
+        <h3>${ch.title}</h3>
+        <p><strong>সাবস্ক্রাইবার:</strong> <span id="currentCompleted">${ch.completed}</span> / ${ch.max}</p>
+        <div class="progress"><div class="progress-bar" style="width: ${(ch.completed / ch.max) * 100}%"></div></div>
+        <p style="margin-top: 15px;">${ch.description || "বিস্তারিত তথ্য উপলব্ধ নেই।"}</p>
+        <div id="initialButtons" style="margin-top: 20px;">
+          <button id="showChannelLinkBtn" class="btn btn-primary">চ্যানেলের লিংক</button>
+          <a href="index.html" class="btn btn-danger" style="margin-left: 10px;">⬅️ ড্যাশবোর্ডে ফিরে যাও</a>
+        </div>
+        <div id="channelLinkSection" style="display: none; margin-top: 20px;"></div>
+        <div id="confirmationSection" style="display: none; margin-top: 20px;"></div>
+      `;
+
+      hideLoading();
+
+      const showChannelLinkBtn = document.getElementById('showChannelLinkBtn');
+      const channelLinkSection = document.getElementById('channelLinkSection');
+      const confirmationSection = document.getElementById('confirmationSection');
+      const currentCompletedSpan = document.getElementById('currentCompleted');
+
+      showChannelLinkBtn.addEventListener('click', async () => {
+        if (!currentUserId) {
+          alert('অনুগ্রহ করে লগইন করুন।');
+          return;
+        }
+
+        document.getElementById('initialButtons').style.display = 'none';
+        channelLinkSection.style.display = 'block';
+
+        try {
+          const channelId = extractChannelId(ch.link);
+          if (!channelId) {
+            alert('চ্যানেল আইডি পাওয়া যায়নি।');
+            return;
+          }
+
+          const beforeCount = await getYouTubeSubscriberCount(channelId, YOUTUBE_API_KEY);
+
+          await db.ref('users/' + currentUserId + '/taskProgress/' + taskId).set({
+            beforeCount,
+            status: 'started',
+            startTime: firebase.database.ServerValue.TIMESTAMP
+          });
+
+          channelLinkSection.innerHTML = `
+            <p>চ্যানেলের লিংক: <a href="${ch.link}" target="_blank">${ch.link}</a></p>
+            <p id="beforeCountDisplay">🔢 সাবস্ক্রাইবার সংখ্যা (শুরুর সময়): ${beforeCount}</p>
+            <a href="${ch.link}" target="_blank" class="btn btn-primary" style="margin-top: 10px;">➡️ সাবস্ক্রাইব করতে এখানে ক্লিক করো</a>
+            <button id="doneBtn" class="btn btn-success" style="margin-left: 10px;">Done ✅</button>
+          `;
+
+          document.getElementById('doneBtn').addEventListener('click', () => {
+            channelLinkSection.style.display = 'none';
+            confirmationSection.style.display = 'block';
+            confirmationSection.innerHTML = `
+              <p>আপনি কি সত্যিই সাবস্ক্রাইব করেছেন?</p>
+              <button id="iHaveSubscribedBtn" class="btn btn-success">আমি সাবস্ক্রাইব করেছি</button>
+            `;
+
+            document.getElementById('iHaveSubscribedBtn').addEventListener('click', async () => {
+              try {
+                const taskProgressSnap = await db.ref('users/' + currentUserId + '/taskProgress/' + taskId).once('value');
+                const progress = taskProgressSnap.val();
+                if (!progress || progress.status !== 'started') {
+                  alert('আপনার টাস্ক শুরু হয়নি।');
+                  return;
+                }
+
+                const newCount = await getYouTubeSubscriberCount(channelId, YOUTUBE_API_KEY);
+                confirmationSection.innerHTML += `<p>🔁 বর্তমান সাবস্ক্রাইবার সংখ্যা: ${newCount}</p>`;
+
+                const difference = newCount - progress.beforeCount;
+                if (difference > 0) {
+                  confirmationSection.innerHTML += `<p style="color:green;">🎉 সাবস্ক্রাইব বেড়েছে: ${difference} জন</p>`;
+
+                  await Promise.all([
+                    db.ref('tasks/' + taskId).transaction(data => {
+                      if (data && data.completed < data.max) {
+                        data.completed += 1;
+                      }
+                      return data;
+                    }),
+                    db.ref('users/' + currentUserId + '/points').transaction(points => (points || 0) + 1),
+                    db.ref('users/' + currentUserId + '/taskProgress/' + taskId).update({
+                      status: 'completed',
+                      completionTime: firebase.database.ServerValue.TIMESTAMP
+                    })
+                  ]);
+
+                  db.ref('tasks/' + taskId).once('value').then(updatedSnap => {
+                    const updated = updatedSnap.val();
+                    if (updated) {
+                      currentCompletedSpan.textContent = updated.completed;
+                      document.querySelector('.progress-bar').style.width = `${(updated.completed / updated.max) * 100}%`;
+                    }
+                  });
+
+                  alert('✅ সাবস্ক্রিপশন সফল! আপনাকে 1 পয়েন্ট দেওয়া হয়েছে।');
+                  window.location.href = 'index.html';
+                } else {
+                  confirmationSection.innerHTML += `<p style="color:red;">⚠️ সাবস্ক্রাইব সংখ্যা বাড়েনি। অনুগ্রহ করে সাবস্ক্রাইব করুন।</p>`;
+                  alert('সাবস্ক্রাইব নিশ্চিত হয়নি। আবার চেষ্টা করুন।');
+                }
+              } catch (err) {
+                console.error(err);
+                alert('সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+              }
+            });
+          });
+
+        } catch (error) {
+          console.error(error);
+          alert('সাবস্ক্রাইবার সংখ্যা লোড করতে ব্যর্থ।');
+        }
+      });
+    })
+    .catch(err => {
+      console.error(err);
+      document.getElementById('taskDetail').innerHTML = "<p>ডেটা লোড করতে সমস্যা হয়েছে।</p>";
+      hideLoading();
+    });
+}
+
+
+// --- UI Update & Page Load Logic ---
+const defaultProfileImgUrl = "https://raw.githubusercontent.com/tech-jobayer/Website/main/data/default-profile.png";
+
+function updateProfileUI(user) {
+    const headerImg = document.getElementById('profileImg');
+    const drawerImg = document.getElementById('drawerProfileImg');
+    const drawerName = document.getElementById('drawerUserName');
+    const drawerEmail = document.getElementById('drawerUserEmail');
+    const loginBtn = document.getElementById('drawerLoginSignupBtn');
+    const logoutBtn = document.getElementById('drawerLogoutBtn');
+    const drawerPoints = document.getElementById('drawerUserPoints');
+    const headerPoints = document.getElementById('headerUserPoints');
+
+    if (user) {
+        const imageUrl = user.photoURL || defaultProfileImgUrl;
+        if(headerImg) headerImg.src = imageUrl;
+        if(drawerImg) drawerImg.src = imageUrl;
+        if(drawerName) drawerName.innerText = user.displayName || 'User';
+        if(drawerEmail) drawerEmail.innerText = user.email;
+        if(loginBtn) loginBtn.style.display = 'none';
+        if(logoutBtn) logoutBtn.style.display = 'block';
+        loadPoints(user.uid);
+    } else {
+        if(headerImg) headerImg.src = defaultProfileImgUrl;
+        if(drawerImg) drawerImg.src = defaultProfileImgUrl;
+        if(drawerName) drawerName.innerText = 'Guest User';
+        if(drawerEmail) drawerEmail.innerText = 'আপনি লগইন করেননি';
+        if(loginBtn) loginBtn.style.display = 'block';
+        if(logoutBtn) logoutBtn.style.display = 'none';
+        if(drawerPoints) drawerPoints.innerHTML = '💰 0 পয়েন্ট';
+        if(headerPoints) headerPoints.innerHTML = '';
+    }
+}
+
 // --- Notification Functions ---
+function setNotificationCount(count) {
+    const notifyCountSpan = document.querySelector('.notify-count');
+    if (notifyCountSpan) {
+        notifyCountSpan.textContent = count > 0 ? count : 0;
+        // যদি নোটিফিকেশন না থাকে তাহলে ব্যাজটি লুকিয়ে রাখতে পারেন
+        notifyCountSpan.style.display = count > 0 ? 'flex' : 'none';
+    }
+}
+
 function fetchAndDisplayNotifications() {
     const notificationList = document.getElementById('notificationList');
     notificationList.innerHTML = '<p class="no-notifications-message">লোড হচ্ছে...</p>';
     const userId = auth.currentUser ? auth.currentUser.uid : null;
+
+    if (!userId) {
+        notificationList.innerHTML = '<p class="no-notifications-message">নোটিফিকেশন দেখতে লগইন করুন।</p>';
+        return;
+    }
 
     db.ref('notifications').orderByChild('timestamp').limitToLast(20).once('value')
         .then(snapshot => {
@@ -123,7 +354,7 @@ function fetchAndDisplayNotifications() {
 
             notificationList.innerHTML = '';
             if (notifications.length === 0) {
-                notificationList.innerHTML = '<p class="no-notifications-message">কোনো নোটিফিকেশন নেই।</p>';
+                notificationList.innerHTML = '<p class="no-notifications-message">কোনো নতুন নোটিফিকেশন নেই।</p>';
                 return;
             }
 
@@ -177,76 +408,7 @@ function markNotificationAsRead(notificationId, element) {
     readRef.set(true)
         .then(() => {
             if (element) element.classList.remove('unread');
+            updateNotificationBadge(); // নোটিফিকেশন পঠিত হলে ব্যাজ আপডেট করুন
         })
         .catch(error => console.error(`নোটিফিকেশন পঠিত হিসেবে চিহ্নিত করতে সমস্যা:`, error));
-}
-
-
-// --- UI Update & Page Load Logic ---
-const defaultProfileImgUrl = "https://raw.githubusercontent.com/tech-jobayer/Website/main/data/default-profile.png";
-
-function updateProfileUI(user) {
-    const headerImg = document.getElementById('profileImg');
-    const drawerImg = document.getElementById('drawerProfileImg');
-    const drawerName = document.getElementById('drawerUserName');
-    const drawerEmail = document.getElementById('drawerUserEmail');
-    const loginBtn = document.getElementById('drawerLoginSignupBtn');
-    const logoutBtn = document.getElementById('drawerLogoutBtn');
-    const drawerPoints = document.getElementById('drawerUserPoints');
-    const headerPoints = document.getElementById('headerUserPoints');
-
-    if (user) {
-        const imageUrl = user.photoURL || defaultProfileImgUrl;
-        if(headerImg) headerImg.src = imageUrl;
-        if(drawerImg) drawerImg.src = imageUrl;
-        if(drawerName) drawerName.innerText = user.displayName || 'User';
-        if(drawerEmail) drawerEmail.innerText = user.email;
-        if(loginBtn) loginBtn.style.display = 'none';
-        if(logoutBtn) logoutBtn.style.display = 'block';
-        loadPoints(user.uid);
-    } else {
-        if(headerImg) headerImg.src = defaultProfileImgUrl;
-        if(drawerImg) drawerImg.src = defaultProfileImgUrl;
-        if(drawerName) drawerName.innerText = 'Guest User';
-        if(drawerEmail) drawerEmail.innerText = 'আপনি লগইন করেননি';
-        if(loginBtn) loginBtn.style.display = 'block';
-        if(logoutBtn) logoutBtn.style.display = 'none';
-        if(drawerPoints) drawerPoints.innerHTML = '💰 0 পয়েন্ট';
-        if(headerPoints) headerPoints.innerHTML = '';
-    }
-}
-
-// --- Main Execution Logic ---
-function showContent() {
-    document.getElementById("loadingScreen").style.display = "none";
-    document.getElementById("dashboardContent").style.display = "block";
-}
-
-// একটি নির্দিষ্ট সময় পর লোডিং স্ক্রিন সরানোর জন্য ফলব্যাক
-const loadingFallback = setTimeout(showContent, 4000);
-
-auth.onAuthStateChanged(user => {
-    clearTimeout(loadingFallback); // অথ স্ট্যাটাস পেলে ফলব্যাক বন্ধ করুন
-    updateProfileUI(user);
-    updateNotificationBadge();
-    loadTasks(); // ব্যবহারকারী লগইন থাকুক বা না থাকুক, টাস্ক লোড করুন
-    showContent();
-});
-
-// Loading dots animation
-const loadingText = document.querySelector('.loading-text');
-if (loadingText) {
-    let dotCount = 0;
-    setInterval(() => {
-        dotCount = (dotCount + 1) % 4;
-        loadingText.innerHTML = `অনুগ্রহ করে অপেক্ষা করুন${'.'.repeat(dotCount)}`;
-    }, 500);
-}
-
-function setNotificationCount(count) {
-    const notifyCount = document.querySelector('.notify-count');
-    if (notifyCount) {
-        notifyCount.textContent = count;
-        notifyCount.style.display = count > 0 ? 'inline-block' : 'none';
-    }
 }
