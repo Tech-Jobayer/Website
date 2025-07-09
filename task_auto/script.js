@@ -1,4 +1,39 @@
 /* location: Website/task_auto/script.js */
+// --- Drawer Control Functions ---
+document.getElementById('menuBtn').onclick = function() {
+    document.getElementById('sidebar').style.width = "240px";
+    closeProfileDrawer();
+    closeNotificationDrawer();
+};
+
+function closeSidebar() {
+    document.getElementById('sidebar').style.width = "0";
+}
+
+document.getElementById('profileBtn').onclick = function() {
+    document.getElementById('profileDrawer').style.display = "block";
+    setTimeout(() => { document.getElementById('profileDrawer').style.width = "280px"; }, 10);
+    closeSidebar();
+    closeNotificationDrawer();
+};
+
+function closeProfileDrawer() {
+    document.getElementById('profileDrawer').style.width = "0";
+    setTimeout(() => { document.getElementById('profileDrawer').style.display = "none"; }, 300);
+}
+
+document.getElementById('notifyBtn').onclick = function() {
+    document.getElementById('notificationDrawer').style.display = "block";
+    setTimeout(() => { document.getElementById('notificationDrawer').style.width = "280px"; }, 10);
+    closeSidebar();
+    closeProfileDrawer();
+    fetchAndDisplayNotifications();
+};
+
+function closeNotificationDrawer() {
+    document.getElementById('notificationDrawer').style.width = "0";
+    setTimeout(() => { document.getElementById('notificationDrawer').style.display = "none"; }, 300);
+}
 const firebaseConfig = {
       apiKey: "AIzaSyAC4h55aA0Zz--V5ejyndzR5WC_-9rAPio",
       authDomain: "subscribe-bot-6f9b2.firebaseapp.com",
