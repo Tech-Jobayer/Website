@@ -83,7 +83,7 @@ function loadTasks() {
             Object.entries(data).forEach(([key, ch]) => {
                 const percentage = ch.max > 0 ? Math.round((ch.completed / ch.max) * 100) : 0;
                 const cardLink = document.createElement('a');
-                cardLink.href = `./Website/task_details?taskId=${encodeURIComponent(key)}`;
+                cardLink.href = `./Website/task_auto?taskId=${encodeURIComponent(key)}`;
                 cardLink.target = "_blank";
                 cardLink.rel = "noopener noreferrer";
                 cardLink.className = "card-link";
