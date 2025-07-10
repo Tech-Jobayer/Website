@@ -1,19 +1,223 @@
-<!-- Profile Drawer -->
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Profile Drawer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri&family=Noto+Sans+Bengali&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Noto Sans Bengali', 'Hind Siliguri', sans-serif;
+      background: #f2f2f2;
+      margin: 0;
+      padding: 0;
+    }
 
-<div id="profileDrawer" class="profile-drawer">
-  <button class="closebtn" onclick="closeProfileDrawer()">&times;</button>
-  <div class="profile-info">
-    <img id="drawerProfileImg" src="https://raw.githubusercontent.com/tech-jobayer/Website/main/data/default-profile.png" alt="Profile" class="profile-img-large">
-    <h3 id="drawerUserName">Guest User</h3>
-    <p id="drawerUserEmail">Not logged in</p>
-    <p id="drawerUserPoints">🔥 0 পয়েন্ট</p>
-    <div class="profile-actions">
-      <button id="drawerLoginSignupBtn" class="btn" onclick="redirectToLogin()">🔐 Login / Signup</button>
-      <button id="drawerLogoutBtn" class="btn" onclick="logout()" style="display: none;">🚪 Logout</button>
+    .profile-drawer {
+      height: 100%;
+      width: 0;
+      position: fixed;
+      z-index: 1001;
+      top: 0;
+      right: 0;
+      background-color: #2a313e;
+      overflow-x: hidden;
+      transition: 0.3s ease-in-out;
+      padding-top: 60px;
+      box-shadow: -4px 0 10px rgba(0,0,0,0.3);
+      color: white;
+      text-align: center;
+      display: none;
+    }
+
+    .profile-drawer .closebtn {
+      position: absolute;
+      top: 12px;
+      left: 16px;
+      font-size: 36px;
+      background: none;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .profile-info {
+      padding: 20px 15px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      margin-bottom: 20px;
+    }
+
+    .profile-img-large {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 0 auto 10px;
+      border: 3px solid #e91e63;
+      box-shadow: 0 0 8px rgba(233, 30, 99, 0.5);
+    }
+
+    .profile-info h3 {
+      margin: 10px 0 5px;
+      color: #fff;
+      font-size: 1.4em;
+    }
+
+    .profile-info p {
+      margin: 5px 0;
+      color: #bbb;
+      font-size: 0.95em;
+    }
+
+    .profile-actions {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 0 20px;
+    }
+
+    .profile-drawer .btn {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px 15px;
+      font-size: 1em;
+      background-color: #e91e63;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .profile-drawer .btn:hover {
+      background-color: #c2185b;
+      transform: translateY(-2px);
+    }
+
+    .profile-drawer-links {
+      padding-bottom: 20px;
+    }
+
+    .profile-drawer-links a {
+      padding: 15px 20px;
+      text-decoration: none;
+      font-size: 1em;
+      color: #ccc;
+      display: block;
+      transition: 0.2s;
+      text-align: left;
+    }
+
+    .profile-drawer-links a:hover {
+      color: #fff;
+      background-color: #314156;
+    }
+
+    @media (max-width: 600px) {
+      .profile-drawer {
+        width: 250px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Drawer Toggle Button -->
+  <button id="profileBtn" style="position:fixed;top:20px;right:20px;padding:10px 15px;">👤 প্রোফাইল</button>
+  <img id="profileImg" src="https://raw.githubusercontent.com/tech-jobayer/Website/main/data/default-profile.png" style="display:none;" />
+
+  <!-- Profile Drawer -->
+  <div id="profileDrawer" class="profile-drawer">
+    <button class="closebtn" onclick="closeProfileDrawer()">&times;</button>
+    <div class="profile-info">
+      <img id="drawerProfileImg" src="https://raw.githubusercontent.com/tech-jobayer/Website/main/data/default-profile.png" alt="Profile" class="profile-img-large">
+      <h3 id="drawerUserName">Guest User</h3>
+      <p id="drawerUserEmail">Not logged in</p>
+      <p id="drawerUserPoints">🔥 0 পয়েন্ট</p>
+      <div class="profile-actions">
+        <button id="drawerLoginSignupBtn" class="btn" onclick="redirectToLogin()">🔐 Login / Signup</button>
+        <button id="drawerLogoutBtn" class="btn" onclick="logout()" style="display: none;">🚪 Logout</button>
+      </div>
+    </div>
+    <div class="profile-drawer-links">
+      <a href="/Website/profile/">👤 প্রোফাইল সেটিংস</a>
+      <a href="/Website/rewards/">🎁 আমার রিওয়ার্ড</a>
     </div>
   </div>
-  <div class="profile-drawer-links">
-    <a href="/Website/profile/">👤 প্রোফাইল সেটিংস</a>
-    <a href="/Website/rewards/">🎁 আমার রিওয়ার্ড</a>
-  </div>
-</div>
+
+  <script>
+    // Drawer Open
+    document.getElementById('profileBtn').onclick = function () {
+      const drawer = document.getElementById('profileDrawer');
+      drawer.style.display = "block";
+      setTimeout(() => {
+        drawer.style.width = "280px";
+      }, 10);
+      if (typeof closeSidebar === "function") closeSidebar();
+      if (typeof closeNotificationDrawer === "function") closeNotificationDrawer();
+    };
+
+    // Drawer Close
+    function closeProfileDrawer() {
+      const drawer = document.getElementById('profileDrawer');
+      drawer.style.width = "0";
+      setTimeout(() => {
+        drawer.style.display = "none";
+      }, 300);
+    }
+
+    // Redirect Login
+    function redirectToLogin() {
+      window.location.href = "/Website/login/";
+    }
+
+    // Dummy logout
+    function logout() {
+      alert("লগআউট সম্পন্ন হয়েছে");
+      updateProfileUI(null);
+    }
+
+    // Update UI
+    function updateProfileUI(user) {
+      const headerImg = document.getElementById('profileImg');
+      const drawerImg = document.getElementById('drawerProfileImg');
+      const drawerName = document.getElementById('drawerUserName');
+      const drawerEmail = document.getElementById('drawerUserEmail');
+      const loginBtn = document.getElementById('drawerLoginSignupBtn');
+      const logoutBtn = document.getElementById('drawerLogoutBtn');
+      const drawerPoints = document.getElementById('drawerUserPoints');
+      const defaultProfileImgUrl = "https://raw.githubusercontent.com/tech-jobayer/Website/main/data/default-profile.png";
+
+      if (user) {
+        const imageUrl = user.photoURL || defaultProfileImgUrl;
+        headerImg.src = imageUrl;
+        drawerImg.src = imageUrl;
+        drawerName.innerText = user.displayName || 'User';
+        drawerEmail.innerText = user.email;
+        loginBtn.style.display = 'none';
+        logoutBtn.style.display = 'block';
+        drawerPoints.innerHTML = '🔥 ' + (user.points || 0) + ' পয়েন্ট';
+      } else {
+        headerImg.src = defaultProfileImgUrl;
+        drawerImg.src = defaultProfileImgUrl;
+        drawerName.innerText = 'Guest User';
+        drawerEmail.innerText = 'আপনি লগইন করেননি';
+        loginBtn.style.display = 'block';
+        logoutBtn.style.display = 'none';
+        drawerPoints.innerHTML = '💰 0 পয়েন্ট';
+      }
+    }
+
+    // উদাহরণ ইউজার লোড (ডেমো)
+    const exampleUser = {
+      displayName: "Jobayer",
+      email: "jobayer@example.com",
+      photoURL: "https://i.ibb.co/vZysx0M/user.png",
+      points: 120
+    };
+    updateProfileUI(exampleUser);
+  </script>
+
+</body>
+</html>
