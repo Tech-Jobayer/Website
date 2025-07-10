@@ -243,7 +243,7 @@ if (loadingText) {
     }, 500);
 }
 
-function redirectToLogin() {
+function redirectTologin() {
     window.location.href = "/Website/login/"; // ✅ এখানে তোমার প্রকৃত লগইন পেইজের path বসাও
 }
 
