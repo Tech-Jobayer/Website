@@ -1,18 +1,11 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Profile Drawer</title>
-  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri&family=Noto+Sans+Bengali&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: 'Noto Sans Bengali', 'Hind Siliguri', sans-serif;
-      background: #f2f2f2;
-      margin: 0;
-      padding: 0;
-    }
-
+    /* --- Profile Drawer Styles --- */
     .profile-drawer {
       height: 100%;
       width: 0;
@@ -123,101 +116,119 @@
 </head>
 <body>
 
-  <!-- Drawer Toggle Button -->
-  <button id="profileBtn" style="position:fixed;top:20px;right:20px;padding:10px 15px;">👤 প্রোফাইল</button>
-  <img id="profileImg" src="https://raw.githubusercontent.com/tech-jobayer/Website/main/data/default-profile.png" style="display:none;" />
-
-  <!-- Profile Drawer -->
-  <div id="profileDrawer" class="profile-drawer">
-    <button class="closebtn" onclick="closeProfileDrawer()">&times;</button>
-    <div class="profile-info">
-      <img id="drawerProfileImg" src="https://raw.githubusercontent.com/tech-jobayer/Website/main/data/default-profile.png" alt="Profile" class="profile-img-large">
-      <h3 id="drawerUserName">Guest User</h3>
-      <p id="drawerUserEmail">Not logged in</p>
-      <p id="drawerUserPoints">🔥 0 পয়েন্ট</p>
-      <div class="profile-actions">
-        <button id="drawerLoginSignupBtn" class="btn" onclick="redirectToLogin()">🔐 Login / Signup</button>
-        <button id="drawerLogoutBtn" class="btn" onclick="logout()" style="display: none;">🚪 Logout</button>
-      </div>
-    </div>
-    <div class="profile-drawer-links">
-      <a href="/Website/profile/">👤 প্রোফাইল সেটিংস</a>
-      <a href="/Website/rewards/">🎁 আমার রিওয়ার্ড</a>
+<!-- Profile Drawer -->
+<div id="profileDrawer" class="profile-drawer">
+  <button class="closebtn" onclick="closeProfileDrawer()">&times;</button>
+  <div class="profile-info">
+    <img id="drawerProfileImg" src="https://raw.githubusercontent.com/tech-jobayer/Website/main/data/default-profile.png" alt="Profile" class="profile-img-large">
+    <h3 id="drawerUserName">Guest User</h3>
+    <p id="drawerUserEmail">Not logged in</p>
+    <p id="drawerUserPoints">🔥 0 পয়েন্ট</p>
+    <div class="profile-actions">
+      <button id="drawerLoginSignupBtn" class="btn" onclick="redirectToLogin()">🔐 Login / Signup</button>
+      <button id="drawerLogoutBtn" class="btn" onclick="logout()" style="display: none;">🚪 Logout</button>
     </div>
   </div>
+  <div class="profile-drawer-links">
+    <a href="/Website/profile/">👤 প্রোফাইল সেটিংস</a>
+    <a href="/Website/rewards/">🎁 আমার রিওয়ার্ড</a>
+  </div>
+</div>
 
-  <script>
-    // Drawer Open
-    document.getElementById('profileBtn').onclick = function () {
-      const drawer = document.getElementById('profileDrawer');
-      drawer.style.display = "block";
-      setTimeout(() => {
-        drawer.style.width = "280px";
-      }, 10);
-      if (typeof closeSidebar === "function") closeSidebar();
-      if (typeof closeNotificationDrawer === "function") closeNotificationDrawer();
+<!-- Dummy Profile Button for Demo -->
+<button id="profileBtn" style="margin:20px;">Open Profile Drawer</button>
+<img id="profileImg" src="https://raw.githubusercontent.com/tech-jobayer/Website/main/data/default-profile.png" style="width:40px;height:40px;border-radius:50%;margin:10px;" />
+<div id="headerUserPoints"></div>
+
+<script>
+  // Drawer Open
+  document.getElementById('profileBtn').onclick = function() {
+    document.getElementById('profileDrawer').style.display = "block";
+    setTimeout(() => {
+      document.getElementById('profileDrawer').style.width = "280px";
+    }, 10);
+    closeSidebar(); // অন্য ড্রয়ার বন্ধ
+    closeNotificationDrawer();
+  };
+
+  // Drawer Close
+  function closeProfileDrawer() {
+    document.getElementById('profileDrawer').style.width = "0";
+    setTimeout(() => {
+      document.getElementById('profileDrawer').style.display = "none";
+    }, 300);
+  }
+
+  // Update UI after Login/Logout
+  function updateProfileUI(user) {
+    const headerImg = document.getElementById('profileImg');
+    const drawerImg = document.getElementById('drawerProfileImg');
+    const drawerName = document.getElementById('drawerUserName');
+    const drawerEmail = document.getElementById('drawerUserEmail');
+    const loginBtn = document.getElementById('drawerLoginSignupBtn');
+    const logoutBtn = document.getElementById('drawerLogoutBtn');
+    const drawerPoints = document.getElementById('drawerUserPoints');
+    const headerPoints = document.getElementById('headerUserPoints');
+
+    const defaultProfileImgUrl = "https://raw.githubusercontent.com/tech-jobayer/Website/main/data/default-profile.png";
+
+    if (user) {
+      const imageUrl = user.photoURL || defaultProfileImgUrl;
+      headerImg.src = imageUrl;
+      drawerImg.src = imageUrl;
+      drawerName.innerText = user.displayName || 'User';
+      drawerEmail.innerText = user.email;
+      loginBtn.style.display = 'none';
+      logoutBtn.style.display = 'block';
+      loadPoints(user.uid); // ইউজার পয়েন্ট আপডেট
+    } else {
+      headerImg.src = defaultProfileImgUrl;
+      drawerImg.src = defaultProfileImgUrl;
+      drawerName.innerText = 'Guest User';
+      drawerEmail.innerText = 'আপনি লগইন করেননি';
+      loginBtn.style.display = 'block';
+      logoutBtn.style.display = 'none';
+      drawerPoints.innerHTML = '💰 0 পয়েন্ট';
+      headerPoints.innerHTML = '';
+    }
+  }
+
+  function redirectToLogin() {
+    window.location.href = "/Website/login/";
+  }
+
+  function closeSidebar() {
+    // Dummy function placeholder
+  }
+
+  function closeNotificationDrawer() {
+    // Dummy function placeholder
+  }
+
+  function logout() {
+    // Dummy logout function
+    alert("Logged out");
+    updateProfileUI(null);
+  }
+
+  function loadPoints(uid) {
+    // Dummy point load function
+    const points = 123;
+    document.getElementById('drawerUserPoints').innerText = `🔥 ${points} পয়েন্ট`;
+    document.getElementById('headerUserPoints').innerText = `🔥 ${points} পয়েন্ট`;
+  }
+
+  // Example usage: simulate login
+  setTimeout(() => {
+    const mockUser = {
+      uid: 'abc123',
+      displayName: 'Jobayer',
+      email: 'jobayer@example.com',
+      photoURL: ''
     };
-
-    // Drawer Close
-    function closeProfileDrawer() {
-      const drawer = document.getElementById('profileDrawer');
-      drawer.style.width = "0";
-      setTimeout(() => {
-        drawer.style.display = "none";
-      }, 300);
-    }
-
-    // Redirect Login
-    function redirectToLogin() {
-      window.location.href = "/Website/login/";
-    }
-
-    // Dummy logout
-    function logout() {
-      alert("লগআউট সম্পন্ন হয়েছে");
-      updateProfileUI(null);
-    }
-
-    // Update UI
-    function updateProfileUI(user) {
-      const headerImg = document.getElementById('profileImg');
-      const drawerImg = document.getElementById('drawerProfileImg');
-      const drawerName = document.getElementById('drawerUserName');
-      const drawerEmail = document.getElementById('drawerUserEmail');
-      const loginBtn = document.getElementById('drawerLoginSignupBtn');
-      const logoutBtn = document.getElementById('drawerLogoutBtn');
-      const drawerPoints = document.getElementById('drawerUserPoints');
-      const defaultProfileImgUrl = "https://raw.githubusercontent.com/tech-jobayer/Website/main/data/default-profile.png";
-
-      if (user) {
-        const imageUrl = user.photoURL || defaultProfileImgUrl;
-        headerImg.src = imageUrl;
-        drawerImg.src = imageUrl;
-        drawerName.innerText = user.displayName || 'User';
-        drawerEmail.innerText = user.email;
-        loginBtn.style.display = 'none';
-        logoutBtn.style.display = 'block';
-        drawerPoints.innerHTML = '🔥 ' + (user.points || 0) + ' পয়েন্ট';
-      } else {
-        headerImg.src = defaultProfileImgUrl;
-        drawerImg.src = defaultProfileImgUrl;
-        drawerName.innerText = 'Guest User';
-        drawerEmail.innerText = 'আপনি লগইন করেননি';
-        loginBtn.style.display = 'block';
-        logoutBtn.style.display = 'none';
-        drawerPoints.innerHTML = '💰 0 পয়েন্ট';
-      }
-    }
-
-    // উদাহরণ ইউজার লোড (ডেমো)
-    const exampleUser = {
-      displayName: "Jobayer",
-      email: "jobayer@example.com",
-      photoURL: "https://i.ibb.co/vZysx0M/user.png",
-      points: 120
-    };
-    updateProfileUI(exampleUser);
-  </script>
+    updateProfileUI(mockUser);
+  }, 1000);
+</script>
 
 </body>
 </html>
