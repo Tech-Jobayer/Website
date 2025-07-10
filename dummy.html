@@ -1,32 +1,89 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Header Only Page</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Header with Profile Drawer</title>
   <style>
-    /* Header Styling */
+    /* বেসিক হেডার স্টাইল */
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
       background-color: #f4f4f4;
     }
-
     .header {
       background-color: #2C3E50;
       color: white;
       padding: 15px 20px;
-      text-align: center;
-      font-size: 1.5em;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 1.5em;
+    }
+    .profile-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
 
   <div class="header">
-    📌 আমার পেজ হেডার
+    <h1>📌 আমার পেজ হেডার</h1>
+    <button id="profileBtn" class="profile-btn" aria-label="Open Profile Drawer">👤</button>
   </div>
+
+  <!-- প্রোফাইল ড্রয়ার HTML এখানে লোড হবে -->
+  <div id="profileDrawerContainer"></div>
+
+  <script>
+    // প্রোফাইল ড্রয়ার কন্টেন্ট লোড করার ফাংশন
+    async function loadProfileDrawer() {
+      try {
+        const response = await fetch('function/profile_drawer.html');
+        if (!response.ok) throw new Error('Failed to load profile drawer');
+        const html = await response.text();
+        document.getElementById('profileDrawerContainer').innerHTML = html;
+
+        // এখন প্রোফাইল ড্রয়ারের JS ও CSS যদি আলাদা ফাইলে থাকে তবে লোড করতে হবে
+
+        // Drawer Open
+        document.getElementById('profileBtn').onclick = function() {
+          const drawer = document.getElementById('profileDrawer');
+          if (drawer) {
+            drawer.style.display = "block";
+            setTimeout(() => {
+              drawer.style.width = "280px";
+            }, 10);
+          }
+          // প্রয়োজনমত অন্য ড্রয়ার বন্ধ করার ফাংশন এখানে কল করো
+        };
+
+        // Drawer Close function (profile_drawer.html-এ ডিফাইন্ড না থাকলে এখানে দিতে হবে)
+        window.closeProfileDrawer = function() {
+          const drawer = document.getElementById('profileDrawer');
+          if (drawer) {
+            drawer.style.width = "0";
+            setTimeout(() => {
+              drawer.style.display = "none";
+            }, 300);
+          }
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    // পেজ লোড হলে প্রোফাইল ড্রয়ার লোড করো
+    window.addEventListener('DOMContentLoaded', loadProfileDrawer);
+  </script>
 
 </body>
 </html>
