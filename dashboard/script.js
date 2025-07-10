@@ -243,6 +243,10 @@ if (loadingText) {
     }, 500);
 }
 
+function redirectToLogin() {
+    window.location.href = "/Website/login/"; // ✅ এখানে তোমার প্রকৃত লগইন পেইজের path বসাও
+}
+
 function setNotificationCount(count) {
     const notifyCount = document.querySelector('.notify-count');
     if (notifyCount) {
