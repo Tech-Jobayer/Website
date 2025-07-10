@@ -527,6 +527,9 @@ if (loadingText) {
     }, 500);
 }
 
+function redirectToLogin() {
+    window.location.href = "/Website/login/";
+}
 function setNotificationCount(count) {
     const notifyCount = document.querySelector('.notify-count');
     if (notifyCount) {
